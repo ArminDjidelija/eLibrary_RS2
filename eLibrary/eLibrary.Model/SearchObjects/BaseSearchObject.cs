@@ -9,7 +9,9 @@ namespace eLibrary.Model.SearchObjects
         public int? Page { get; set; }
         public int? PageSize { get; set; }
         public bool? RetrieveAll { get; set; }
-        public string? SortBy { get; set; }
+        public string? OrderBy { get; set; }
         public string? SortDirection { get; set; }
+        //pass by AutoriKnjige.Knjige.Uvezi, 
+        public string? IncludeTables {  get; set; }
     }
 }

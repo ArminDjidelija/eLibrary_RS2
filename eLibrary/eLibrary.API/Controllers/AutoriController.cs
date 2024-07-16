@@ -3,15 +3,17 @@ using eLibrary.Model;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services;
+using eLibrary.Services.BaseServicesInterfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eLibrary.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JeziciController : BaseCRUDController<Model.Jezici, JeziciSearchObject, JeziciUpsertRequest, JeziciUpsertRequest>
+    public class AutoriController : BaseCRUDController<Autori, AutoriSearchObject, AutoriUpsertRequest, AutoriUpsertRequest>
     {
-        public JeziciController(IJeziciService service) : base(service)
+        public AutoriController(IAutoriService service) : base(service)
         {
         }
     }
