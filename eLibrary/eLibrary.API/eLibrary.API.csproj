@@ -14,4 +14,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\eLibrary.Model\eLibrary.Model.csproj" />
+    <ProjectReference Include="..\eLibrary.Services\eLibrary.Services.csproj" />
+  </ItemGroup>
+
 </Project>

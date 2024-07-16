@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eLibrary.API", "eLibrary.API\eLibrary.API.csproj", "{92D47698-D9FB-42D1-AE56-79EF30131A89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eLibrary.API", "eLibrary.API\eLibrary.API.csproj", "{92D47698-D9FB-42D1-AE56-79EF30131A89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eLibrary.Model", "eLibrary.Model\eLibrary.Model.csproj", "{50AE92F4-C52F-4A52-B6EB-DB5D9E35A1F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eLibrary.Services", "eLibrary.Services\eLibrary.Services.csproj", "{37CA19E7-36D4-4964-84A8-37015D37B616}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{92D47698-D9FB-42D1-AE56-79EF30131A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D47698-D9FB-42D1-AE56-79EF30131A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D47698-D9FB-42D1-AE56-79EF30131A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50AE92F4-C52F-4A52-B6EB-DB5D9E35A1F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50AE92F4-C52F-4A52-B6EB-DB5D9E35A1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50AE92F4-C52F-4A52-B6EB-DB5D9E35A1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50AE92F4-C52F-4A52-B6EB-DB5D9E35A1F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37CA19E7-36D4-4964-84A8-37015D37B616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37CA19E7-36D4-4964-84A8-37015D37B616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37CA19E7-36D4-4964-84A8-37015D37B616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37CA19E7-36D4-4964-84A8-37015D37B616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
