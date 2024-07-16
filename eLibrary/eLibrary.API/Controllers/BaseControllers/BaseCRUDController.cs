@@ -1,9 +1,8 @@
 ﻿using eLibrary.Model.SearchObjects;
-using eLibrary.Services;
-using Microsoft.AspNetCore.Http;
+using eLibrary.Services.BaseServicesInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace eLibrary.API.Controllers
+namespace eLibrary.API.Controllers.BaseControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,21 +16,21 @@ namespace eLibrary.API.Controllers
         }
 
         [HttpPost]
-        public virtual TModel Insert(TInsert request)
+        public virtual Task<TModel> Insert(TInsert request, CancellationToken cancellationToken = default)
         {
-            return _service.Insert(request);
+            return _service.InsertAsync(request, cancellationToken);
         }
 
         [HttpPut("{id}")]
-        public virtual TModel Update(int id, TUpdate request)
+        public virtual Task<TModel> Update(int id, TUpdate request, CancellationToken cancellationToken = default)
         {
-            return _service.Update(id, request);
+            return _service.UpdateAsync(id, request, cancellationToken);
         }
 
         [HttpDelete("{id}")]
-        public virtual void Delete(int id)
+        public virtual Task Delete(int id, CancellationToken cancellationToken = default)
         {
-            _service.Delete(id);
+            return _service.DeleteAsync(id, cancellationToken);
         }
     }
 }

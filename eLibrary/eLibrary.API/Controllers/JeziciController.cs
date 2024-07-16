@@ -1,8 +1,8 @@
-﻿using eLibrary.Model;
+﻿using eLibrary.API.Controllers.BaseControllers;
+using eLibrary.Model;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eLibrary.API.Controllers
@@ -15,12 +15,12 @@ namespace eLibrary.API.Controllers
         {
         }
 
-        public override Jezici Insert(JeziciUpsertRequest request)
+        public override Task<Jezici> Insert(JeziciUpsertRequest request, CancellationToken cancellationToken = default)
         {
             return base.Insert(request);
         }
 
-        public override PagedResult<Jezici> GetList([FromQuery] JeziciSearchObject searchObject)
+        public override Task<PagedResult<Jezici>> GetList([FromQuery] JeziciSearchObject searchObject, CancellationToken cancellationToken = default)
         {
             return base.GetList(searchObject);
         }

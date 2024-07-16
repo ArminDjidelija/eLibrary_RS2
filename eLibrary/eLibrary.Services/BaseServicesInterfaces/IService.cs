@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eLibrary.Services
+namespace eLibrary.Services.BaseServicesInterfaces
 {
     public interface IService<TModel, TSearch> where TSearch : BaseSearchObject
     {
-        public PagedResult<TModel> GetPaged(TSearch search);
-        public TModel GetById(int id);
+        public Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default);
+        public Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     }
 }

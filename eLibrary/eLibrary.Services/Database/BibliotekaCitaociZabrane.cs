@@ -12,6 +12,7 @@ public partial class BibliotekaCitaociZabrane : ISoftDeletable
     public int BibliotekaId { get; set; }
 
     public int CitalacId { get; set; }
+    public string? StateMachine { get; set; }
 
     public virtual Biblioteke Biblioteka { get; set; } = null!;
 
