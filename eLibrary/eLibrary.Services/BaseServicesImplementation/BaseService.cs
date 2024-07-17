@@ -1,4 +1,5 @@
 ﻿using eLibrary.Model;
+using eLibrary.Model.Exceptions;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServicesInterfaces;
 using eLibrary.Services.Database;
@@ -63,7 +64,7 @@ namespace eLibrary.Services.BaseServices
             }
             catch (Exception)
             {
-                throw new Exception("Pogrešna include lista!");
+                throw new UserException("Pogrešna include lista!");
             }
 
             return query;
@@ -122,5 +123,25 @@ namespace eLibrary.Services.BaseServices
                 return null;
             }
         }
+
+        //public TModel GetFirstOrDefaultForSearchObject(TSearch search)
+        //{
+        //    var query = Context.Set<TDbEntity>().AsQueryable();
+
+        //    query=ApplyGetFirstOrDefaultForSearchObject(query, search);
+
+        //    var entity = query.FirstOrDefault();
+        //    if (entity != null)
+        //    {
+        //        return Mapper.Map<TModel>(entity);
+        //    }
+
+        //    return null;
+        //}
+
+        //public virtual IQueryable<TDbEntity> ApplyGetFirstOrDefaultForSearchObject(IQueryable<TDbEntity> query, TSearch search)
+        //{
+        //    return query;
+        //}
     }
 }

@@ -19,7 +19,7 @@ public partial class Biblioteke : ISoftDeletable
 
     public string? Mail { get; set; }
 
-    public int? RukovodilacId { get; set; }
+    //public int? RukovodilacId { get; set; }
 
     public int KantonId { get; set; }
 
@@ -35,7 +35,7 @@ public partial class Biblioteke : ISoftDeletable
 
     public virtual ICollection<Obavijesti> Obavijestis { get; set; } = new List<Obavijesti>();
 
-    public virtual Rukovodilac? Rukovodilac { get; set; }
+    //public virtual Rukovodilac? Rukovodilac { get; set; }
 
     public virtual ICollection<TipClanarineBiblioteke> TipClanarineBibliotekes { get; set; } = new List<TipClanarineBiblioteke>();
 

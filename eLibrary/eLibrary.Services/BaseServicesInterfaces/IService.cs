@@ -12,5 +12,6 @@ namespace eLibrary.Services.BaseServicesInterfaces
     {
         public PagedResult<TModel> GetPaged(TSearch search);
         public TModel GetById(int id);
+        //public TModel GetFirstOrDefaultForSearchObject(TSearch search);
     }
 }

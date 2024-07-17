@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.JeziciDTO
+namespace eLibrary.Model.GeneralDTOs
 {
     public class KnjigeDTO
     {

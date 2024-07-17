@@ -1,4 +1,5 @@
-﻿using eLibrary.Model.SearchObjects;
+﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Database;
 using MapsterMapper;
 using System;
@@ -51,7 +52,7 @@ namespace eLibrary.Services.BaseServices
             var entity = await Context.Set<TDbEntity>().FindAsync(id, cancellationToken);
             if (entity == null)
             {
-                throw new Exception("Nemoguće pronaći objekat sa poslanim id-om!");
+                throw new UserException("Nemoguće pronaći objekat sa poslanim id-om!");
             }
 
             if (entity is ISoftDeletable softDeleteEntity)

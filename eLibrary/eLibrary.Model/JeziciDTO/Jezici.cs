@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using eLibrary.Model.GeneralDTOs;
 
 namespace eLibrary.Model.JeziciDTO
 {

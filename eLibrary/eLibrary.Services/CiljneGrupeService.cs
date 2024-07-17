@@ -16,6 +16,15 @@ namespace eLibrary.Services
         public CiljneGrupeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
-      
+
+        public override IQueryable<CiljneGrupe> AddFilter(CiljnaGrupaSearchObject search, IQueryable<CiljneGrupe> query)
+        {
+            if(!string.IsNullOrEmpty(search?.NazivGTE))
+            {
+                query = query.Where(x => x.Naziv.ToLower().StartsWith(search.NazivGTE.ToLower()));
+            }
+            return query;
+        }
+
     }
 }

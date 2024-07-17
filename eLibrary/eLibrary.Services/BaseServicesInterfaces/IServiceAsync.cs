@@ -12,5 +12,7 @@ namespace eLibrary.Services.BaseServicesInterfaces
     {
         public Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default);
         public Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        //public Task<TModel> GetFirstOrDefaultForSearchObjectAsync(TSearch search, CancellationToken cancellationToken = default);
+
     }
 }

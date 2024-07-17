@@ -1,10 +1,12 @@
 ﻿using eLibrary.Model;
+using eLibrary.Model.Exceptions;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServicesInterfaces;
 using eLibrary.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace eLibrary.Services.BaseServices
 {
@@ -64,7 +66,7 @@ namespace eLibrary.Services.BaseServices
             }
             catch (Exception)
             {
-                throw new Exception("Pogrešna include lista!");
+                throw new UserException("Pogrešna include lista!");
             }
 
             return query;
@@ -123,5 +125,25 @@ namespace eLibrary.Services.BaseServices
                 return null;
             }
         }
+
+        //public async Task<TModel> GetFirstOrDefaultForSearchObjectAsync(TSearch search, CancellationToken cancellationToken = default)
+        //{
+        //    var query = Context.Set<TDbEntity>().AsQueryable();
+
+        //    query = ApplyGetFirstOrDefaultForSearchObject(query, search);
+
+        //    var entity = await query.FirstOrDefaultAsync(cancellationToken);
+        //    if (entity != null)
+        //    {
+        //        return Mapper.Map<TModel>(entity);
+        //    }
+
+        //    return null;
+        //}
+
+        //public virtual IQueryable<TDbEntity> ApplyGetFirstOrDefaultForSearchObject(IQueryable<TDbEntity> query, TSearch search)
+        //{
+        //    return query;
+        //}
     }
 }

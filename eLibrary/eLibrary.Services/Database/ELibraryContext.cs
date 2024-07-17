@@ -62,7 +62,7 @@ public partial class ELibraryContext : DbContext
 
     public virtual DbSet<Rezervacije> Rezervacijes { get; set; }
 
-    public virtual DbSet<Rukovodilac> Rukovodilacs { get; set; }
+    //public virtual DbSet<Rukovodilac> Rukovodilacs { get; set; }
 
     public virtual DbSet<TipClanarineBiblioteke> TipClanarineBibliotekes { get; set; }
 
@@ -186,9 +186,9 @@ public partial class ELibraryContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKBiblioteke432909");
 
-            entity.HasOne(d => d.Rukovodilac).WithMany(p => p.Bibliotekes)
-                .HasForeignKey(d => d.RukovodilacId)
-                .HasConstraintName("FKBiblioteke215719");
+            //entity.HasOne(d => d.Rukovodilac).WithMany(p => p.Bibliotekes)
+            //    .HasForeignKey(d => d.RukovodilacId)
+            //    .HasConstraintName("FKBiblioteke215719");
         });
 
         modelBuilder.Entity<CiljneGrupe>(entity =>
@@ -501,17 +501,17 @@ public partial class ELibraryContext : DbContext
                 .HasConstraintName("FKRezervacij386618");
         });
 
-        modelBuilder.Entity<Rukovodilac>(entity =>
-        {
-            entity.HasKey(e => e.RukovodilacId).HasName("PK__Rukovodi__E39449BE8CC81700");
+        //modelBuilder.Entity<Rukovodilac>(entity =>
+        //{
+        //    entity.HasKey(e => e.RukovodilacId).HasName("PK__Rukovodi__E39449BE8CC81700");
 
-            entity.ToTable("Rukovodilac");
+        //    entity.ToTable("Rukovodilac");
 
-            entity.Property(e => e.Email).HasMaxLength(150);
-            entity.Property(e => e.Ime).HasMaxLength(50);
-            entity.Property(e => e.Kontakt).HasMaxLength(50);
-            entity.Property(e => e.Prezime).HasMaxLength(50);
-        });
+        //    entity.Property(e => e.Email).HasMaxLength(150);
+        //    entity.Property(e => e.Ime).HasMaxLength(50);
+        //    entity.Property(e => e.Kontakt).HasMaxLength(50);
+        //    entity.Property(e => e.Prezime).HasMaxLength(50);
+        //});
 
         modelBuilder.Entity<TipClanarineBiblioteke>(entity =>
         {

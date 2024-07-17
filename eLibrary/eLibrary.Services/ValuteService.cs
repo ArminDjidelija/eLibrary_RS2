@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class VrsteSadrzajaService : BaseCRUDServiceAsync<Model.VrsteSadrzajaDTO.VrsteSadrzaja, VrsteSadrzajaSearchObject, Database.VrsteSadrzaja, VrsteSadrzajaUpsertRequest, VrsteSadrzajaUpsertRequest>, IVrsteSadrzajaService
+    public class ValuteService : BaseCRUDServiceAsync<Model.ValuteDTO.Valute, ValuteSearchObject, Database.Valute, ValuteUpsertRequest, ValuteUpsertRequest>, IValuteService
     {
-        public VrsteSadrzajaService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        public ValuteService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public override IQueryable<VrsteSadrzaja> AddFilter(VrsteSadrzajaSearchObject search, IQueryable<VrsteSadrzaja> query)
+        public override IQueryable<Valute> AddFilter(ValuteSearchObject search, IQueryable<Valute> query)
         {
             if (!string.IsNullOrEmpty(search?.NazivGTE))
             {
