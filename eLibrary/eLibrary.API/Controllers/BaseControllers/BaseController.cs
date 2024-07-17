@@ -18,15 +18,17 @@ namespace eLibrary.API.Controllers.BaseControllers
         }
 
         [HttpGet]
-        public virtual Task<PagedResult<TModel>> GetList([FromQuery] TSearch searchObject, CancellationToken cancellationToken = default)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public virtual PagedResult<TModel> GetList([FromQuery] TSearch searchObject)
         {
-            return _service.GetPagedAsync(searchObject, cancellationToken);
+            return _service.GetPaged(searchObject);
         }
 
         [HttpGet("{id}")]
-        public virtual Task<TModel> GetById(int id, CancellationToken cancellationToken = default)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public virtual TModel GetById(int id)
         {
-            return _service.GetByIdAsync(id, cancellationToken);
+            return _service.GetById(id);
         }
     }
 }

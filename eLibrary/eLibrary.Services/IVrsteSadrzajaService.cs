@@ -1,6 +1,6 @@
-﻿using eLibrary.Model.AutoriDTO;
-using eLibrary.Model.Requests;
+﻿using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Model.VrsteSadrzajaDTO;
 using eLibrary.Services.BaseServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public interface IAutoriService:ICRUDServiceAsync<Autori, AutoriSearchObject, AutoriUpsertRequest, AutoriUpsertRequest>
+    public interface IVrsteSadrzajaService:ICRUDServiceAsync<VrsteSadrzaja, VrsteSadrzajaSearchObject, VrsteSadrzajaUpsertRequest, VrsteSadrzajaUpsertRequest>
     {
-
     }
 }

@@ -10,7 +10,7 @@ namespace eLibrary.Services.BaseServicesInterfaces
 {
     public interface IService<TModel, TSearch> where TSearch : BaseSearchObject
     {
-        public Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default);
-        public Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        public PagedResult<TModel> GetPaged(TSearch search);
+        public TModel GetById(int id);
     }
 }

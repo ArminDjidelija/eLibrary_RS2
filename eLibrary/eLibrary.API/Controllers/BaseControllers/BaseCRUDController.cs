@@ -16,21 +16,24 @@ namespace eLibrary.API.Controllers.BaseControllers
         }
 
         [HttpPost]
-        public virtual Task<TModel> Insert(TInsert request, CancellationToken cancellationToken = default)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public virtual TModel Insert(TInsert request)
         {
-            return _service.InsertAsync(request, cancellationToken);
+            return _service.Insert(request);
         }
 
         [HttpPut("{id}")]
-        public virtual Task<TModel> Update(int id, TUpdate request, CancellationToken cancellationToken = default)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public virtual TModel Update(int id, TUpdate request)
         {
-            return _service.UpdateAsync(id, request, cancellationToken);
+            return _service.Update(id, request);
         }
 
         [HttpDelete("{id}")]
-        public virtual Task Delete(int id, CancellationToken cancellationToken = default)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public virtual void Delete(int id)
         {
-            return _service.DeleteAsync(id, cancellationToken);
+            _service.Delete(id);
         }
     }
 }

@@ -5,22 +5,21 @@ using eLibrary.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
 
 namespace eLibrary.Services.BaseServices
 {
-    public class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public class BaseServiceAsync<TModel, TSearch, TDbEntity> : IServiceAsync<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
         public ELibraryContext Context { get; }
         public IMapper Mapper { get; }
 
-        public BaseService(ELibraryContext context, IMapper mapper)
+        public BaseServiceAsync(ELibraryContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
         }
 
-        public PagedResult<TModel> GetPaged(TSearch search)
+        public async Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default)
         {
             List<TModel> result = new List<TModel>();
 
@@ -30,9 +29,10 @@ namespace eLibrary.Services.BaseServices
             {
                 query = ApplyIncludes(query, search.IncludeTables);
             }
+
             query = AddFilter(search, query);
 
-            int count = query.Count();
+            int count = await query.CountAsync(cancellationToken);
 
             if (!string.IsNullOrEmpty(search?.OrderBy) && !string.IsNullOrEmpty(search?.SortDirection))
             {
@@ -42,9 +42,9 @@ namespace eLibrary.Services.BaseServices
             if (search?.Page.HasValue == true && search?.PageSize.HasValue == true && (search?.RetrieveAll.HasValue == false || search?.RetrieveAll == null))
             {
                 query = query.Skip((search.Page.Value - 1) * search.PageSize.Value).Take(search.PageSize.Value);
-            }
+            }            
 
-            var list = query.ToList();
+            var list = await query.ToListAsync(cancellationToken);
 
             result = Mapper.Map(list, result);
 
@@ -54,11 +54,12 @@ namespace eLibrary.Services.BaseServices
 
             return pagedResult;
         }
+
         private IQueryable<TDbEntity> ApplyIncludes(IQueryable<TDbEntity> query, string includes)
         {
             try
             {
-                var tableIncludes=includes.Split(',');
+                var tableIncludes = includes.Split(',');
                 query = tableIncludes.Aggregate(query, (current, inc) => current.Include(inc));
             }
             catch (Exception)
@@ -81,7 +82,7 @@ namespace eLibrary.Services.BaseServices
 
                 string methodName = "";
 
-                var sortDirectionToLower = sortDirection.ToLower();
+                var sortDirectionToLower=sortDirection.ToLower();
 
                 methodName = sortDirectionToLower == "desc" || sortDirectionToLower == "descending" ? "OrderByDescending" :
                     sortDirectionToLower == "asc" || sortDirectionToLower == "ascending" ? "OrderBy" : "";
@@ -109,9 +110,9 @@ namespace eLibrary.Services.BaseServices
         }
 
 
-        public TModel GetById(int id)
+        public async Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = Context.Set<TDbEntity>().Find(id);
+            var entity = await Context.Set<TDbEntity>().FindAsync(id, cancellationToken);
 
             if (entity != null)
             {

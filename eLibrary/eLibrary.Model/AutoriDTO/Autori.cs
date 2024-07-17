@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace eLibrary.Model
+namespace eLibrary.Model.AutoriDTO
 {
     public class Autori
     {
@@ -14,6 +12,6 @@ namespace eLibrary.Model
 
         public int? GodinaRodjenja { get; set; }
 
-        public ICollection<KnjigaAutori>? KnjigaAutoris { get; set; }
+        public ICollection<KnjigaAutoriDTO> KnjigaAutoris { get; set; } = new List<KnjigaAutoriDTO>();
     }
 }

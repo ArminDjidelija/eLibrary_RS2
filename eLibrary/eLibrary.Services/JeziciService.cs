@@ -7,7 +7,7 @@ using MapsterMapper;
 
 namespace eLibrary.Services
 {
-    public class JeziciService : BaseCRUDService<Model.Jezici, JeziciSearchObject, Database.Jezici, JeziciUpsertRequest, JeziciUpsertRequest>, IJeziciService
+    public class JeziciService : BaseCRUDServiceAsync<Model.JeziciDTO.Jezici, JeziciSearchObject, Database.Jezici, JeziciUpsertRequest, JeziciUpsertRequest>, IJeziciService
     {
         public JeziciService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

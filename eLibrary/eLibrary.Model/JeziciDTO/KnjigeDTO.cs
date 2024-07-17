@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model
+namespace eLibrary.Model.JeziciDTO
 {
-    public class Knjige
+    public class KnjigeDTO
     {
         public int KnjigaId { get; set; }
 
@@ -27,12 +27,5 @@ namespace eLibrary.Model
         public int IzdavacId { get; set; }
 
         public int JezikId { get; set; }
-
-        public virtual Jezici Jezik { get; set; } = null!;
-
-        public virtual ICollection<KnjigaAutori> KnjigaAutoris { get; set; } = new List<KnjigaAutori>();
-              
-
-        public virtual Uvezi Uvez { get; set; } = null!;
     }
 }
