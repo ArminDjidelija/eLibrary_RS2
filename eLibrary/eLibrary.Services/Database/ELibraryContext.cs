@@ -80,6 +80,8 @@ public partial class ELibraryContext : DbContext
 
     public virtual DbSet<VrsteSadrzaja> VrsteSadrzajas { get; set; }
 
+    public virtual DbSet<VrsteGrade> VrsteGrades { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=localhost, 1433;Initial Catalog=eLibrary;user=sa;Password=QWEasd123!;TrustServerCertificate=True");
@@ -356,6 +358,11 @@ public partial class ELibraryContext : DbContext
                 .HasForeignKey(d => d.UvezId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKKnjige620887");
+
+            entity.HasOne(d => d.VrstaGrade).WithMany(p => p.Knjiges)
+                .HasForeignKey(d => d.VrsteGradeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Knjige_VrsteGrade");
         });
 
         modelBuilder.Entity<Korisnici>(entity =>
@@ -621,6 +628,15 @@ public partial class ELibraryContext : DbContext
             entity.ToTable("VrsteSadrzaja");
 
             entity.Property(e => e.Naziv).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<VrsteGrade>(entity =>
+        {
+            entity.HasKey(e => e.VrstaGradeId).HasName("PK__VrsteGra__D25BAB10DD033220");
+
+            entity.ToTable("VrsteGrade");
+
+            entity.Property(e => e.Naziv).HasMaxLength(100);
         });
 
         OnModelCreatingPartial(modelBuilder);

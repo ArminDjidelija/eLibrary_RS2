@@ -25,6 +25,8 @@ public partial class Knjige : ISoftDeletable
 
     public int IzdavacId { get; set; }
 
+    public int? VrsteGradeId { get; set; }
+
     public int JezikId { get; set; }
 
     public virtual ICollection<BibliotekaKnjige> BibliotekaKnjiges { get; set; } = new List<BibliotekaKnjige>();
@@ -41,7 +43,9 @@ public partial class Knjige : ISoftDeletable
 
     public virtual ICollection<KorisnikSacuvanaKnjiga> KorisnikSacuvanaKnjigas { get; set; } = new List<KorisnikSacuvanaKnjiga>();
 
+    public virtual VrsteGrade? VrstaGrade { get; set; }
+
     public virtual Uvezi Uvez { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

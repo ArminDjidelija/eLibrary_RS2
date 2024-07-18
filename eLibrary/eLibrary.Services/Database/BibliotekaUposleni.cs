@@ -17,5 +17,5 @@ public partial class BibliotekaUposleni : ISoftDeletable
 
     public virtual Korisnici Korisnik { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

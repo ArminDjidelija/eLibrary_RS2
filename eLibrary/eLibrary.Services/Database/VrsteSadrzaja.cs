@@ -11,5 +11,5 @@ public partial class VrsteSadrzaja : ISoftDeletable
 
     public virtual ICollection<KnjigaVrsteSadrzaja> KnjigaVrsteSadrzajas { get; set; } = new List<KnjigaVrsteSadrzaja>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

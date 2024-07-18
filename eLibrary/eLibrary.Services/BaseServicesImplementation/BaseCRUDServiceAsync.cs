@@ -21,17 +21,17 @@ namespace eLibrary.Services.BaseServices
         {
             TDbEntity entity = Mapper.Map<TDbEntity>(request);
 
-            BeforeInsert(request, entity);
+            await BeforeInsertAsync(request, entity);
 
             Context.Add(entity);
             await Context.SaveChangesAsync(cancellationToken);
 
-            AfterInsert(request, entity);
+            await AfterInsertAsync(request, entity);
 
             return Mapper.Map<TModel>(entity);
         }
-        public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
-        public virtual void AfterInsert(TInsert request, TDbEntity entity) { }
+        public virtual async Task BeforeInsertAsync(TInsert request, TDbEntity entity, CancellationToken cancellationToken=default) { }
+        public virtual async Task AfterInsertAsync(TInsert request, TDbEntity entity, CancellationToken cancellationToken = default) { }
 
         public virtual async Task<TModel> UpdateAsync(int id, TUpdate request, CancellationToken cancellationToken = default)
         {
@@ -41,17 +41,17 @@ namespace eLibrary.Services.BaseServices
 
             Mapper.Map(request, entity);
 
-            BeforeUpdate(request, entity);
+            await BeforeUpdateAsync(request, entity);
 
             await Context.SaveChangesAsync(cancellationToken);
 
-            AfterUpdate(request, entity);
+            await AfterUpdateAsync(request, entity);
 
             return Mapper.Map<TModel>(entity);
         }
 
-        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }
-        public virtual void AfterUpdate(TUpdate request, TDbEntity entity) { }
+        public virtual async Task BeforeUpdateAsync(TUpdate request, TDbEntity entity, CancellationToken cancellationToken = default) { }
+        public virtual async Task AfterUpdateAsync(TUpdate request, TDbEntity entity, CancellationToken cancellationToken = default) { }
 
         public virtual async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {

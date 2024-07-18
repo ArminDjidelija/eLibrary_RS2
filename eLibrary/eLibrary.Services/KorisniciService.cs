@@ -6,13 +6,8 @@ using eLibrary.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
@@ -66,7 +61,7 @@ namespace eLibrary.Services
             return query;
         }
 
-        public override void BeforeInsert(KorisniciInsertRequest request, Korisnici entity)
+        public override async Task BeforeInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken=default)
         {
             _logger.LogInformation($"Adding user: {entity.KorisnickoIme}");
 
@@ -80,7 +75,7 @@ namespace eLibrary.Services
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
         }
 
-        public override void AfterInsert(KorisniciInsertRequest request, Korisnici entity)
+        public override async Task AfterInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken = default)
         {
             if (request.Uloge != null)
             {
@@ -92,11 +87,11 @@ namespace eLibrary.Services
                         UlogaId = u
                     });
                 }
-                Context.SaveChanges();
+                await Context.SaveChangesAsync(cancellationToken);
             }
         }
 
-        public override void BeforeUpdate(KorisniciUpdateRequest request, Korisnici entity)
+        public override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnici entity, CancellationToken cancellationToken = default)
         {
             if(request.Lozinka!=null && request.LozinkaPotvrda != null)
             {

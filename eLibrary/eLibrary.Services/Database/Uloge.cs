@@ -11,5 +11,5 @@ public partial class Uloge : ISoftDeletable
 
     public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

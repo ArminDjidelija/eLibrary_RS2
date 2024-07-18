@@ -15,5 +15,5 @@ public partial class KnjigaCiljneGrupe : ISoftDeletable
 
     public virtual Knjige Knjiga { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

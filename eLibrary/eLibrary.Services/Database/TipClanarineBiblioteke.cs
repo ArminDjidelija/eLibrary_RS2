@@ -23,5 +23,5 @@ public partial class TipClanarineBiblioteke : ISoftDeletable
 
     public virtual Valute Valuta { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

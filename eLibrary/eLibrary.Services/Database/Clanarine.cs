@@ -29,5 +29,5 @@ public partial class Clanarine : ISoftDeletable
 
     public virtual Uplate Uplate { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

@@ -27,5 +27,8 @@ namespace eLibrary.Model.GeneralDTOs
         public int IzdavacId { get; set; }
 
         public int JezikId { get; set; }
+
+        public int? VrsteGradeId { get; set; }
+
     }
 }

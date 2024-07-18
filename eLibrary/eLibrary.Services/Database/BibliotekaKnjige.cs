@@ -29,5 +29,5 @@ public partial class BibliotekaKnjige : ISoftDeletable
 
     public virtual ICollection<Rezervacije> Rezervacijes { get; set; } = new List<Rezervacije>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

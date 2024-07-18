@@ -19,5 +19,5 @@ public partial class Penali : ISoftDeletable
 
     public virtual Uplate? Uplata { get; set; }
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

@@ -20,6 +20,9 @@ builder.Services.AddTransient<IKantoniService, KantoniService>();
 builder.Services.AddTransient<IBibliotekeService, BibliotekeService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 builder.Services.AddTransient<IUlogeService, UlogeService>();
+builder.Services.AddTransient<ITipClanarineBibliotekeService, TipClanarineBibliotekeService>();
+builder.Services.AddTransient<IUveziService, UveziService>();
+builder.Services.AddTransient<IVrsteGradeService, VrsteGradeService>();
 
 builder.Services.AddControllers(x =>
 {

@@ -21,5 +21,5 @@ public partial class Obavijesti : ISoftDeletable
 
     public virtual Citaoci? Citalac { get; set; }
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

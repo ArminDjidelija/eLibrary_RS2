@@ -29,5 +29,5 @@ public partial class Pozajmice : ISoftDeletable
 
     public virtual ICollection<ProduženjePozajmica> ProduženjePozajmicas { get; set; } = new List<ProduženjePozajmica>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

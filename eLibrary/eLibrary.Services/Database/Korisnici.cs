@@ -27,7 +27,6 @@ public partial class Korisnici : ISoftDeletable
 
     public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
 
-    public string ImePrezime => Ime + " " + Prezime;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

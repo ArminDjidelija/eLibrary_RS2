@@ -15,5 +15,5 @@ public partial class KorisniciUloge : ISoftDeletable
 
     public virtual Uloge Uloga { get; set; } = null!;
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

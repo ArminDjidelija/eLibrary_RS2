@@ -15,7 +15,7 @@ public partial class Autori : ISoftDeletable
     
     public virtual ICollection<KnjigaAutori> KnjigaAutoris { get; set; } = new List<KnjigaAutori>();
     public bool IsDeleted { get ; set; }=false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 
     public string ImePrezime => Ime + " " + Prezime;
 }

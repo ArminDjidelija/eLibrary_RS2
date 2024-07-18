@@ -11,5 +11,5 @@ public partial class Jezici : ISoftDeletable
 
     public virtual ICollection<Knjige> Knjiges { get; set; } = new List<Knjige>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

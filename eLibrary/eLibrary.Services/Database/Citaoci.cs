@@ -47,5 +47,5 @@ public partial class Citaoci : ISoftDeletable
 
     public virtual ICollection<Uplate> Uplates { get; set; } = new List<Uplate>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

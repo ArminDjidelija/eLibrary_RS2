@@ -11,5 +11,5 @@ public partial class CiljneGrupe : ISoftDeletable
 
     public virtual ICollection<KnjigaCiljneGrupe> KnjigaCiljneGrupes { get; set; } = new List<KnjigaCiljneGrupe>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }

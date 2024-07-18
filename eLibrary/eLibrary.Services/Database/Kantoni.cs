@@ -15,5 +15,5 @@ public partial class Kantoni : ISoftDeletable
 
     public virtual ICollection<Citaoci> Citaocis { get; set; } = new List<Citaoci>();
     public bool IsDeleted { get; set; } = false;
-    public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+    public DateTime? VrijemeBrisanja { get; set; }
 }
