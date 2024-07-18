@@ -25,10 +25,11 @@ namespace eLibrary.Services.BaseServices
 
             Context.Add(entity);
             Context.SaveChanges();
-
+            AfterInsert(request, entity);
             return Mapper.Map<TModel>(entity);
         }
         public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
+        public virtual void AfterInsert(TInsert request, TDbEntity entity) { }
 
         public virtual TModel Update(int id, TUpdate request)
         {
@@ -42,10 +43,13 @@ namespace eLibrary.Services.BaseServices
 
             Context.SaveChanges();
 
+            AfterUpdate(request, entity);
+
             return Mapper.Map<TModel>(entity);
         }
 
         public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }
+        public virtual void AfterUpdate(TUpdate request, TDbEntity entity) { }
 
         public virtual void Delete(int id)
         {

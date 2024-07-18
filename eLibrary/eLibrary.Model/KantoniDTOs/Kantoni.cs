@@ -1,9 +1,8 @@
-﻿using eLibrary.Model.GeneralDTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.KantoniDTO
+namespace eLibrary.Model.KantoniDTOs
 {
     public class Kantoni
     {
@@ -13,6 +12,6 @@ namespace eLibrary.Model.KantoniDTO
 
         public string Skracenica { get; set; }
 
-        public virtual ICollection<GeneralDTO.BibliotekeDTO> Bibliotekes { get; set; } = new List<GeneralDTO.BibliotekeDTO>();
+        public virtual ICollection<GeneralDTOs.BibliotekeDTO> Bibliotekes { get; set; } = new List<GeneralDTOs.BibliotekeDTO>();
     }
 }

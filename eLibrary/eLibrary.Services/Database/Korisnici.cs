@@ -21,11 +21,13 @@ public partial class Korisnici : ISoftDeletable
 
     public string LozinkaSalt { get; set; } = null!;
 
-    public bool Status { get; set; }
+    public bool Status { get; set; } = true;
 
     public virtual ICollection<BibliotekaUposleni> BibliotekaUposlenis { get; set; } = new List<BibliotekaUposleni>();
 
     public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
     public bool IsDeleted { get; set; } = false;
     public DateTime? VrijemeBrisanja { get; set; } = DateTime.Now;
+
+    public string ImePrezime => Ime + " " + Prezime;
 }

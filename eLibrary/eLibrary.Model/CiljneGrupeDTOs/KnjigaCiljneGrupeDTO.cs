@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.CiljneGrupeDTO
+namespace eLibrary.Model.CiljneGrupeDTOs
 {
     public class KnjigaCiljneGrupeDTO
     {

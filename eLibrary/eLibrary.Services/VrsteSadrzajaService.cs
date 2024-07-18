@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class VrsteSadrzajaService : BaseCRUDServiceAsync<Model.VrsteSadrzajaDTO.VrsteSadrzaja, VrsteSadrzajaSearchObject, Database.VrsteSadrzaja, VrsteSadrzajaUpsertRequest, VrsteSadrzajaUpsertRequest>, IVrsteSadrzajaService
+    public class VrsteSadrzajaService : BaseCRUDServiceAsync<Model.VrsteSadrzajaDTOs.VrsteSadrzaja, VrsteSadrzajaSearchObject, Database.VrsteSadrzaja, VrsteSadrzajaUpsertRequest, VrsteSadrzajaUpsertRequest>, IVrsteSadrzajaService
     {
         public VrsteSadrzajaService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class KantoniService : BaseServiceAsync<Model.KantoniDTO.Kantoni, KantoniSearchObject, Database.Kantoni>, IKantoniService
+    public class KantoniService : BaseServiceAsync<Model.KantoniDTOs.Kantoni, KantoniSearchObject, Database.Kantoni>, IKantoniService
     {
         public KantoniService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.ValuteDTO
+namespace eLibrary.Model.ValuteDTOs
 {
     public class Valute
     {

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class BibliotekeService : BaseCRUDServiceAsync<Model.BibliotekeDTO.Biblioteke, BibliotekeSearchObject, Database.Biblioteke, BibliotekeUpsertRequest, BibliotekeUpsertRequest>, IBibliotekeService
+    public class BibliotekeService : BaseCRUDServiceAsync<Model.BibliotekeDTOs.Biblioteke, BibliotekeSearchObject, Database.Biblioteke, BibliotekeUpsertRequest, BibliotekeUpsertRequest>, IBibliotekeService
     {
         public BibliotekeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

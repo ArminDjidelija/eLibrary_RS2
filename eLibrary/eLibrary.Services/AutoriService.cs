@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class AutoriService : BaseCRUDServiceAsync<Model.AutoriDTO.Autori, AutoriSearchObject, Database.Autori, AutoriUpsertRequest, AutoriUpsertRequest>, IAutoriService
+    public class AutoriService : BaseCRUDServiceAsync<Model.AutoriDTOs.Autori, AutoriSearchObject, Database.Autori, AutoriUpsertRequest, AutoriUpsertRequest>, IAutoriService
     {
         public AutoriService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

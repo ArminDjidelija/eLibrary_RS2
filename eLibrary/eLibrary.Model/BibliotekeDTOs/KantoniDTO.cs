@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.BibliotekeDTO
+namespace eLibrary.Model.BibliotekeDTOs
 {
     public class KantoniDTO
     {

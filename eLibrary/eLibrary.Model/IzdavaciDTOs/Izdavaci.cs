@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.Izdavaci
+namespace eLibrary.Model.IzdavaciDTOs
 {
     public class Izdavaci
     {

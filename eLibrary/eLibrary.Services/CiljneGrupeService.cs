@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class CiljneGrupeService : BaseCRUDServiceAsync<Model.CiljneGrupeDTO.CiljneGrupe, CiljnaGrupaSearchObject, Database.CiljneGrupe, CiljnaGrupaUpsertRequest, CiljnaGrupaUpsertRequest>, ICiljneGrupeService
+    public class CiljneGrupeService : BaseCRUDServiceAsync<Model.CiljneGrupeDTOs.CiljneGrupe, CiljnaGrupaSearchObject, Database.CiljneGrupe, CiljnaGrupaUpsertRequest, CiljnaGrupaUpsertRequest>, ICiljneGrupeService
     {
         public CiljneGrupeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

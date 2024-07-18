@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace eLibrary.Model.KnjigeDTOs
+{
+    public class Knjige
+    {
+        public int KnjigaId { get; set; }
+
+        public string Naslov { get; set; } = null!;
+
+        public int GodinaIzdanja { get; set; }
+
+        public int BrojIzdanja { get; set; }
+
+        public int BrojStranica { get; set; }
+
+        public string? Isbn { get; set; }
+
+        public string? Napomena { get; set; }
+
+        public byte[]? Slika { get; set; }
+
+        public int UvezId { get; set; }
+
+        public int IzdavacId { get; set; }
+
+        public int JezikId { get; set; }
+
+        public virtual ICollection<BibliotekaKnjigeDTO> BibliotekaKnjiges { get; set; } = new List<BibliotekaKnjigeDTO>();
+
+        //public virtual Izdavaci Izdavac { get; set; } = null!;
+
+        //public virtual Jezici Jezik { get; set; } = null!;
+
+        //public virtual ICollection<KnjigaAutori> KnjigaAutoris { get; set; } = new List<KnjigaAutori>();
+
+        //public virtual ICollection<KnjigaCiljneGrupe> KnjigaCiljneGrupes { get; set; } = new List<KnjigaCiljneGrupe>();
+
+        //public virtual ICollection<KnjigaVrsteSadrzaja> KnjigaVrsteSadrzajas { get; set; } = new List<KnjigaVrsteSadrzaja>();
+
+        //public virtual ICollection<KorisnikSacuvanaKnjiga> KorisnikSacuvanaKnjigas { get; set; } = new List<KorisnikSacuvanaKnjiga>();
+    }
+}

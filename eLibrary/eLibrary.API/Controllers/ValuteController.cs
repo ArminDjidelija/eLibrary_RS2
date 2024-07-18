@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace eLibrary.API.Controllers
 {
     [ApiController]
-    public class ValuteController : BaseCRUDControllerAsync<Model.ValuteDTO.Valute, ValuteSearchObject, ValuteUpsertRequest, ValuteUpsertRequest>
+    public class ValuteController : BaseCRUDControllerAsync<Model.ValuteDTOs.Valute, ValuteSearchObject, ValuteUpsertRequest, ValuteUpsertRequest>
     {
         public ValuteController(IValuteService service) : base(service)
         {

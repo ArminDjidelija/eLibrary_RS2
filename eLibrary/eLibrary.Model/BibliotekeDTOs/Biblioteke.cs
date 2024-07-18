@@ -1,9 +1,8 @@
-﻿using eLibrary.Model.KantoniDTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.BibliotekeDTO
+namespace eLibrary.Model.BibliotekeDTOs
 {
     public class Biblioteke
     {

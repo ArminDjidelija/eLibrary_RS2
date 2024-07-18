@@ -26,9 +26,12 @@ namespace eLibrary.Services.BaseServices
             Context.Add(entity);
             await Context.SaveChangesAsync(cancellationToken);
 
+            AfterInsert(request, entity);
+
             return Mapper.Map<TModel>(entity);
         }
         public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
+        public virtual void AfterInsert(TInsert request, TDbEntity entity) { }
 
         public virtual async Task<TModel> UpdateAsync(int id, TUpdate request, CancellationToken cancellationToken = default)
         {
@@ -42,10 +45,13 @@ namespace eLibrary.Services.BaseServices
 
             await Context.SaveChangesAsync(cancellationToken);
 
+            AfterUpdate(request, entity);
+
             return Mapper.Map<TModel>(entity);
         }
 
         public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }
+        public virtual void AfterUpdate(TUpdate request, TDbEntity entity) { }
 
         public virtual async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {

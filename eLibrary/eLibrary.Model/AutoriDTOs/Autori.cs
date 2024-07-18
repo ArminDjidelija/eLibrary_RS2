@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace eLibrary.Model.AutoriDTO
+namespace eLibrary.Model.AutoriDTOs
 {
     public class Autori
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public interface IValuteService:ICRUDServiceAsync<Model.ValuteDTO.Valute, ValuteSearchObject, ValuteUpsertRequest, ValuteUpsertRequest>
+    public interface IValuteService:ICRUDServiceAsync<Model.ValuteDTOs.Valute, ValuteSearchObject, ValuteUpsertRequest, ValuteUpsertRequest>
     {
     }
 }

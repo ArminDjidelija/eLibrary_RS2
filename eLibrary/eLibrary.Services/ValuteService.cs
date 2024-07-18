@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class ValuteService : BaseCRUDServiceAsync<Model.ValuteDTO.Valute, ValuteSearchObject, Database.Valute, ValuteUpsertRequest, ValuteUpsertRequest>, IValuteService
+    public class ValuteService : BaseCRUDServiceAsync<Model.ValuteDTOs.Valute, ValuteSearchObject, Database.Valute, ValuteUpsertRequest, ValuteUpsertRequest>, IValuteService
     {
         public ValuteService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

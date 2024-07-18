@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public interface IBibliotekeService:ICRUDServiceAsync<Model.BibliotekeDTO.Biblioteke, BibliotekeSearchObject, BibliotekeUpsertRequest, BibliotekeUpsertRequest>
+    public interface IBibliotekeService:ICRUDServiceAsync<Model.BibliotekeDTOs.Biblioteke, BibliotekeSearchObject, BibliotekeUpsertRequest, BibliotekeUpsertRequest>
     {
     }
 }

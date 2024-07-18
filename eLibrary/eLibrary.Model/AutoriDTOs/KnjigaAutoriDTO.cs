@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.AutoriDTO
+namespace eLibrary.Model.AutoriDTOs
 {
     public class KnjigaAutoriDTO
     {

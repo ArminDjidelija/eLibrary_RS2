@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class IzdavaciService : BaseCRUDServiceAsync<Model.Izdavaci.Izdavaci, IzdavaciSearchObject, Database.Izdavaci, IzdavaciUpsertRequest, IzdavaciUpsertRequest>, IIzdavaciService
+    public class IzdavaciService : BaseCRUDServiceAsync<Model.IzdavaciDTOs.Izdavaci, IzdavaciSearchObject, Database.Izdavaci, IzdavaciUpsertRequest, IzdavaciUpsertRequest>, IIzdavaciService
     {
         public IzdavaciService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {

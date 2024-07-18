@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public interface IKantoniService:IServiceAsync<Model.KantoniDTO.Kantoni, KantoniSearchObject>
+    public interface IKantoniService:IServiceAsync<Model.KantoniDTOs.Kantoni, KantoniSearchObject>
     {
     }
 }
