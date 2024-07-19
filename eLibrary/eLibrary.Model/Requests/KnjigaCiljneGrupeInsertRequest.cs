@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.CiljneGrupeDTOs
+namespace eLibrary.Model.Requests
 {
-    public class KnjigaCiljneGrupeDTO
+    public class KnjigaCiljneGrupeInsertRequest
     {
-        public int KnjigaCiljnaGrupaId { get; set; }
-
         public int CiljnaGrupaId { get; set; }
 
         public int KnjigaId { get; set; }

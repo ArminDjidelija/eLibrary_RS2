@@ -38,7 +38,9 @@ namespace eLibrary.Services
             }
             if (string.IsNullOrEmpty(search?.ImeGTE) && string.IsNullOrEmpty(search?.PrezimeGTE) && !string.IsNullOrEmpty(search?.ImePrezimeGTE))
             {
-                query = query.Where(x => x.ImePrezime.ToLower().StartsWith(search.ImePrezimeGTE));
+                query = query
+                    .Where(x => 
+                    (x.Ime+" "+x.Prezime).ToLower().StartsWith(search.ImePrezimeGTE));
             }
             return query;
         }

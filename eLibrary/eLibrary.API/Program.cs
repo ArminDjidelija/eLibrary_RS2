@@ -23,6 +23,12 @@ builder.Services.AddTransient<IUlogeService, UlogeService>();
 builder.Services.AddTransient<ITipClanarineBibliotekeService, TipClanarineBibliotekeService>();
 builder.Services.AddTransient<IUveziService, UveziService>();
 builder.Services.AddTransient<IVrsteGradeService, VrsteGradeService>();
+builder.Services.AddTransient<IKnjigaAutoriService, KnjigaAutoriService>();
+builder.Services.AddTransient<ITipoviUplatumService, TipoviUplatumService>();
+builder.Services.AddTransient<IBibliotekaKnjigeService, BibliotekaKnjigeService>();
+builder.Services.AddTransient<IKnjigaVrsteSadrzajaService, KnjigaVrsteSadrzajaService>();
+builder.Services.AddTransient<IKnjigaCiljneGrupeService, KnjigaCiljneGrupeService>();
+builder.Services.AddTransient<IKnjigeService, KnjigeService>();
 
 builder.Services.AddControllers(x =>
 {

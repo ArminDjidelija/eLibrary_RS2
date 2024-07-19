@@ -30,16 +30,16 @@ namespace eLibrary.Model.KnjigeDTOs
 
         public virtual ICollection<BibliotekaKnjigeDTO> BibliotekaKnjiges { get; set; } = new List<BibliotekaKnjigeDTO>();
 
-        //public virtual Izdavaci Izdavac { get; set; } = null!;
+        public virtual IzdavaciDTO Izdavac { get; set; }
 
-        //public virtual Jezici Jezik { get; set; } = null!;
+        public virtual JeziciDTO Jezik { get; set; } 
 
-        //public virtual ICollection<KnjigaAutori> KnjigaAutoris { get; set; } = new List<KnjigaAutori>();
+        public virtual ICollection<GeneralDTOs.KnjigaAutoriDTO> KnjigaAutoris { get; set; } = new List<GeneralDTOs.KnjigaAutoriDTO>();
 
-        //public virtual ICollection<KnjigaCiljneGrupe> KnjigaCiljneGrupes { get; set; } = new List<KnjigaCiljneGrupe>();
+        public virtual ICollection<GeneralDTOs.KnjigaCiljneGrupeDTO> KnjigaCiljneGrupes { get; set; } = new List<GeneralDTOs.KnjigaCiljneGrupeDTO>();
 
-        //public virtual ICollection<KnjigaVrsteSadrzaja> KnjigaVrsteSadrzajas { get; set; } = new List<KnjigaVrsteSadrzaja>();
+        public virtual ICollection<GeneralDTOs.KnjigaVrsteSadrzajaDTO> KnjigaVrsteSadrzajas { get; set; } = new List<GeneralDTOs.KnjigaVrsteSadrzajaDTO>();
 
-        //public virtual ICollection<KorisnikSacuvanaKnjiga> KorisnikSacuvanaKnjigas { get; set; } = new List<KorisnikSacuvanaKnjiga>();
+        public virtual ICollection<GeneralDTOs.KorisnikSacuvanaKnjigaDTO> KorisnikSacuvanaKnjigas { get; set; } = new List<GeneralDTOs.KorisnikSacuvanaKnjigaDTO>();
     }
 }

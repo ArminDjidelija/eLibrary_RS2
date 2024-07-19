@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.VrsteSadrzajaDTOs
+namespace eLibrary.Model.Requests
 {
-    public class KnjigaVrsteSadrzajaDTO
+    public class KnjigaVrsteSadrzajaInsertRequest
     {
-        public int KnjigaVrstaSadrzajaId { get; set; }
-
         public int VrstaSadrzajaId { get; set; }
 
         public int KnjigaId { get; set; }
