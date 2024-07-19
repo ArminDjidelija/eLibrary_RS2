@@ -29,6 +29,7 @@ builder.Services.AddTransient<IBibliotekaKnjigeService, BibliotekaKnjigeService>
 builder.Services.AddTransient<IKnjigaVrsteSadrzajaService, KnjigaVrsteSadrzajaService>();
 builder.Services.AddTransient<IKnjigaCiljneGrupeService, KnjigaCiljneGrupeService>();
 builder.Services.AddTransient<IKnjigeService, KnjigeService>();
+builder.Services.AddTransient<IBibliotekaUposleniService, BibliotekaUposleniService>();
 
 builder.Services.AddControllers(x =>
 {

@@ -15,5 +15,14 @@ namespace eLibrary.Services
         public TipoviUplatumService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<TipoviUplatum> AddFilter(TipoviUplataSearchObject search, IQueryable<TipoviUplatum> query)
+        {
+            if (!string.IsNullOrEmpty(search?.Naziv))
+            {
+                query=query.Where(x=>x.Naziv.ToLower().StartsWith(search.Naziv.ToLower()));
+            }
+            return query;
+        }
     }
 }

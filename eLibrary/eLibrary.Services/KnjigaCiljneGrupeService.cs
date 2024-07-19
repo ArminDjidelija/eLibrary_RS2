@@ -16,5 +16,18 @@ namespace eLibrary.Services
         public KnjigaCiljneGrupeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<KnjigaCiljneGrupe> AddFilter(KnjigaCiljneGrupeSearchObject search, IQueryable<KnjigaCiljneGrupe> query)
+        {
+            if (search?.CiljnaGrupaId != null)
+            {
+                query=query.Where(x=>x.CiljnaGrupaId==search.CiljnaGrupaId);
+            }
+            if(search?.KnjigaId != null)
+            {
+                query=query.Where(x=>x.KnjigaId==search.KnjigaId);
+            }
+            return query;
+        }
     }
 }

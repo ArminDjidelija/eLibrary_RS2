@@ -16,5 +16,13 @@ namespace eLibrary.Services
         public UveziService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
+        public override IQueryable<Uvezi> AddFilter(UveziSearchObject search, IQueryable<Uvezi> query)
+        {
+            if (!string.IsNullOrEmpty(search?.Naziv))
+            {
+                query = query.Where(x => x.Naziv.ToLower().StartsWith(search.Naziv.ToLower()));
+            }
+            return query;
+        }
     }
 }

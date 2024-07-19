@@ -16,5 +16,13 @@ namespace eLibrary.Services
         public VrsteGradeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
         }
+        public override IQueryable<VrsteGrade> AddFilter(VrsteGradeSearchObject search, IQueryable<VrsteGrade> query)
+        {
+            if (!string.IsNullOrEmpty(search?.NazivGTE))
+            {
+                query = query.Where(x => x.Naziv.ToLower().StartsWith(search.NazivGTE.ToLower()));
+            }
+            return query;
+        }
     }
 }

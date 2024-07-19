@@ -41,5 +41,11 @@ namespace eLibrary.Services
             }
             return query;
         }
+
+        public override async Task BeforeInsertAsync(BibliotekaKnjigeInsertRequest request, BibliotekaKnjige entity, CancellationToken cancellationToken = default)
+        {
+            entity.DatumDodavanja = DateTime.Now;
+
+        }
     }
 }

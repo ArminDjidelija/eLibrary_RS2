@@ -34,8 +34,8 @@ namespace eLibrary.Services
                     .Where(x =>
                         (x.KnjigaAutoris
                         .Where(
-                            y => (y.Autor.Ime + " " + y.Autor.Prezime).ToLower().StartsWith(search.Autor)
-                            ).Count() > 0));
+                            y => (y.Autor.Ime + " " + y.Autor.Prezime).ToLower().StartsWith(search.Autor))
+                            .Count() > 0));
             }
             if (search?.BrojStranicaGTE != null)
             {
