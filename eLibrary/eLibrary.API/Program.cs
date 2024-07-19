@@ -1,6 +1,8 @@
 using eLibrary.API.Auth;
 using eLibrary.API.Filters;
 using eLibrary.Services;
+using eLibrary.Services.Auth;
+using eLibrary.Services.BaseServicesInterfaces;
 using eLibrary.Services.Database;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
@@ -30,6 +32,9 @@ builder.Services.AddTransient<IKnjigaVrsteSadrzajaService, KnjigaVrsteSadrzajaSe
 builder.Services.AddTransient<IKnjigaCiljneGrupeService, KnjigaCiljneGrupeService>();
 builder.Services.AddTransient<IKnjigeService, KnjigeService>();
 builder.Services.AddTransient<IBibliotekaUposleniService, BibliotekaUposleniService>();
+
+
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -65,6 +70,7 @@ builder.Services.AddDbContext<ELibraryContext>(options =>
 builder.Services.AddMapster();
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

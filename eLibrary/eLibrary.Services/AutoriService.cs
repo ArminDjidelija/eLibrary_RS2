@@ -1,5 +1,6 @@
 ﻿using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
@@ -14,8 +15,11 @@ namespace eLibrary.Services
 {
     public class AutoriService : BaseCRUDServiceAsync<Model.AutoriDTOs.Autori, AutoriSearchObject, Database.Autori, AutoriUpsertRequest, AutoriUpsertRequest>, IAutoriService
     {
-        public AutoriService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserService userService;
+
+        public AutoriService(ELibraryContext context, IMapper mapper, ICurrentUserService userService) : base(context, mapper)
         {
+            this.userService = userService;
         }
 
         public override IQueryable<Database.Autori> AddFilter(AutoriSearchObject search, IQueryable<Database.Autori> query)

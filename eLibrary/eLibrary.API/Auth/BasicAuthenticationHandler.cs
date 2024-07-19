@@ -40,10 +40,12 @@ namespace eLibrary.API.Auth
 
             if (user == null)
             {
+                //potrebna provjera da li je citaoc, te ako nije vracamo fail
                 return AuthenticateResult.Fail("Auth failed");
             }
             else
             {
+                
                 var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, user.Ime),
