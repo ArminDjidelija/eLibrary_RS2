@@ -37,6 +37,11 @@ builder.Services.AddTransient<IKorisnikSacuvanaKnjigaService, KorisnikSacuvaneKn
 builder.Services.AddTransient<IPozajmiceService, PozajmiceService>();
 builder.Services.AddTransient<IUplateService, UplateService>();
 builder.Services.AddTransient<IClanarineService, ClanarineService>();
+builder.Services.AddTransient<IPenaliService, PenaliService>();
+builder.Services.AddTransient<IObavijestiService, ObavijestiService>();
+builder.Services.AddTransient<IRezervacijeService, RezervacijeService>();
+builder.Services.AddTransient<IBibliotekaCitaociZabraneService, BibliotekaCitaociZabraneService>();
+builder.Services.AddTransient<IProduzenjePozajmicaService, ProduzenjePozajmicaService>();
 
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
