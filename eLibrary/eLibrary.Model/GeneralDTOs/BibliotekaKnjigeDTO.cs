@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eLibrary.Model.KnjigeDTOs
+namespace eLibrary.Model.GeneralDTOs
 {
     public class BibliotekaKnjigeDTO
     {

@@ -34,6 +34,9 @@ builder.Services.AddTransient<IBibliotekaUposleniService, BibliotekaUposleniServ
 builder.Services.AddTransient<ICitaociService, CitaociService>();
 builder.Services.AddTransient<IUpitiService, UpitiService>();
 builder.Services.AddTransient<IKorisnikSacuvanaKnjigaService, KorisnikSacuvaneKnjigeService>();
+builder.Services.AddTransient<IPozajmiceService, PozajmiceService>();
+builder.Services.AddTransient<IUplateService, UplateService>();
+builder.Services.AddTransient<IClanarineService, ClanarineService>();
 
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

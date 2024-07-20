@@ -1,0 +1,18 @@
+﻿using eLibrary.API.Controllers.BaseControllers;
+using eLibrary.Model.PozajmiceDTOs;
+using eLibrary.Model.Requests;
+using eLibrary.Model.SearchObjects;
+using eLibrary.Services;
+using eLibrary.Services.BaseServicesInterfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace eLibrary.API.Controllers
+{
+    [ApiController]
+    public class PozajmiceController : BaseCRUDControllerAsync<Model.PozajmiceDTOs.Pozajmice, PozajmiceSearchObject, PozajmiceInsertRequest, PozajmiceUpdateRequest>
+    {
+        public PozajmiceController(IPozajmiceService service) : base(service)
+        {
+        }
+    }
+}

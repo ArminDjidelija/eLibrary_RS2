@@ -28,7 +28,7 @@ namespace eLibrary.Model.KnjigeDTOs
 
         public int JezikId { get; set; }
 
-        public virtual ICollection<BibliotekaKnjigeDTO> BibliotekaKnjiges { get; set; } = new List<BibliotekaKnjigeDTO>();
+        public virtual ICollection<GeneralDTOs.BibliotekaKnjigeDTO> BibliotekaKnjiges { get; set; } = new List<GeneralDTOs.BibliotekaKnjigeDTO>();
 
         public virtual IzdavaciDTO Izdavac { get; set; }
 
