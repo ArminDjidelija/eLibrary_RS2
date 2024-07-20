@@ -14,8 +14,8 @@ namespace eLibrary.Model.KnjigaCiljneGrupeDTOs
 
         public int KnjigaId { get; set; }
 
-        public virtual GeneralDTOs.CiljneGrupeDTO CiljnaGrupa { get; set; }
+        public virtual GeneralDTOs.CiljneGrupeDTO? CiljnaGrupa { get; set; }
 
-        public virtual GeneralDTOs.KnjigeDTO Knjiga { get; set; } 
+        public virtual GeneralDTOs.KnjigeDTO? Knjiga { get; set; } 
     }
 }

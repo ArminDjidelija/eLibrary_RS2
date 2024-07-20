@@ -7,26 +7,28 @@ using eLibrary.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class KorisniciService : BaseCRUDServiceAsync<Model.KorisniciDTOs.Korisnici, KorisniciSearchObject, Database.Korisnici, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
+    public class CitaociService : BaseCRUDServiceAsync<Model.CitaociDTOs.Citaoci, CitaociSearchObject, Database.Citaoci, CitaociInsertRequest, CitaociUpdateRequest>, ICitaociService
     {
-        private readonly ILogger<KorisniciService> _logger;
+        private readonly ILogger<CitaociService> _logger;
         private readonly IPasswordService _passwordService;
 
-        public KorisniciService(ELibraryContext context, 
-            IMapper mapper, 
-            ILogger<KorisniciService> logger,
+        public CitaociService(ELibraryContext context,
+            IMapper mapper,
+            ILogger<CitaociService> logger,
             IPasswordService passwordService) : base(context, mapper)
         {
-            _logger = logger;
+            this._logger = logger;
             this._passwordService = passwordService;
         }
-
-        public override IQueryable<Korisnici> AddFilter(KorisniciSearchObject search, IQueryable<Korisnici> query)
+        public override IQueryable<Citaoci> AddFilter(CitaociSearchObject search, IQueryable<Citaoci> query)
         {
             if (!string.IsNullOrEmpty(search?.ImeGTE))
             {
@@ -41,12 +43,12 @@ namespace eLibrary.Services
             if (!string.IsNullOrEmpty(search?.ImePrezimeGTE) &&
                 (string.IsNullOrEmpty(search?.ImeGTE) && string.IsNullOrEmpty(search?.PrezimeGTE)))
             {
-                query = query.Where(x => (x.Ime+" "+x.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
+                query = query.Where(x => x.Prezime.ToLower().StartsWith(search.PrezimeGTE.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(search?.Telefon))
+            if (!string.IsNullOrEmpty(search?.InstitucijaGTE))
             {
-                query = query.Where(x => x.Telefon==search.Telefon);
+                query = query.Where(x => x.Institucija.ToLower().StartsWith(search.InstitucijaGTE.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(search?.Email))
@@ -59,17 +61,17 @@ namespace eLibrary.Services
                 query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
             }
 
-            if(search.Status != null)
+            if (search.Status != null)
             {
-                query=query.Where(x=>x.Status==search.Status);
+                query = query.Where(x => x.Status == search.Status);
             }
 
             return query;
         }
 
-        public override async Task BeforeInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken=default)
+        public override async Task BeforeInsertAsync(CitaociInsertRequest request, Citaoci entity, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"Adding user: {entity.KorisnickoIme}");
+            _logger.LogInformation($"Adding citaoc: {entity.KorisnickoIme}");
 
             if (string.IsNullOrEmpty(request.Lozinka) || string.IsNullOrEmpty(request.LozinkaPotvrda))
                 throw new UserException("Lozinka i potvrda lozinke moraju imati vrijednost");
@@ -79,27 +81,14 @@ namespace eLibrary.Services
 
             entity.LozinkaSalt = _passwordService.GenerateSalt();
             entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+
+            entity.Status = true;
+            entity.DatumRegistracije = DateTime.Now;
         }
 
-        public override async Task AfterInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken = default)
+        public override async Task BeforeUpdateAsync(CitaociUpdateRequest request, Citaoci entity, CancellationToken cancellationToken = default)
         {
-            if (request.Uloge != null)
-            {
-                foreach (var u in request.Uloge)
-                {
-                    Context.KorisniciUloges.Add(new Database.KorisniciUloge
-                    {
-                        KorisnikId = entity.KorisnikId,
-                        UlogaId = u
-                    });
-                }
-                await Context.SaveChangesAsync(cancellationToken);
-            }
-        }
-
-        public override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnici entity, CancellationToken cancellationToken = default)
-        {
-            if(request.Lozinka!=null && request.LozinkaPotvrda != null)
+            if (request.Lozinka != null && request.LozinkaPotvrda != null)
             {
                 if (request.Lozinka == request.LozinkaPotvrda)
                 {
@@ -107,29 +96,25 @@ namespace eLibrary.Services
                 }
             }
         }
-
-        
-
-        public Model.KorisniciDTOs.Korisnici Login(string username, string password)
+        public Model.CitaociDTOs.Citaoci Login(string username, string password)
         {
             var entity = Context
-                .Korisnicis
-                .Include(x => x.KorisniciUloges)
-                    .ThenInclude(y => y.Uloga).FirstOrDefault(x => x.KorisnickoIme == username);
+                .Citaocis
+                .FirstOrDefault(x => x.KorisnickoIme == username);
 
-            if(entity==null)
+            if (entity == null)
             {
-                return null; 
+                return null;
             }
 
-            var hash= _passwordService.GenerateHash(entity.LozinkaSalt, password);
+            var hash = _passwordService.GenerateHash(entity.LozinkaSalt, password);
 
             if (hash != entity.LozinkaHash)
             {
                 return null;
             }
 
-            return this.Mapper.Map<Model.KorisniciDTOs.Korisnici>(entity);
+            return this.Mapper.Map<Model.CitaociDTOs.Citaoci>(entity);
         }
     }
 }

@@ -12,14 +12,17 @@ namespace eLibrary.API.Auth
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly IKorisniciService _korisniciService;
+        private readonly ICitaociService _citaociService;
 
         public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder, 
             ISystemClock clock,
-            IKorisniciService korisniciService) : base(options, logger, encoder, clock)
+            IKorisniciService korisniciService,
+            ICitaociService citaociService) : base(options, logger, encoder, clock)
         {
             _korisniciService = korisniciService;
+            this._citaociService = citaociService;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -41,11 +44,32 @@ namespace eLibrary.API.Auth
             if (user == null)
             {
                 //potrebna provjera da li je citaoc, te ako nije vracamo fail
-                return AuthenticateResult.Fail("Auth failed");
+                var citalac = _citaociService.Login(username, password);
+
+                if (citalac == null)
+                {
+                    return AuthenticateResult.Fail("Auth failed");
+                }
+                else
+                {
+                    var claims = new List<Claim>()
+                    {
+                    new Claim(ClaimTypes.Name, citalac.Ime),
+                    new Claim(ClaimTypes.NameIdentifier, citalac.KorisnickoIme)
+                    };
+
+                    claims.Add(new Claim(ClaimTypes.Role, "Citalac"));                   
+
+                    var identity = new ClaimsIdentity(claims, Scheme.Name);
+
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                    return AuthenticateResult.Success(ticket);
+                }           
             }
             else
-            {
-                
+            {                
                 var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, user.Ime),

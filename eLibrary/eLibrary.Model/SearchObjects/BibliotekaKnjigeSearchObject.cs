@@ -12,6 +12,8 @@ namespace eLibrary.Model.SearchObjects
 
         public int? BrojKopijaGTE { get; set; }
 
+        public string? Isbn { get; set; }
+
         public DateTime? DatumDodavanjaGTE { get; set; }
         public DateTime? DatumDodavanjaLTE { get; set; }
     }
