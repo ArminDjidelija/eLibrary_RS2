@@ -29,7 +29,7 @@ namespace eLibrary.Model.CitaociDTOs
 
         public int KantonId { get; set; }
 
-        public virtual ICollection<GeneralDTOs.BibliotekaCitaociZabrane> BibliotekaCitaociZabranes { get; set; } = new List<GeneralDTOs.BibliotekaCitaociZabrane>();
+        public virtual ICollection<GeneralDTOs.BibliotekaCitaociZabraneDTO> BibliotekaCitaociZabranes { get; set; } = new List<GeneralDTOs.BibliotekaCitaociZabraneDTO>();
 
         public virtual ICollection<GeneralDTOs.ClanarineDTO> Clanarines { get; set; } = new List<GeneralDTOs.ClanarineDTO>();
 

@@ -1,0 +1,36 @@
+version: '3'
+services:
+#mssql docker    
+  elibrary-sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=Password123!
+        - MSSQL_PID=Developer
+    ports:
+        - 1401:1433
+    expose:
+        - 1433
+    networks:
+        - elibrarynet2024
+
+  elibrary-api:
+      restart: unless-stopped
+      build:
+        context: .
+      environment:
+        - ConnectionStrings:eLibraryConnection=Server=elibrary-sql,1433;Database=210046;User=sa;Password=Password123!;ConnectRetryCount=0;TrustServerCertificate=True
+        - ASPNETCORE_ENVIRONMENT=Development
+      ports:
+        - 5023:5023
+      networks:
+        - elibrarynet2024
+      links:
+        - elibrary-sql
+      depends_on:
+        - elibrary-sql
+
+networks:
+  elibrarynet2024:
+    driver: bridge      

@@ -13,10 +13,12 @@ RUN dotnet restore "./eLibrary.API/eLibrary.API.csproj"
 COPY . .
 WORKDIR "/src/eLibrary.API"
 RUN dotnet build "./eLibrary.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+#RUN dotnet build "./eLibrary.API.csproj" -c $Release -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./eLibrary.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+#RUN dotnet publish "./eLibrary.API.csproj" -c &Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

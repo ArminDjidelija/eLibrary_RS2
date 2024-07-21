@@ -1,4 +1,6 @@
-﻿using eLibrary.Model.Requests;
+﻿using EasyNetQ;
+using eLibrary.Model.Messages;
+using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
@@ -24,6 +26,10 @@ namespace eLibrary.Services
 
         public override IQueryable<Database.Autori> AddFilter(AutoriSearchObject search, IQueryable<Database.Autori> query)
         {
+            //var bus = RabbitHutch.CreateBus("host=localhost");
+            //bus.PubSub.Publish(new AutorPretraga { Autor=search});
+
+
             if (!string.IsNullOrEmpty(search?.ImeGTE))
             {
                 query=query.Where(x=>x.Ime.ToLower().StartsWith(search.ImeGTE.ToLower()));    
@@ -48,5 +54,6 @@ namespace eLibrary.Services
             }
             return query;
         }
+
     }
 }

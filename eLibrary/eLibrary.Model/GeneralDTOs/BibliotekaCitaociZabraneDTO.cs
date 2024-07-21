@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eLibrary.Model.GeneralDTOs
 {
-    public class BibliotekaCitaociZabrane
+    public class BibliotekaCitaociZabraneDTO
     {
         public int BibliotekaCitaocZabranaId { get; set; }
 
