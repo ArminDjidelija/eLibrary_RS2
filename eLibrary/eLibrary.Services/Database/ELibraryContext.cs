@@ -639,7 +639,7 @@ public partial class ELibraryContext : DbContext
             entity.Property(e => e.Naziv).HasMaxLength(100);
         });
 
-        OnModelCreatingPartial(modelBuilder);
+        //OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

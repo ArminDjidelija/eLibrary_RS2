@@ -2,6 +2,7 @@
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.Validators.Interfaces;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,18 @@ namespace eLibrary.Services
 {
     public class KnjigeService : BaseCRUDServiceAsync<Model.KnjigeDTOs.Knjige, KnjigeSearchObject, Database.Knjige, KnjigeInsertRequest, KnjigeUpdateRequest>, IKnjigeService
     {
-        public KnjigeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly IAutoriValidator autoriValidator;
+        private readonly ICiljneGrupeValidator ciljneGrupeValidator;
+        private readonly IVrsteSadrzajaValidator vrsteSadrzajaValidator;
+
+        public KnjigeService(ELibraryContext context, IMapper mapper,
+            IAutoriValidator autoriValidator,
+            ICiljneGrupeValidator ciljneGrupeValidator,
+            IVrsteSadrzajaValidator vrsteSadrzajaValidator) : base(context, mapper)
         {
+            this.autoriValidator = autoriValidator;
+            this.ciljneGrupeValidator = ciljneGrupeValidator;
+            this.vrsteSadrzajaValidator = vrsteSadrzajaValidator;
         }
 
         public override IQueryable<Knjige> AddFilter(KnjigeSearchObject search, IQueryable<Knjige> query)
@@ -65,8 +76,36 @@ namespace eLibrary.Services
 
         public override async Task BeforeInsertAsync(KnjigeInsertRequest request, Knjige entity, CancellationToken cancellationToken = default)
         {
-            if(!string.IsNullOrEmpty(request?.SlikaBase64))
+            if (request?.Autori != null)
             {
+                autoriValidator.ValidateNoDuplicates(request.Autori);
+                foreach (var item in request.Autori)
+                {
+                    autoriValidator.ValidateEntityExists(item);
+                }
+            }
+
+            if (request?.CiljneGrupe != null)
+            {
+                ciljneGrupeValidator.ValidateNoDuplicates(request.CiljneGrupe);
+
+                foreach (var item in request.CiljneGrupe)
+                {
+                    ciljneGrupeValidator.ValidateEntityExists(item);
+                }
+            }
+
+            if (request?.VrsteSadrzaja != null)
+            {
+                vrsteSadrzajaValidator.ValidateNoDuplicates(request.VrsteSadrzaja);
+
+                foreach (var item in request.VrsteSadrzaja)
+                {
+                    vrsteSadrzajaValidator.ValidateEntityExists(item);
+                }
+            }
+            if (!string.IsNullOrEmpty(request?.SlikaBase64))
+            {              
                 string base64Data = request.SlikaBase64;
                 if (base64Data.Contains(","))
                 {

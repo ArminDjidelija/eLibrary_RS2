@@ -21,5 +21,8 @@ namespace eLibrary.Model.Requests
         public string LozinkaPotvrda { get; set; }
 
         public List<int> Uloge{ get; set; }
+
+        public int? BibliotekaId { get; set; }
+
     }
 }

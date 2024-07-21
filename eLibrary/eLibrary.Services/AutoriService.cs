@@ -5,6 +5,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.Validators.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,17 +19,21 @@ namespace eLibrary.Services
     public class AutoriService : BaseCRUDServiceAsync<Model.AutoriDTOs.Autori, AutoriSearchObject, Database.Autori, AutoriUpsertRequest, AutoriUpsertRequest>, IAutoriService
     {
         private readonly ICurrentUserService userService;
+        private readonly IAutoriValidator autoriValidator;
 
-        public AutoriService(ELibraryContext context, IMapper mapper, ICurrentUserService userService) : base(context, mapper)
+        public AutoriService(ELibraryContext context, IMapper mapper, 
+            ICurrentUserService userService,
+            IAutoriValidator autoriValidator) : base(context, mapper)
         {
             this.userService = userService;
+            this.autoriValidator = autoriValidator;
         }
 
         public override IQueryable<Database.Autori> AddFilter(AutoriSearchObject search, IQueryable<Database.Autori> query)
         {
             //var bus = RabbitHutch.CreateBus("host=localhost");
             //bus.PubSub.Publish(new AutorPretraga { Autor=search});
-
+            
 
             if (!string.IsNullOrEmpty(search?.ImeGTE))
             {
@@ -53,6 +58,11 @@ namespace eLibrary.Services
                     (x.Ime+" "+x.Prezime).ToLower().StartsWith(search.ImePrezimeGTE));
             }
             return query;
+        }
+
+        public override async Task BeforeInsertAsync(AutoriUpsertRequest request, Autori entity, CancellationToken cancellationToken = default)
+        {
+            autoriValidator.ValidateAutorNaziv(request);
         }
 
     }
