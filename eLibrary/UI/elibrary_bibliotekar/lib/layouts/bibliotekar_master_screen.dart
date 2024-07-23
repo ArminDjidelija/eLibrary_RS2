@@ -67,10 +67,9 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         title: const Text(
                           "Knjige",
                           style: TextStyle(
-                            color: Colors.white, // Promijenite boju teksta
-                            fontSize: 18, // Promijenite veličinu teksta
-                            fontWeight:
-                                FontWeight.bold, // Promijenite stil fonta
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         onTap: () {
@@ -82,10 +81,9 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         title: const Text(
                           "Clanarine",
                           style: TextStyle(
-                            color: Colors.white, // Promijenite boju teksta
-                            fontSize: 18, // Promijenite veličinu teksta
-                            fontWeight:
-                                FontWeight.bold, // Promijenite stil fonta
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         onTap: () {
@@ -106,6 +104,14 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                       icon: Icon(_drawerOpen ? Icons.close : Icons.menu),
                       onPressed: _toggleDrawer,
                     ),
+                    Text(
+                      widget.title,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                   ],
                 ),
                 Expanded(

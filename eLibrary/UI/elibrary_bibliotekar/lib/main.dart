@@ -2,9 +2,12 @@ import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => KnjigaProvider()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme:
-            ColorScheme.fromSeed(seedColor: Colors.blue, primary: Colors.red),
+            ColorScheme.fromSeed(seedColor: Colors.blue, primary: Colors.black),
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -90,7 +93,7 @@ class LoginPage extends StatelessWidget {
                         // provider.get();
 
                         try {
-                          var data = await provider.get();
+                          //var data = await provider.get();
                           print("Authenticated!");
 
                           Navigator.of(context).push(MaterialPageRoute(
