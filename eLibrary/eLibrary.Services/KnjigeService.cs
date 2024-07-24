@@ -104,16 +104,16 @@ namespace eLibrary.Services
                     vrsteSadrzajaValidator.ValidateEntityExists(item);
                 }
             }
-            if (!string.IsNullOrEmpty(request?.SlikaBase64))
-            {              
-                string base64Data = request.SlikaBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Substring(base64Data.IndexOf(",") + 1);
-                }
+            //if (!string.IsNullOrEmpty(request?.Slika))
+            //{              
+            //    string base64Data = request.Slika;
+            //    if (base64Data.Contains(","))
+            //    {
+            //        base64Data = base64Data.Substring(base64Data.IndexOf(",") + 1);
+            //    }
 
-                entity.Slika = Convert.FromBase64String(base64Data);
-            }
+            //    entity.Slika = Convert.FromBase64String(base64Data);
+            //}
         }
 
         public override async Task AfterInsertAsync(KnjigeInsertRequest request, Knjige entity, CancellationToken cancellationToken = default)
@@ -160,16 +160,16 @@ namespace eLibrary.Services
 
         public override async Task BeforeUpdateAsync(KnjigeUpdateRequest request, Knjige entity, CancellationToken cancellationToken = default)
         {
-            if (!string.IsNullOrEmpty(request?.SlikaBase64))
-            {
-                string base64Data = request.SlikaBase64;
-                if (base64Data.Contains(","))
-                {
-                    base64Data = base64Data.Substring(base64Data.IndexOf(",") + 1);
-                }
+            //if (!string.IsNullOrEmpty(request?.Slika))
+            //{
+            //    string base64Data = request.Slika;
+            //    if (base64Data.Contains(","))
+            //    {
+            //        base64Data = base64Data.Substring(base64Data.IndexOf(",") + 1);
+            //    }
 
-                entity.Slika = Convert.FromBase64String(base64Data);
-            }
+            //    entity.Slika = Convert.FromBase64String(base64Data);
+            //}
         }
 
     }

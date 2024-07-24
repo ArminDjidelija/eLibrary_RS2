@@ -52,8 +52,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var url = "$_baseUrl$_endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
-
+    // print(request);
     var jsonRequest = jsonEncode(request);
+    // print(jsonRequest);
     var response = await http.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
@@ -70,6 +71,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
+    // print(jsonRequest);
     var response = await http.put(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {

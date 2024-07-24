@@ -1,5 +1,12 @@
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
+import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
+import 'package:elibrary_bibliotekar/providers/ciljne_grupe_provider.dart';
+import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
+import 'package:elibrary_bibliotekar/providers/jezici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
+import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
+import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +14,13 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => KnjigaProvider()),
+    ChangeNotifierProvider(create: (_) => JezikProvider()),
+    ChangeNotifierProvider(create: (_) => VrstaGradeProvider()),
+    ChangeNotifierProvider(create: (_) => IzdavacProvider()),
+    ChangeNotifierProvider(create: (_) => UvezProvider()),
+    ChangeNotifierProvider(create: (_) => AutoriProvider()),
+    ChangeNotifierProvider(create: (_) => VrsteSadrzajaProvider()),
+    ChangeNotifierProvider(create: (_) => CiljneGrupeProvider()),
   ], child: const MyApp()));
 }
 

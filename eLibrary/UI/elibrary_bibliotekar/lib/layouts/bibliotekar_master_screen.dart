@@ -50,8 +50,12 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                 ? Column(
                     children: [
                       ListTile(
+                        leading: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
                         title: const Text(
-                          "Back",
+                          "Nazad",
                           style: TextStyle(
                             color: Colors.white, // Promijenite boju teksta
                             fontSize: 18, // Promijenite veličinu teksta
@@ -79,7 +83,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                       ),
                       ListTile(
                         title: const Text(
-                          "Clanarine",
+                          "Članarine",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,

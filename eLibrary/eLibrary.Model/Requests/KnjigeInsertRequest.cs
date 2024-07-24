@@ -18,7 +18,7 @@ namespace eLibrary.Model.Requests
 
         public string? Napomena { get; set; }
 
-        public string? SlikaBase64 { get; set; }
+        public byte[]? Slika { get; set; }
 
         public int UvezId { get; set; }
 
