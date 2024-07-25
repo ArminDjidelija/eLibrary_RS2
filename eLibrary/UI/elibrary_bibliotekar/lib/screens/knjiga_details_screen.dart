@@ -20,6 +20,7 @@ import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -226,17 +227,18 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
             ),
             Row(
               children: [
-                Expanded(
+                Container(
+                    width: 150,
                     child: FormBuilderDropdown(
-                  name: "izdavacId",
-                  decoration: InputDecoration(labelText: "Izdavac"),
-                  items: izdavaciResult?.resultList
-                          .map((e) => DropdownMenuItem(
-                              value: e.izdavacId.toString(),
-                              child: Text(e.naziv ?? "")))
-                          .toList() ??
-                      [],
-                )),
+                      name: "izdavacId",
+                      decoration: InputDecoration(labelText: "Izdavac"),
+                      items: izdavaciResult?.resultList
+                              .map((e) => DropdownMenuItem(
+                                  value: e.izdavacId.toString(),
+                                  child: Text(e.naziv ?? "")))
+                              .toList() ??
+                          [],
+                    )),
                 SizedBox(
                   width: 10,
                 ),
@@ -263,23 +265,24 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   SizedBox(
                     width: 10,
                   ),
-                  Expanded(
+                  Container(
+                      width: 150,
                       child: FormBuilderCheckboxGroup<List<int>>(
-                    // name: "autorId",
-                    name: "ciljneGrupe",
-                    decoration: InputDecoration(labelText: "Ciljne grupe"),
-                    // valueTransformer: (value) => value ?? [],
-                    validator: (value) {
-                      return null;
-                    },
+                        // name: "autorId",
+                        name: "ciljneGrupe",
+                        decoration: InputDecoration(labelText: "Ciljne grupe"),
+                        // valueTransformer: (value) => value ?? [],
+                        validator: (value) {
+                          return null;
+                        },
 
-                    options: ciljneGrupeResult?.resultList
-                            .map((e) => FormBuilderFieldOption(
-                                value: [e.ciljnaGrupaId!],
-                                child: Text(e.naziv ?? "")))
-                            .toList() ??
-                        [],
-                  )),
+                        options: ciljneGrupeResult?.resultList
+                                .map((e) => FormBuilderFieldOption(
+                                    value: [e.ciljnaGrupaId!],
+                                    child: Text(e.naziv ?? "")))
+                                .toList() ??
+                            [],
+                      )),
                   SizedBox(
                     width: 10,
                   ),
@@ -305,22 +308,23 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
             ),
             Row(
               children: [
-                Expanded(
+                Container(
+                    width: 300,
                     child: FormBuilderField(
-                  name: "imageId",
-                  builder: (field) {
-                    return InputDecorator(
-                      decoration:
-                          InputDecoration(label: Text("Odaberite sliku")),
-                      child: ListTile(
-                        leading: Icon(Icons.image),
-                        title: Text("Select image"),
-                        trailing: Icon(Icons.file_upload),
-                        onTap: getImage,
-                      ),
-                    );
-                  },
-                ))
+                      name: "imageId",
+                      builder: (field) {
+                        return InputDecorator(
+                          decoration:
+                              InputDecoration(label: Text("Odaberite sliku")),
+                          child: ListTile(
+                            leading: Icon(Icons.image),
+                            title: Text("Select image"),
+                            trailing: Icon(Icons.file_upload),
+                            onTap: getImage,
+                          ),
+                        );
+                      },
+                    ))
               ],
             )
           ],

@@ -20,6 +20,8 @@ namespace eLibrary.Model.SearchObjects
 
         public int? UvezId { get; set; }
 
+        public int? BibliotekaId { get; set; }
+
         public int? IzdavacId { get; set; }
 
         public int? VrsteGradeId { get; set; }

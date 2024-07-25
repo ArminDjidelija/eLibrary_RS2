@@ -26,6 +26,22 @@ namespace eLibrary.Services
                     .Include(x => x.Knjiga)
                     .Where(x => x.Knjiga.Isbn == search.Isbn);
             }
+            if (!string.IsNullOrEmpty(search?.NaslovGTE))
+            {
+                query = query
+                    .Include(x => x.Knjiga)
+                    .Where(x => x.Knjiga.Naslov.ToLower().StartsWith(search.NaslovGTE.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(search?.AutorGTE))
+            {
+                query = query
+                    .Include(x => x.Knjiga)
+                    .ThenInclude(x=>x.KnjigaAutoris)
+                    .ThenInclude(x=>x.Autor)
+                    .Where(x => x
+                    .Knjiga.KnjigaAutoris
+                    .Any(x=>(x.Autor.Ime+" "+x.Autor.Prezime).ToLower().StartsWith(search.AutorGTE.ToLower())));
+            }
             if (search?.BibliotekaId != null)
             {
                 query=query.Where(x=>x.BibliotekaId==search.BibliotekaId);

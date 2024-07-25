@@ -10,6 +10,8 @@ namespace eLibrary.Model.SearchObjects
 
         public int? KnjigaId { get; set; }
 
+        public string? NaslovGTE {  get; set; }
+        public string? AutorGTE {  get; set; }
         public int? BrojKopijaGTE { get; set; }
 
         public string? Isbn { get; set; }

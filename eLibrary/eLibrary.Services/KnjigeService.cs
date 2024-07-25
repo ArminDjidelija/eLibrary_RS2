@@ -70,6 +70,13 @@ namespace eLibrary.Services
                 query=query.Where(x=>x.JezikId==search.JezikId);
             }
 
+            if (search?.BibliotekaId!=null)
+            {
+                query = query
+                    .Include(k=>k.BibliotekaKnjiges)
+                    .Where(x => x.BibliotekaKnjiges.Any(bk=>bk.BibliotekaId==search.BibliotekaId));
+            }
+
             return query;
             
         }

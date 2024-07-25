@@ -1,5 +1,13 @@
+import 'package:elibrary_bibliotekar/screens/autori_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteka_knjige_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/citaoci_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/clanarine_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/izdavaci_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/pozajmice_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/rezervacije_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/uplate_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class BibliotekarMasterScreen extends StatefulWidget {
@@ -83,6 +91,64 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                       ),
                       ListTile(
                         title: const Text(
+                          "Biblioteka knjige",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  BibliotekaKnjigeListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Autori",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AutoriListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Izdavači",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => IzdavaciListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Tipovi članarina",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  TipClanarineBibliotekaListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
                           "Članarine",
                           style: TextStyle(
                             color: Colors.white,
@@ -93,6 +159,62 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ClanarineListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Uplate",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UplateListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Čitaoci",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CitaociListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Pozajmice",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PozajmiceListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          "Rezervacije",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => RezervacijeListScreen()));
                         },
                       ),
                     ],

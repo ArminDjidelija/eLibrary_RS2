@@ -4,25 +4,29 @@ import 'dart:ffi';
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
+import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class KnjigeListScreen extends StatefulWidget {
-  const KnjigeListScreen({super.key});
+class BibliotekaKnjigeListScreen extends StatefulWidget {
+  const BibliotekaKnjigeListScreen({super.key});
 
   @override
-  State<KnjigeListScreen> createState() => _KnjigeListScreenState();
+  State<BibliotekaKnjigeListScreen> createState() =>
+      _BibliotekaKnjigeListScreenState();
 }
 
-class _KnjigeListScreenState extends State<KnjigeListScreen> {
-  late KnjigaProvider provider;
-  SearchResult<Knjiga>? result;
-  List<Knjiga> data = [];
+class _BibliotekaKnjigeListScreenState
+    extends State<BibliotekaKnjigeListScreen> {
+  late BibliotekaKnjigaProvider provider;
+  SearchResult<BibliotekaKnjiga>? result;
+  List<BibliotekaKnjiga> data = [];
   late KnjigaDataSource _source;
   int page = 1;
   int pageSize = 10;
@@ -43,16 +47,16 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     // TODO: implement initState
 
     super.initState();
-    provider = context.read<KnjigaProvider>();
+    provider = context.read<BibliotekaKnjigaProvider>();
     _source = KnjigaDataSource(provider: provider, context: context);
-    updateFilter("", "");
+    //updateFilter("", "");
     // initForm();
   }
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Knjige",
+        "Biblioteka knjige",
         Container(
           child: Column(
             children: [
@@ -65,6 +69,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
 
   TextEditingController _naslovEditingController = TextEditingController();
   TextEditingController _autorEditingController = TextEditingController();
+  TextEditingController _isbnEditingController = TextEditingController();
 
   Widget _buildSearch() {
     return Padding(
@@ -88,6 +93,19 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
               child: TextField(
             controller: _autorEditingController,
             decoration: const InputDecoration(labelText: "Autor"),
+            onChanged: (value) async {
+              // page = 1;
+              // await updateFilter(_naslovEditingController.text, value);
+              _source.filterServerSide(_naslovEditingController.text, value);
+            },
+          )),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+              child: TextField(
+            controller: _isbnEditingController,
+            decoration: const InputDecoration(labelText: "ISBN"),
             onChanged: (value) async {
               // page = 1;
               // await updateFilter(_naslovEditingController.text, value);
@@ -128,10 +146,12 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     });
 
     var filter = {
-      'naslovGTE': naslov,
-      'autor': autor,
+      // 'naslovGTE': naslov,
+      // 'autor': autor,
       'page': page,
-      'pageSize': pageSize
+      'pageSize': pageSize,
+      'bibliotekaId': 2,
+      'includeTables': 'Knjiga'
     };
     print("Metoda u updatefilter");
     print(filter);
@@ -155,65 +175,65 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     }
   }
 
-  Widget _buildResultView() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: 2,
-            ),
-            DataTable(
-              columns: const [
-                // DataColumn(label: Text("Id"), numeric: true),
-                DataColumn(
-                  label: Text("Naziv"),
-                ),
-                DataColumn(label: Text("ISBN")),
-                DataColumn(label: Text("Godina izdanja")),
-                DataColumn(label: Text("Broj izdanja")),
-                DataColumn(label: Text("Broj stranica")),
-                DataColumn(label: Text("Slika")),
-              ],
-              rows: result?.resultList
-                      .map((e) => DataRow(
-                              onSelectChanged: (selected) => {
-                                    if (selected == true)
-                                      {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    KnjigaDetailsScreen(
-                                                      knjiga: e,
-                                                    ))),
-                                      }
-                                  },
-                              cells: [
-                                // DataCell(Text(e.knjigaId.toString())),
-                                DataCell(Text(e.naslov.toString() ?? "")),
-                                DataCell(Text(e.isbn.toString() ?? "")),
-                                DataCell(
-                                    Text(e.godinaIzdanja.toString() ?? "")),
-                                DataCell(Text(e.brojIzdanja.toString() ?? "")),
-                                DataCell(Text(e.brojStranica.toString() ?? "")),
-                                DataCell(e.slika != null
-                                    ? Container(
-                                        width: 50,
-                                        height: 50,
-                                        child: imageFromString(e.slika!),
-                                      )
-                                    : const Text("")),
-                              ]))
-                      .toList()
-                      .cast<DataRow>() ??
-                  [],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildResultView() {
+  //   return Expanded(
+  //     child: SingleChildScrollView(
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.start,
+  //         children: [
+  //           const SizedBox(
+  //             width: 2,
+  //           ),
+  //           DataTable(
+  //             columns: const [
+  //               // DataColumn(label: Text("Id"), numeric: true),
+  //               DataColumn(
+  //                 label: Text("Naziv"),
+  //               ),
+  //               DataColumn(label: Text("ISBN")),
+  //               DataColumn(label: Text("Godina izdanja")),
+  //               DataColumn(label: Text("Broj izdanja")),
+  //               DataColumn(label: Text("Broj stranica")),
+  //               DataColumn(label: Text("Slika")),
+  //             ],
+  //             rows: result?.resultList
+  //                     .map((e) => DataRow(
+  //                             onSelectChanged: (selected) => {
+  //                                   if (selected == true)
+  //                                     {
+  //                                       Navigator.of(context).push(
+  //                                           MaterialPageRoute(
+  //                                               builder: (context) =>
+  //                                                   KnjigaDetailsScreen(
+  //                                                     knjiga: e,
+  //                                                   ))),
+  //                                     }
+  //                                 },
+  //                             cells: [
+  //                               // DataCell(Text(e.knjigaId.toString())),
+  //                               DataCell(Text(e.naslov.toString() ?? "")),
+  //                               DataCell(Text(e.isbn.toString() ?? "")),
+  //                               DataCell(
+  //                                   Text(e.godinaIzdanja.toString() ?? "")),
+  //                               DataCell(Text(e.brojIzdanja.toString() ?? "")),
+  //                               DataCell(Text(e.brojStranica.toString() ?? "")),
+  //                               DataCell(e.slika != null
+  //                                   ? Container(
+  //                                       width: 50,
+  //                                       height: 50,
+  //                                       child: imageFromString(e.slika!),
+  //                                     )
+  //                                   : const Text("")),
+  //                             ]))
+  //                     .toList()
+  //                     .cast<DataRow>() ??
+  //                 [],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildPaginatedTable() {
     return Expanded(
@@ -266,19 +286,19 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     );
   }
 
-  Future<List<Knjiga>> _getKnjige() async {
-    var lista = await provider.get();
-    return lista.resultList;
-  }
+  // Future<List<BibliotekaKnjiga>> _getKnjige() async {
+  //   var lista = await provider.get();
+  //   return lista.resultList;
+  // }
 
   Future initForm() async {
     await updateFilter("", "");
   }
 }
 
-class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
-  List<Knjiga>? data = [];
-  final KnjigaProvider provider;
+class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
+  List<BibliotekaKnjiga>? data = [];
+  final BibliotekaKnjigaProvider provider;
   int count = 10;
   int page = 1;
   int pageSize = 10;
@@ -297,26 +317,28 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     final item = data?[index];
 
     return DataRow(
+        selected: false,
         onSelectChanged: (selected) => {
+              selected = selected ?? false,
               if (selected == true)
                 {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => KnjigaDetailsScreen(
-                            knjiga: item,
-                          ))),
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => KnjigaDetailsScreen(
+                  //           knjiga: item,
+                  //         ))),
                 }
             },
         cells: [
-          DataCell(Text(item!.naslov.toString())),
-          DataCell(Text(item!.isbn.toString())),
-          DataCell(Text(item!.godinaIzdanja.toString())),
-          DataCell(Text(item!.brojIzdanja.toString())),
-          DataCell(Text(item!.brojStranica.toString())),
-          DataCell(item!.slika != null
+          DataCell(Text(item!.knjiga!.naslov.toString())),
+          DataCell(Text(item!.knjiga!.isbn.toString())),
+          DataCell(Text(item!.knjiga!.godinaIzdanja.toString())),
+          DataCell(Text(item!.knjiga!.brojIzdanja.toString())),
+          DataCell(Text(item!.knjiga!.brojStranica.toString())),
+          DataCell(item!.knjiga!.slika != null
               ? Container(
                   width: 75,
                   height: 75,
-                  child: imageFromString(item.slika!),
+                  child: imageFromString(item.knjiga!.slika!),
                 )
               : const Text("")),
         ]);
@@ -338,15 +360,15 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
   int get selectedRowCount => 0;
 
   @override
-  Future<RemoteDataSourceDetails<Knjiga>> getNextPage(
+  Future<RemoteDataSourceDetails<BibliotekaKnjiga>> getNextPage(
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
-      'naslovGTE': naslov,
-      'autor': autor,
       'page': page,
-      'pageSize': pageSize
+      'pageSize': pageSize,
+      'bibliotekaId': 2,
+      'includeTables': 'Knjiga'
     };
     print("Metoda u get next row");
     print(filter);
