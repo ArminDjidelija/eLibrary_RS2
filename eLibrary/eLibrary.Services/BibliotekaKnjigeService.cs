@@ -24,7 +24,8 @@ namespace eLibrary.Services
             {
                 query = query
                     .Include(x => x.Knjiga)
-                    .Where(x => x.Knjiga.Isbn == search.Isbn);
+                    .Where(x => x.Knjiga.Isbn == search.Isbn || 
+                    (x.Knjiga.Isbn.Replace("-", "")==search.Isbn));
             }
             if (!string.IsNullOrEmpty(search?.NaslovGTE))
             {

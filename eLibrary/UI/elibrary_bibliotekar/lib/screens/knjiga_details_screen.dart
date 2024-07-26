@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KnjigaDetailsScreen extends StatefulWidget {
   Knjiga? knjiga;
@@ -383,6 +384,11 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   };
                   // print(knjigaSlanje);
                   knjigaProvider.insert(knjigaSlanje);
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Uspješno dodata knjiga",
+                      width: 300);
                 } else {
                   _base64Image ??= widget.knjiga?.slika;
                   final knjigaUpdate = {
@@ -404,6 +410,11 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
 
                   // print(knjigaUpdate);
                   knjigaProvider.update(widget.knjiga!.knjigaId!, knjigaUpdate);
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Uspješno modifikovana knjiga",
+                      width: 400);
                 }
               },
               child: Text("Sacuvaj"))

@@ -58,7 +58,9 @@ namespace eLibrary.Services
             }
             if (!string.IsNullOrEmpty(search?.Isbn))
             {
-                query=query.Where(x=>x.Isbn==search.Isbn);
+                query = query
+                         .Where(x => x.Isbn == search.Isbn ||
+                         (x.Isbn.Replace("-", "") == search.Isbn));
             }
 
             if (search?.IzdavacId != null)

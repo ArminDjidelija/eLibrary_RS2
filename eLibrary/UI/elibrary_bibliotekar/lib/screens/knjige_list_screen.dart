@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
@@ -45,7 +43,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     super.initState();
     provider = context.read<KnjigaProvider>();
     _source = KnjigaDataSource(provider: provider, context: context);
-    updateFilter("", "");
+    // updateFilter("", "");
     // initForm();
   }
 

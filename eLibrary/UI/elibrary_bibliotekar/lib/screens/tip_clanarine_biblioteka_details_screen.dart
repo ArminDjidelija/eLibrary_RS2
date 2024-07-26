@@ -96,6 +96,9 @@ class _TipClanarineBibliotekaDetailsScreenState
                   //   FormBuilderValidators.email(),
                   // ]),
                 )),
+                const SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Naziv"),

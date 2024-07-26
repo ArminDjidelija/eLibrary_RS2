@@ -45,7 +45,7 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
 
     provider = context.read<AutoriProvider>();
     _source = AutorDataSource(provider: provider, context: context);
-    updateFilter("");
+    //updateFilter("");
   }
 
   @override

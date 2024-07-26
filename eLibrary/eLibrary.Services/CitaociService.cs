@@ -43,7 +43,7 @@ namespace eLibrary.Services
             if (!string.IsNullOrEmpty(search?.ImePrezimeGTE) &&
                 (string.IsNullOrEmpty(search?.ImeGTE) && string.IsNullOrEmpty(search?.PrezimeGTE)))
             {
-                query = query.Where(x => x.Prezime.ToLower().StartsWith(search.PrezimeGTE.ToLower()));
+                query = query.Where(x => (x.Ime+" "+x.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(search?.InstitucijaGTE))
@@ -51,9 +51,9 @@ namespace eLibrary.Services
                 query = query.Where(x => x.Institucija.ToLower().StartsWith(search.InstitucijaGTE.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(search?.Email))
+            if (!string.IsNullOrEmpty(search?.EmailContains))
             {
-                query = query.Where(x => x.Email == search.Email);
+                query = query.Where(x => x.Email.ToLower().Contains(search.EmailContains.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(search?.KorisnickoIme))

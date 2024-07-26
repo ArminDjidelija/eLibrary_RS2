@@ -1,13 +1,14 @@
 import 'package:elibrary_bibliotekar/models/autor.dart';
+import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/providers/base_provider.dart';
 import 'package:flutter/material.dart';
 
-class AutoriProvider extends BaseProvider<Autor> {
-  AutoriProvider() : super("Autori");
+class CitaociProvider extends BaseProvider<Citalac> {
+  CitaociProvider() : super("Citaoci");
 
   @override
-  Autor fromJson(data) {
+  Citalac fromJson(data) {
     // TODO: implement fromJson
-    return Autor.fromJson(data);
+    return Citalac.fromJson(data);
   }
 }

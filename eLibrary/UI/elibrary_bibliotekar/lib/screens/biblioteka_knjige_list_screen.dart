@@ -82,7 +82,8 @@ class _BibliotekaKnjigeListScreenState
             decoration: const InputDecoration(labelText: "Naziv"),
             onChanged: (value) async {
               // page = 1;
-              _source.filterServerSide(value, _autorEditingController.text);
+              _source.filterServerSide(value, _autorEditingController.text,
+                  _isbnEditingController.text);
               // await updateFilter(value, _autorEditingController.text);
             },
           )),
@@ -96,7 +97,8 @@ class _BibliotekaKnjigeListScreenState
             onChanged: (value) async {
               // page = 1;
               // await updateFilter(_naslovEditingController.text, value);
-              _source.filterServerSide(_naslovEditingController.text, value);
+              _source.filterServerSide(_naslovEditingController.text, value,
+                  _isbnEditingController.text);
             },
           )),
           const SizedBox(
@@ -109,7 +111,8 @@ class _BibliotekaKnjigeListScreenState
             onChanged: (value) async {
               // page = 1;
               // await updateFilter(_naslovEditingController.text, value);
-              _source.filterServerSide(_naslovEditingController.text, value);
+              _source.filterServerSide(_naslovEditingController.text,
+                  _autorEditingController.text, value);
             },
           )),
           ElevatedButton(
@@ -121,7 +124,7 @@ class _BibliotekaKnjigeListScreenState
                 // updateFilter(_naslovEditingController.text,
                 //     _autorEditingController.text);
                 _source.filterServerSide(_naslovEditingController.text,
-                    _autorEditingController.text);
+                    _autorEditingController.text, _isbnEditingController.text);
                 setState(() {});
               },
               child: const Text("Pretraga")),
@@ -140,7 +143,8 @@ class _BibliotekaKnjigeListScreenState
     );
   }
 
-  Future<void> updateFilter(String naslov, String autor) async {
+  Future<void> updateFilter(String naslov, String autor, String isbn) async {
+    _source.filterServerSide("", "", "");
     setState(() {
       _isLoading = true;
     });
@@ -171,69 +175,9 @@ class _BibliotekaKnjigeListScreenState
       // setState(() {
       //   page++;
       // });
-      updateFilter(naslov, autor);
+      updateFilter(naslov, autor, "");
     }
   }
-
-  // Widget _buildResultView() {
-  //   return Expanded(
-  //     child: SingleChildScrollView(
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.start,
-  //         children: [
-  //           const SizedBox(
-  //             width: 2,
-  //           ),
-  //           DataTable(
-  //             columns: const [
-  //               // DataColumn(label: Text("Id"), numeric: true),
-  //               DataColumn(
-  //                 label: Text("Naziv"),
-  //               ),
-  //               DataColumn(label: Text("ISBN")),
-  //               DataColumn(label: Text("Godina izdanja")),
-  //               DataColumn(label: Text("Broj izdanja")),
-  //               DataColumn(label: Text("Broj stranica")),
-  //               DataColumn(label: Text("Slika")),
-  //             ],
-  //             rows: result?.resultList
-  //                     .map((e) => DataRow(
-  //                             onSelectChanged: (selected) => {
-  //                                   if (selected == true)
-  //                                     {
-  //                                       Navigator.of(context).push(
-  //                                           MaterialPageRoute(
-  //                                               builder: (context) =>
-  //                                                   KnjigaDetailsScreen(
-  //                                                     knjiga: e,
-  //                                                   ))),
-  //                                     }
-  //                                 },
-  //                             cells: [
-  //                               // DataCell(Text(e.knjigaId.toString())),
-  //                               DataCell(Text(e.naslov.toString() ?? "")),
-  //                               DataCell(Text(e.isbn.toString() ?? "")),
-  //                               DataCell(
-  //                                   Text(e.godinaIzdanja.toString() ?? "")),
-  //                               DataCell(Text(e.brojIzdanja.toString() ?? "")),
-  //                               DataCell(Text(e.brojStranica.toString() ?? "")),
-  //                               DataCell(e.slika != null
-  //                                   ? Container(
-  //                                       width: 50,
-  //                                       height: 50,
-  //                                       child: imageFromString(e.slika!),
-  //                                     )
-  //                                   : const Text("")),
-  //                             ]))
-  //                     .toList()
-  //                     .cast<DataRow>() ??
-  //                 [],
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildPaginatedTable() {
     return Expanded(
@@ -292,7 +236,7 @@ class _BibliotekaKnjigeListScreenState
   // }
 
   Future initForm() async {
-    await updateFilter("", "");
+    await updateFilter("", "", "");
   }
 }
 
@@ -304,6 +248,7 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
   int pageSize = 10;
   String autor = "";
   String naslov = "";
+  String isbn = "";
   dynamic filter;
   BuildContext context;
   KnjigaDataSource({required this.provider, required this.context});
@@ -344,9 +289,10 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
         ]);
   }
 
-  void filterServerSide(naslovv, autorr) {
+  void filterServerSide(naslovv, autorr, isbnn) {
     naslov = naslovv;
     autor = autorr;
+    isbn = isbnn;
     setNextView();
   }
 
@@ -365,6 +311,9 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
+      'naslovGTE': naslov,
+      'autorGTE': autor,
+      'isbn': isbn,
       'page': page,
       'pageSize': pageSize,
       'bibliotekaId': 2,

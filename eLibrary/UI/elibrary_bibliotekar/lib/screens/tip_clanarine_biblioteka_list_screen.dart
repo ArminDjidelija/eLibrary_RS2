@@ -50,7 +50,7 @@ class _TipClanarinaBibliotekaListScreenState
     provider = context.read<TipClanarineBibliotekaProvider>();
     _source =
         TipClanarinaBibliotekaDataSource(provider: provider, context: context);
-    updateFilter("");
+    // updateFilter("");
   }
 
   @override

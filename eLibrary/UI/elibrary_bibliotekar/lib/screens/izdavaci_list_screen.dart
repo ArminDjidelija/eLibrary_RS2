@@ -47,7 +47,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
 
     provider = context.read<IzdavacProvider>();
     _source = IzdavacDataSource(provider: provider, context: context);
-    updateFilter("");
+    // updateFilter("");
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:quickalert/quickalert.dart';
 
 import '../models/search_result.dart';
 import 'auth_provider.dart';
@@ -29,7 +30,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var response = await http.get(uri, headers: headers);
-
+    // throw new Exception("Greška");
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
 
@@ -41,6 +42,25 @@ abstract class BaseProvider<T> with ChangeNotifier {
         result.resultList.add(fromJson(item));
       }
 
+      return result;
+    } else {
+      throw new Exception("Unknown error");
+    }
+    // print("response: ${response.request} ${response.statusCode}, ${response.body}");
+  }
+
+  Future<T> getById(int id) async {
+    var url = "$_baseUrl$_endpoint/$id";
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.get(uri, headers: headers);
+    // throw new Exception("Greška");
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+
+      var result = data as T;
       return result;
     } else {
       throw new Exception("Unknown error");
