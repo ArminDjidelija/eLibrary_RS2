@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/ciljne_grupe_provider.dart';
+import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:elibrary_bibliotekar/providers/jezici_provider.dart';
+import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
+import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
@@ -15,19 +22,37 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => KnjigaProvider()),
-    ChangeNotifierProvider(create: (_) => BibliotekaKnjigaProvider()),
-    ChangeNotifierProvider(create: (_) => JezikProvider()),
-    ChangeNotifierProvider(create: (_) => VrstaGradeProvider()),
-    ChangeNotifierProvider(create: (_) => IzdavacProvider()),
-    ChangeNotifierProvider(create: (_) => UvezProvider()),
-    ChangeNotifierProvider(create: (_) => AutoriProvider()),
-    ChangeNotifierProvider(create: (_) => VrsteSadrzajaProvider()),
-    ChangeNotifierProvider(create: (_) => CiljneGrupeProvider()),
-    ChangeNotifierProvider(create: (_) => TipClanarineBibliotekaProvider()),
-    ChangeNotifierProvider(create: (_) => ValutaProvider()),
-  ], child: const MyApp()));
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails errorDetails) {
+      print("ON error error: ${errorDetails.exception.toString()}");
+    };
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => KnjigaProvider()),
+      ChangeNotifierProvider(create: (_) => BibliotekaKnjigaProvider()),
+      ChangeNotifierProvider(create: (_) => JezikProvider()),
+      ChangeNotifierProvider(create: (_) => VrstaGradeProvider()),
+      ChangeNotifierProvider(create: (_) => IzdavacProvider()),
+      ChangeNotifierProvider(create: (_) => UvezProvider()),
+      ChangeNotifierProvider(create: (_) => AutoriProvider()),
+      ChangeNotifierProvider(create: (_) => VrsteSadrzajaProvider()),
+      ChangeNotifierProvider(create: (_) => CiljneGrupeProvider()),
+      ChangeNotifierProvider(create: (_) => TipClanarineBibliotekaProvider()),
+      ChangeNotifierProvider(create: (_) => ValutaProvider()),
+      ChangeNotifierProvider(create: (_) => CitaociProvider()),
+      ChangeNotifierProvider(create: (_) => PozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+      ChangeNotifierProvider(create: (_) => KantonProvider()),
+      ChangeNotifierProvider(create: (_) => UplataProvider()),
+      ChangeNotifierProvider(create: (_) => PozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+    ], child: const MyApp()));
+  }, (error, stack) {
+    print("Error from OUT_SUDE Framerwork");
+    print("--------------------------------");
+    print("Error : $error");
+    // print("StackTrace : $stack");
+  });
 }
 
 class MyApp extends StatelessWidget {
