@@ -215,51 +215,54 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
 
   Widget _buildPaginatedTable() {
     return Expanded(
-      child: SingleChildScrollView(
-        child: SizedBox(
-            width: double.infinity,
-            child: AdvancedPaginatedDataTable(
-              dataRowHeight: 75,
-              columns: [
-                DataColumn(label: Text("Naziv")),
-                DataColumn(label: Text("ISBN")),
-                DataColumn(label: Text("Godina izdanja")),
-                DataColumn(label: Text("Broj izdanja")),
-                DataColumn(label: Text("Broj stranica")),
-                DataColumn(label: Text("Slika")),
-              ],
-              source: _source,
-              addEmptyRows: false,
-            )
-            // PaginatedDataTable(
-            //   header: Text("Knjige:"),
-            //   rowsPerPage: pageSize,
-            //   availableRowsPerPage: const [10, 25, 50],
-            //   onRowsPerPageChanged: (value) {
-            //     setState(() {
-            //       pageSize = value!;
-            //       _loadMoreData("", "");
-            //     });
-            //   },
-            //   onPageChanged: (value) {
-            //     setState(() {
-            //       //page se odnosi na indeks, odnosno ako je page size 10, na drugoj stranici value=10
-            //       page = (value ~/ pageSize).toInt() + 1;
-            //       _loadMoreData("", "");
-            //     });
-            //   },
-            //   columns: [
-            //     DataColumn(label: Text("Naziv")),
-            //     DataColumn(label: Text("ISBN")),
-            //     DataColumn(label: Text("Godina izdanja")),
-            //     DataColumn(label: Text("Broj izdanja")),
-            //     DataColumn(label: Text("Broj stranica")),
-            //     DataColumn(label: Text("Slika")),
-            //   ],
-            //   source: _KnjigaDataSource(
-            //       data: data, count: count, page: page, pageSize: pageSize),
-            // )
-            ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                dataRowHeight: 75,
+                columns: [
+                  DataColumn(label: Text("Naziv")),
+                  DataColumn(label: Text("ISBN")),
+                  DataColumn(label: Text("Godina izdanja")),
+                  DataColumn(label: Text("Broj izdanja")),
+                  DataColumn(label: Text("Broj stranica")),
+                  DataColumn(label: Text("Slika")),
+                ],
+                source: _source,
+                addEmptyRows: false,
+              )
+              // PaginatedDataTable(
+              //   header: Text("Knjige:"),
+              //   rowsPerPage: pageSize,
+              //   availableRowsPerPage: const [10, 25, 50],
+              //   onRowsPerPageChanged: (value) {
+              //     setState(() {
+              //       pageSize = value!;
+              //       _loadMoreData("", "");
+              //     });
+              //   },
+              //   onPageChanged: (value) {
+              //     setState(() {
+              //       //page se odnosi na indeks, odnosno ako je page size 10, na drugoj stranici value=10
+              //       page = (value ~/ pageSize).toInt() + 1;
+              //       _loadMoreData("", "");
+              //     });
+              //   },
+              //   columns: [
+              //     DataColumn(label: Text("Naziv")),
+              //     DataColumn(label: Text("ISBN")),
+              //     DataColumn(label: Text("Godina izdanja")),
+              //     DataColumn(label: Text("Broj izdanja")),
+              //     DataColumn(label: Text("Broj stranica")),
+              //     DataColumn(label: Text("Slika")),
+              //   ],
+              //   source: _KnjigaDataSource(
+              //       data: data, count: count, page: page, pageSize: pageSize),
+              // )
+              ),
+        ),
       ),
     );
   }
@@ -343,12 +346,11 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     filter = {
       'naslovGTE': naslov,
       'autor': autor,
-      'page': page,
-      'pageSize': pageSize
     };
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result =
+        await provider?.get(filter: filter, page: page, pageSize: pageSize);
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

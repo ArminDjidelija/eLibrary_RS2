@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eLibrary.Model.UveziDTOs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,9 +33,11 @@ namespace eLibrary.Model.KnjigeDTOs
 
         public virtual ICollection<GeneralDTOs.BibliotekaKnjigeDTO> BibliotekaKnjiges { get; set; } = new List<GeneralDTOs.BibliotekaKnjigeDTO>();
 
-        public virtual IzdavaciDTO Izdavac { get; set; }
+        public virtual IzdavaciDTO? Izdavac { get; set; }
 
-        public virtual JeziciDTO Jezik { get; set; } 
+        public virtual JeziciDTO? Jezik { get; set; } 
+
+        public virtual GeneralDTOs.UvezDTO? Uvez { get; set; }
 
         public virtual ICollection<GeneralDTOs.KnjigaAutoriDTO> KnjigaAutoris { get; set; } = new List<GeneralDTOs.KnjigaAutoriDTO>();
 

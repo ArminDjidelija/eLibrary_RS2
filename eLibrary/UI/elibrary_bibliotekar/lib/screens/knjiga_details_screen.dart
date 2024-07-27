@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/ciljna_grupa.dart';
@@ -20,7 +21,6 @@ import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -56,6 +56,12 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
   SearchResult<CiljnaGrupa>? ciljneGrupeResult;
   bool isLoading = true;
   bool isEditing = false;
+
+  int? izdavacId;
+  List<int> autori = [];
+  List<int> ciljneGrupe = [];
+  List<int> vrsteSadrzaja = [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -216,7 +222,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderDropdown(
                   name: "vrstaGradeId",
-                  decoration: InputDecoration(labelText: "Vrsta grade"),
+                  decoration: InputDecoration(labelText: "Vrsta građe"),
                   items: vrsteGradeResult?.resultList
                           .map((e) => DropdownMenuItem(
                               value: e.vrstaGradeId.toString(),
@@ -229,81 +235,211 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
             Row(
               children: [
                 Container(
-                    width: 150,
-                    child: FormBuilderDropdown(
-                      name: "izdavacId",
-                      decoration: InputDecoration(labelText: "Izdavac"),
-                      items: izdavaciResult?.resultList
-                              .map((e) => DropdownMenuItem(
-                                  value: e.izdavacId.toString(),
-                                  child: Text(e.naziv ?? "")))
-                              .toList() ??
-                          [],
-                    )),
+                    width: 250,
+                    child: DropdownSearch<Izdavac>(
+                      popupProps: const PopupPropsMultiSelection.menu(
+                          // showSelectedItems: true,
+                          isFilterOnline: true,
+                          showSearchBox: true,
+                          searchDelay: Duration(milliseconds: 5)),
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                              labelText: "Odaberi izdavača",
+                              hintText: "Unesite naziv izdavača")),
+                      asyncItems: (String filter) async {
+                        var citaoci = await getIzdavaci(filter);
+                        return citaoci;
+                      },
+                      onChanged: (Izdavac? c) {
+                        izdavacId = c!.izdavacId;
+                        print(c.naziv);
+                      },
+                      itemAsString: (Izdavac u) => "${u.naziv}",
+                      validator: (Izdavac? c) {
+                        if (c == null) {
+                          return 'Obavezno polje';
+                        }
+                      },
+                      onSaved: (newValue) => {
+                        if (newValue != null) {print(newValue.izdavacId)}
+                      },
+                    )
+                    // FormBuilderDropdown(
+                    //   name: "izdavacId",
+                    //   decoration: InputDecoration(labelText: "Izdavac"),
+                    //   items: izdavaciResult?.resultList
+                    //           .map((e) => DropdownMenuItem(
+                    //               value: e.izdavacId.toString(),
+                    //               child: Text(e.naziv ?? "")))
+                    //           .toList() ??
+                    //       [],
+                    // )
+                    ),
                 SizedBox(
                   width: 10,
                 ),
                 if (isEditing == false) ...[
                   Expanded(
-                      child: FormBuilderCheckboxGroup<List<int>>(
-                    // name: "autorId",
-                    name: "autori",
-                    decoration: InputDecoration(labelText: "Autori"),
-                    // valueTransformer: (value) => value ?? [],
-                    validator: (value) {
-                      return null;
+                      child: DropdownSearch<Autor>.multiSelection(
+                    popupProps: const PopupPropsMultiSelection.menu(
+                        isFilterOnline: true,
+                        showSearchBox: true,
+                        searchDelay: Duration(milliseconds: 5)),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                            labelText: "Odaberi autore",
+                            hintText: "Unesite ime i prezime autora")),
+                    asyncItems: (String filter) async {
+                      var autori = await getAutori(filter);
+                      return autori;
                     },
+                    onChanged: (List<Autor> c) {
+                      if (c != null || c.isNotEmpty) {
+                        autori = c.map((a) => a.autorId!).toList();
+                      }
+                      c.forEach((element) {
+                        print(element.autorId);
+                      });
+                    },
+                    compareFn: (item1, item2) => item1.autorId == item2.autorId,
+                    itemAsString: (Autor u) =>
+                        "${u.ime} ${u.prezime}, ${u.godinaRodjenja}",
+                    validator: (List<Autor>? c) {
+                      if (c == null || c.isEmpty) {
+                        return 'Obavezno polje';
+                      }
+                    },
+                    onSaved: (newValue) => {
+                      if (newValue != null) {print(newValue.length)}
+                    },
+                  )
+                      //      FormBuilderCheckboxGroup<List<int>>(
+                      //   // name: "autorId",
+                      //   name: "autori",
+                      //   decoration: InputDecoration(labelText: "Autori"),
+                      //   // valueTransformer: (value) => value ?? [],
+                      //   validator: (value) {
+                      //     return null;
+                      //   },
 
-                    options: autoriResult?.resultList
-                            .map((e) => FormBuilderFieldOption(
-                                value: [e.autorId!],
-                                child: Text(
-                                    "${e.ime} ${e.prezime}, ${e.godinaRodjenja}" ??
-                                        "")))
-                            .toList() ??
-                        [],
-                  )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      width: 150,
-                      child: FormBuilderCheckboxGroup<List<int>>(
-                        // name: "autorId",
-                        name: "ciljneGrupe",
-                        decoration: InputDecoration(labelText: "Ciljne grupe"),
-                        // valueTransformer: (value) => value ?? [],
-                        validator: (value) {
-                          return null;
-                        },
-
-                        options: ciljneGrupeResult?.resultList
-                                .map((e) => FormBuilderFieldOption(
-                                    value: [e.ciljnaGrupaId!],
-                                    child: Text(e.naziv ?? "")))
-                                .toList() ??
-                            [],
-                      )),
+                      //   options: autoriResult?.resultList
+                      //           .map((e) => FormBuilderFieldOption(
+                      //               value: [e.autorId!],
+                      //               child: Text(
+                      //                   "${e.ime} ${e.prezime}, ${e.godinaRodjenja}" ??
+                      //                       "")))
+                      //           .toList() ??
+                      //       [],
+                      // )
+                      ),
                   SizedBox(
                     width: 10,
                   ),
                   Expanded(
-                      child: FormBuilderCheckboxGroup<List<int>>(
-                    // name: "autorId",
-                    name: "vrsteSadrzaja",
-                    decoration: InputDecoration(labelText: "Vrste sadrzaja"),
-                    // valueTransformer: (value) => value ?? [],
-                    validator: (value) {
-                      return null;
+                      child: DropdownSearch<CiljnaGrupa>.multiSelection(
+                    popupProps: const PopupPropsMultiSelection.menu(
+                        isFilterOnline: true,
+                        showSearchBox: true,
+                        searchDelay: Duration(milliseconds: 5)),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                            labelText: "Odaberi ciljne grupe",
+                            hintText: "Unesite naziv ciljne grupe")),
+                    asyncItems: (String filter) async {
+                      var ciljneGrupe = await getCiljneGrupe(filter);
+                      return ciljneGrupe;
                     },
+                    onChanged: (List<CiljnaGrupa> c) {
+                      if (c != null || c.isNotEmpty) {
+                        autori = c.map((a) => a.ciljnaGrupaId!).toList();
+                      }
+                      c.forEach((element) {
+                        print(element.ciljnaGrupaId);
+                      });
+                    },
+                    compareFn: (item1, item2) =>
+                        item1.ciljnaGrupaId == item2.ciljnaGrupaId,
+                    itemAsString: (CiljnaGrupa u) => "${u.naziv}",
+                    validator: (List<CiljnaGrupa>? c) {
+                      if (c == null || c.isEmpty) {
+                        return 'Obavezno polje';
+                      }
+                    },
+                    onSaved: (newValue) => {
+                      if (newValue != null) {print(newValue.length)}
+                    },
+                  )
+                      // FormBuilderCheckboxGroup<List<int>>(
+                      //   // name: "autorId",
+                      //   name: "ciljneGrupe",
+                      //   decoration: InputDecoration(labelText: "Ciljne grupe"),
+                      //   // valueTransformer: (value) => value ?? [],
+                      //   validator: (value) {
+                      //     return null;
+                      //   },
 
-                    options: vrsteSadrzajaResult?.resultList
-                            .map((e) => FormBuilderFieldOption(
-                                value: [e.vrstaSadrzajaId!],
-                                child: Text(e.naziv ?? "")))
-                            .toList() ??
-                        [],
-                  ))
+                      //   options: ciljneGrupeResult?.resultList
+                      //           .map((e) => FormBuilderFieldOption(
+                      //               value: [e.ciljnaGrupaId!],
+                      //               child: Text(e.naziv ?? "")))
+                      //           .toList() ??
+                      //       [],
+                      // )
+                      ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: DropdownSearch<VrstaSadrzaja>.multiSelection(
+                    popupProps: const PopupPropsMultiSelection.menu(
+                        isFilterOnline: true,
+                        showSearchBox: true,
+                        searchDelay: Duration(milliseconds: 5)),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                            labelText: "Odaberi vrste sadržaja",
+                            hintText: "Unesite naziv vrste sadržaja")),
+                    asyncItems: (String filter) async {
+                      var vrsteSadrzaja = await getVrsteSadrzaja(filter);
+                      return vrsteSadrzaja;
+                    },
+                    onChanged: (List<VrstaSadrzaja> c) {
+                      if (c != null || c.isNotEmpty) {
+                        autori = c.map((a) => a.vrstaSadrzajaId!).toList();
+                      }
+                      c.forEach((element) {
+                        print(element.vrstaSadrzajaId);
+                      });
+                    },
+                    compareFn: (item1, item2) =>
+                        item1.vrstaSadrzajaId == item2.vrstaSadrzajaId,
+                    itemAsString: (VrstaSadrzaja u) => "${u.naziv}",
+                    validator: (List<VrstaSadrzaja>? c) {
+                      if (c == null || c.isEmpty) {
+                        return 'Obavezno polje';
+                      }
+                    },
+                    onSaved: (newValue) => {
+                      if (newValue != null) {print(newValue.length)}
+                    },
+                  )
+                      //      FormBuilderCheckboxGroup<List<int>>(
+                      //   // name: "autorId",
+                      //   name: "vrsteSadrzaja",
+                      //   decoration: InputDecoration(labelText: "Vrste sadrzaja"),
+                      //   // valueTransformer: (value) => value ?? [],
+                      //   validator: (value) {
+                      //     return null;
+                      //   },
+
+                      //   options: vrsteSadrzajaResult?.resultList
+                      //           .map((e) => FormBuilderFieldOption(
+                      //               value: [e.vrstaSadrzajaId!],
+                      //               child: Text(e.naziv ?? "")))
+                      //           .toList() ??
+                      //       [],
+                      // )
+                      )
                 ],
               ],
             ),
@@ -342,9 +478,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
         children: [
           ElevatedButton(
               onPressed: () {
-                _formKey.currentState?.saveAndValidate();
+                var formCheck = _formKey.currentState?.saveAndValidate();
 
-                if (widget.knjiga == null) {
+                if (widget.knjiga == null && formCheck == true) {
                   List<List<int>> autoriList =
                       _formKey.currentState?.value['autori'];
 
@@ -362,6 +498,8 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   List<int> vrsteSadrzaja =
                       vrsteSadrzajaList.expand((list) => list).toList();
                   print(vrsteSadrzaja);
+
+                  var request = Map.from(_formKey.currentState!.value);
 
                   final knjigaSlanje = {
                     'naslov': _formKey.currentState?.value['naslov'],
@@ -389,7 +527,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                       type: QuickAlertType.success,
                       text: "Uspješno dodata knjiga",
                       width: 300);
-                } else {
+                } else if (formCheck == true) {
                   _base64Image ??= widget.knjiga?.slika;
                   final knjigaUpdate = {
                     'naslov': _formKey.currentState?.value['naslov'],
@@ -433,5 +571,57 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
       _image = File(result.files.single.path!);
       _base64Image = base64Encode(_image!.readAsBytesSync());
     }
+  }
+
+  Future<List<Izdavac>> getIzdavaci(String filter) async {
+    var result = await izdavacProvider.get(
+        page: 1,
+        pageSize: 10,
+        filter: {'nazivGTE': filter},
+        orderBy: 'Naziv',
+        sortDirection: 'ascending');
+    if (result == null) {
+      return [];
+    }
+    return result.resultList;
+  }
+
+  Future<List<Autor>> getAutori(String filter) async {
+    var result = await autoriProvider.get(
+        page: 1,
+        pageSize: 10,
+        filter: {'imePrezimeGTE': filter},
+        orderBy: 'Ime',
+        sortDirection: 'ascending');
+    if (result == null) {
+      return [];
+    }
+    return result.resultList;
+  }
+
+  Future<List<CiljnaGrupa>> getCiljneGrupe(String filter) async {
+    var result = await ciljneGrupeProvider.get(
+        page: 1,
+        pageSize: 10,
+        filter: {'nazivGTE': filter},
+        orderBy: 'Naziv',
+        sortDirection: 'ascending');
+    if (result == null) {
+      return [];
+    }
+    return result.resultList;
+  }
+
+  Future<List<VrstaSadrzaja>> getVrsteSadrzaja(String filter) async {
+    var result = await vrsteSadrzajaProvider.get(
+        page: 1,
+        pageSize: 10,
+        filter: {'nazivGTE': filter},
+        orderBy: 'Naziv',
+        sortDirection: 'ascending');
+    if (result == null) {
+      return [];
+    }
+    return result.resultList;
   }
 }

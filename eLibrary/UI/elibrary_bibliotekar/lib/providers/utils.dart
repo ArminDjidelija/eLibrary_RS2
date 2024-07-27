@@ -14,3 +14,9 @@ String formatNumber(dynamic) {
 Image imageFromString(String input) {
   return Image.memory(base64Decode(input));
 }
+
+extension ShowDataInOwnFormat on DateTime {
+  String showDateInOwnFormat() {
+    return '$day.$month.$year. $hour:$minute';
+  }
+}

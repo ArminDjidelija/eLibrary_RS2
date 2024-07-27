@@ -1,3 +1,10 @@
+import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
+import 'package:elibrary_bibliotekar/models/izdavac.dart';
+import 'package:elibrary_bibliotekar/models/jezik.dart';
+import 'package:elibrary_bibliotekar/models/knjiga_autor.dart';
+import 'package:elibrary_bibliotekar/models/knjiga_ciljna_grupa.dart';
+import 'package:elibrary_bibliotekar/models/knjiga_vrsta_sadrzaja.dart';
+import 'package:elibrary_bibliotekar/models/uvez.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'knjiga.g.dart';
 
@@ -15,6 +22,15 @@ class Knjiga {
   int? jezikId;
   int? uvezId;
   int? vrsteGradeId;
+
+  Uvez? uvez;
+  Jezik? jezik;
+  Izdavac? izdavac;
+  List<BibliotekaKnjiga>? bibliotekaKnjiges;
+
+  List<KnjigaAutor>? knjigaAutoris;
+  List<KnjigaCiljnaGrupa>? knjigaCiljneGrupes;
+  List<KnjigaVrstaSadrzaja>? knjigaVrsteSadrzajas;
 
   Knjiga({this.knjigaId, this.naslov, this.isbn});
 

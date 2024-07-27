@@ -28,6 +28,8 @@ namespace eLibrary.Model.SearchObjects
 
         public int? JezikId { get; set; }
 
+        public int? KnjigaId { get; set; }
+
         public string? Autor {  get; set; }
     }
 }

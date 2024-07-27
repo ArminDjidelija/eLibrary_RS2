@@ -1,3 +1,4 @@
+import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'pozajmica.g.dart';
 
@@ -11,6 +12,7 @@ class Pozajmica {
   String? stvarniDatumVracanja;
   int? trajanje;
   bool? moguceProduziti;
+  Citalac? citalac;
   Pozajmica();
   factory Pozajmica.fromJson(Map<String, dynamic> json) =>
       _$PozajmicaFromJson(json);

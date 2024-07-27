@@ -14,7 +14,10 @@ Pozajmica _$PozajmicaFromJson(Map<String, dynamic> json) => Pozajmica()
   ..preporuceniDatumVracanja = json['preporuceniDatumVracanja'] as String?
   ..stvarniDatumVracanja = json['stvarniDatumVracanja'] as String?
   ..trajanje = (json['trajanje'] as num?)?.toInt()
-  ..moguceProduziti = json['moguceProduziti'] as bool?;
+  ..moguceProduziti = json['moguceProduziti'] as bool?
+  ..citalac = json['citalac'] == null
+      ? null
+      : Citalac.fromJson(json['citalac'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PozajmicaToJson(Pozajmica instance) => <String, dynamic>{
       'pozajmicaId': instance.pozajmicaId,
@@ -25,4 +28,5 @@ Map<String, dynamic> _$PozajmicaToJson(Pozajmica instance) => <String, dynamic>{
       'stvarniDatumVracanja': instance.stvarniDatumVracanja,
       'trajanje': instance.trajanje,
       'moguceProduziti': instance.moguceProduziti,
+      'citalac': instance.citalac,
     };

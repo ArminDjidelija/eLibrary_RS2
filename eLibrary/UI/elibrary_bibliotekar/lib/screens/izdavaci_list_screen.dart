@@ -207,10 +207,11 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'nazivGTE': nazivGTE, 'page': page, 'pageSize': pageSize};
+    filter = {'nazivGTE': nazivGTE};
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result =
+        await provider?.get(filter: filter, page: page, pageSize: pageSize);
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

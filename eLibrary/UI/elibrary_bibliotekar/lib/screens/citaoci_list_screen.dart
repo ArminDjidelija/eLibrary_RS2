@@ -111,21 +111,24 @@ class _CitaociListScreenState extends State<CitaociListScreen> {
 
   Widget _buildPaginatedTable() {
     return Expanded(
-      child: SingleChildScrollView(
-        child: SizedBox(
-            width: double.infinity,
-            child: AdvancedPaginatedDataTable(
-              columns: [
-                DataColumn(label: Text("Ime")),
-                DataColumn(label: Text("Prezime")),
-                DataColumn(label: Text("Email")),
-                DataColumn(label: Text("Broj telefona")),
-                DataColumn(label: Text("Institucija")),
-                // DataColumn(label: Text("Slika")),
-              ],
-              source: _source,
-              addEmptyRows: false,
-            )),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: const [
+                  DataColumn(label: Text("Ime")),
+                  DataColumn(label: Text("Prezime")),
+                  DataColumn(label: Text("Email")),
+                  DataColumn(label: Text("Broj telefona")),
+                  DataColumn(label: Text("Institucija")),
+                  // DataColumn(label: Text("Slika")),
+                ],
+                source: _source,
+                addEmptyRows: false,
+              )),
+        ),
       ),
     );
   }
@@ -193,12 +196,11 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
     filter = {
       'imePrezimeGTE': imePrezime,
       'emailContains': email,
-      'page': page,
-      'pageSize': pageSize
     };
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result =
+        await provider?.get(filter: filter, page: page, pageSize: pageSize);
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

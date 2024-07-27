@@ -185,13 +185,14 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'nazivGTE': nazivGTE,
-      'page': page,
-      'pageSize': pageSize,
-      'includeTables': 'Citalac'
     };
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result = await provider?.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize,
+        includeTables: "Citalac");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

@@ -229,12 +229,11 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezimeGTE,
-      'page': page,
-      'pageSize': pageSize
     };
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result =
+        await provider?.get(filter: filter, page: page, pageSize: pageSize);
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

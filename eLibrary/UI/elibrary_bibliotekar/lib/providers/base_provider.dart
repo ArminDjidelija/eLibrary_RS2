@@ -18,11 +18,40 @@ abstract class BaseProvider<T> with ChangeNotifier {
         defaultValue: "http://localhost:5023/api/");
   }
 
-  Future<SearchResult<T>> get({dynamic filter}) async {
+  Future<SearchResult<T>> get(
+      {dynamic filter,
+      int? page,
+      int? pageSize,
+      bool? retrieveAll,
+      String? orderBy,
+      String? sortDirection,
+      String? includeTables}) async {
     var url = "$_baseUrl$_endpoint";
 
+    Map<String, dynamic> queryParams = {};
     if (filter != null) {
-      var queryString = getQueryString(filter);
+      queryParams.addAll(filter);
+    }
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+    if (pageSize != null) {
+      queryParams['pageSize'] = pageSize;
+    }
+    if (retrieveAll != null) {
+      queryParams['retrieveAll'] = retrieveAll;
+    }
+    if (orderBy != null) {
+      queryParams['orderBy'] = orderBy;
+    }
+    if (sortDirection != null) {
+      queryParams['sortDirection'] = sortDirection;
+    }
+    if (includeTables != null) {
+      queryParams['includeTables'] = includeTables;
+    }
+    if (queryParams.isNotEmpty) {
+      var queryString = getQueryString(queryParams);
       url = "$url?$queryString";
     }
 

@@ -4,9 +4,10 @@ using System.Text;
 
 namespace eLibrary.Model.GeneralDTOs
 {
-    public class CiljneGrupeDTO
+    public class UvezDTO
     {
-        public int CiljnaGrupaId { get; set; }
+        public int UvezId { get; set; }
+
         public string Naziv { get; set; }
     }
 }

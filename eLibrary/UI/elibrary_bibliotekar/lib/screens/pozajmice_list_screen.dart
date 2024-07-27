@@ -183,15 +183,14 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {
-      'nazivGTE': nazivGTE,
-      'page': page,
-      'pageSize': pageSize,
-      'includeTables': 'Citalac'
-    };
+    filter = {'nazivGTE': nazivGTE};
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result = await provider?.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize,
+        includeTables: 'Citalac');
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

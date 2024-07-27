@@ -41,6 +41,7 @@ namespace eLibrary.Services
             {
                 throw new UserException("Pozajmica ne može biti veća od jedne godine dana!");
             }
+            entity.DatumPreuzimanja=DateTime.Now;
             entity.PreporuceniDatumVracanja = DateTime.Now.AddDays(request.Trajanje);
         }
     }

@@ -8,7 +8,10 @@ import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:elibrary_bibliotekar/providers/jezici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_autori_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_ciljna_grupa_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
@@ -46,6 +49,9 @@ void main() {
       ChangeNotifierProvider(create: (_) => UplataProvider()),
       ChangeNotifierProvider(create: (_) => PozajmiceProvider()),
       ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaAutoriProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaVrsteSadrzajaProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaCiljnaGrupaProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framerwork");

@@ -58,7 +58,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                 ? Column(
                     children: [
                       ListTile(
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         ),
@@ -76,6 +76,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.book_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Knjige",
                           style: TextStyle(
@@ -90,6 +94,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.menu_book,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Biblioteka knjige",
                           style: TextStyle(
@@ -105,6 +113,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.person_4_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Autori",
                           style: TextStyle(
@@ -119,6 +131,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.apartment,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Izdavači",
                           style: TextStyle(
@@ -133,6 +149,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.card_membership_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Tipovi članarina",
                           style: TextStyle(
@@ -148,6 +168,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.credit_card,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Članarine",
                           style: TextStyle(
@@ -162,6 +186,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.attach_money_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Uplate",
                           style: TextStyle(
@@ -176,6 +204,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.person_2_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Čitaoci",
                           style: TextStyle(
@@ -190,6 +222,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.loyalty_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Pozajmice",
                           style: TextStyle(
@@ -204,6 +240,10 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         },
                       ),
                       ListTile(
+                        leading: const Icon(
+                          Icons.lock_clock_outlined,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           "Rezervacije",
                           style: TextStyle(

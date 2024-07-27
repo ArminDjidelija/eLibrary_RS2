@@ -253,14 +253,15 @@ class TipClanarinaBibliotekaDataSource
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {
-      'page': page,
-      'pageSize': pageSize,
-      'includeTables': 'Biblioteka,Valuta'
-    };
+    // filter = {
+    //   'page': page,
+    //   'pageSize': pageSize,
+    //   'includeTables': 'Biblioteka,Valuta'
+    // };
     print("Metoda u get next row");
     print(filter);
-    var result = await provider?.get(filter: filter);
+    var result = await provider?.get(
+        page: page, pageSize: pageSize, includeTables: "Biblioteka,Valuta");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

@@ -32,6 +32,10 @@ namespace eLibrary.Services
 
         public override IQueryable<Knjige> AddFilter(KnjigeSearchObject search, IQueryable<Knjige> query)
         {
+            if (search?.KnjigaId != null)
+            {
+                query=query.Where(x=>x.KnjigaId==search.KnjigaId);  
+            }
             if (!string.IsNullOrEmpty(search?.NaslovGTE))
             {
                 query = query.Where(x => x.Naslov.ToLower().StartsWith(search.NaslovGTE));
