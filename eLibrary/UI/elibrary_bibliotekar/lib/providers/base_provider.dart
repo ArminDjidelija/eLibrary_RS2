@@ -89,8 +89,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
 
-      var result = data as T;
-      return result;
+      // var result = data as T;
+      return fromJson(data);
+      // return result;
     } else {
       throw new Exception("Unknown error");
     }

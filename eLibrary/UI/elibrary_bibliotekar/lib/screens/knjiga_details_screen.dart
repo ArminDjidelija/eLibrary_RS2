@@ -24,6 +24,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -58,9 +59,13 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
   bool isEditing = false;
 
   int? izdavacId;
+  int? jezikId;
   List<int> autori = [];
   List<int> ciljneGrupe = [];
   List<int> vrsteSadrzaja = [];
+
+  Jezik? pocetniJezik;
+  Izdavac? pocetniIzdavac;
 
   @override
   void didChangeDependencies() {
@@ -91,8 +96,13 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
       'uvezId': widget.knjiga?.uvezId.toString(),
       'napomena': widget.knjiga?.napomena.toString(),
       'slika': widget.knjiga?.slika.toString(),
-      'vrstaGradeId': widget.knjiga?.vrsteGradeId.toString(),
+      'vrsteGradeId': widget.knjiga?.vrsteGradeId.toString(),
     };
+    jezikId = widget.knjiga?.jezikId;
+    izdavacId = widget.knjiga?.izdavacId;
+
+    pocetniJezik = widget.knjiga?.jezik;
+    pocetniIzdavac = widget.knjiga?.izdavac;
     if (widget.knjiga?.knjigaId != null) {
       isEditing = true;
     } else {
@@ -138,10 +148,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Naslov"),
                   name: 'naslov',
-                  // validator: FormBuilderValidators.compose([
-                  //   FormBuilderValidators.required(),
-                  //   FormBuilderValidators.email(),
-                  // ]),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -150,6 +159,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Godina izdanja"),
                   name: 'godinaIzdanja',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -158,6 +170,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Broj izdanja"),
                   name: 'brojIzdanja',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -166,6 +181,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Broj stranica"),
                   name: 'brojStranica',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
               ],
             ),
@@ -189,15 +207,34 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderDropdown(
-                  name: "jezikId",
-                  decoration: InputDecoration(labelText: "Jezik"),
-                  items: jeziciResult?.resultList
-                          .map((e) => DropdownMenuItem(
-                              value: e.jezikId.toString(),
-                              child: Text(e.naziv ?? "")))
-                          .toList() ??
-                      [],
+                    child: DropdownSearch<Jezik>(
+                  selectedItem: pocetniJezik,
+                  popupProps: const PopupPropsMultiSelection.menu(
+                      // showSelectedItems: true,
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5)),
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                          labelText: "Odaberi jezik",
+                          hintText: "Unesite naziv jezika")),
+                  asyncItems: (String filter) async {
+                    var jezici = await getJezici(filter);
+                    return jezici;
+                  },
+                  onChanged: (Jezik? c) {
+                    jezikId = c!.jezikId;
+                    print(c.naziv);
+                  },
+                  itemAsString: (Jezik u) => "${u.naziv}",
+                  validator: (Jezik? c) {
+                    if (c == null) {
+                      return 'Obavezno polje';
+                    }
+                  },
+                  onSaved: (newValue) => {
+                    if (newValue != null) {print(newValue.jezikId)}
+                  },
                 )),
                 SizedBox(
                   width: 10,
@@ -212,6 +249,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                               child: Text(e.naziv ?? "")))
                           .toList() ??
                       [],
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -221,7 +261,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 ),
                 Expanded(
                     child: FormBuilderDropdown(
-                  name: "vrstaGradeId",
+                  name: "vrsteGradeId",
                   decoration: InputDecoration(labelText: "Vrsta građe"),
                   items: vrsteGradeResult?.resultList
                           .map((e) => DropdownMenuItem(
@@ -229,6 +269,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                               child: Text(e.naziv ?? "")))
                           .toList() ??
                       [],
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 ))
               ],
             ),
@@ -237,6 +280,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Container(
                     width: 250,
                     child: DropdownSearch<Izdavac>(
+                      selectedItem: pocetniIzdavac,
                       popupProps: const PopupPropsMultiSelection.menu(
                           // showSelectedItems: true,
                           isFilterOnline: true,
@@ -351,7 +395,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     },
                     onChanged: (List<CiljnaGrupa> c) {
                       if (c != null || c.isNotEmpty) {
-                        autori = c.map((a) => a.ciljnaGrupaId!).toList();
+                        ciljneGrupe = c.map((a) => a.ciljnaGrupaId!).toList();
                       }
                       c.forEach((element) {
                         print(element.ciljnaGrupaId);
@@ -368,24 +412,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     onSaved: (newValue) => {
                       if (newValue != null) {print(newValue.length)}
                     },
-                  )
-                      // FormBuilderCheckboxGroup<List<int>>(
-                      //   // name: "autorId",
-                      //   name: "ciljneGrupe",
-                      //   decoration: InputDecoration(labelText: "Ciljne grupe"),
-                      //   // valueTransformer: (value) => value ?? [],
-                      //   validator: (value) {
-                      //     return null;
-                      //   },
-
-                      //   options: ciljneGrupeResult?.resultList
-                      //           .map((e) => FormBuilderFieldOption(
-                      //               value: [e.ciljnaGrupaId!],
-                      //               child: Text(e.naziv ?? "")))
-                      //           .toList() ??
-                      //       [],
-                      // )
-                      ),
+                  )),
                   SizedBox(
                     width: 10,
                   ),
@@ -405,7 +432,8 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     },
                     onChanged: (List<VrstaSadrzaja> c) {
                       if (c != null || c.isNotEmpty) {
-                        autori = c.map((a) => a.vrstaSadrzajaId!).toList();
+                        vrsteSadrzaja =
+                            c.map((a) => a.vrstaSadrzajaId!).toList();
                       }
                       c.forEach((element) {
                         print(element.vrstaSadrzajaId);
@@ -479,49 +507,39 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
           ElevatedButton(
               onPressed: () {
                 var formCheck = _formKey.currentState?.saveAndValidate();
-
+                print(autori);
+                print(ciljneGrupe);
+                print(vrsteSadrzaja);
                 if (widget.knjiga == null && formCheck == true) {
-                  List<List<int>> autoriList =
-                      _formKey.currentState?.value['autori'];
+                  // List<List<int>> autoriList =
+                  //     _formKey.currentState?.value['autori'];
 
-                  List<int> autori = autoriList.expand((list) => list).toList();
-                  print(autori);
+                  // List<int> autori = autoriList.expand((list) => list).toList();
+                  // print(autori);
 
-                  List<List<int>> ciljneGrupeList =
-                      _formKey.currentState?.value['ciljneGrupe'];
-                  List<int> ciljneGrupe =
-                      ciljneGrupeList.expand((list) => list).toList();
-                  print(ciljneGrupe);
+                  // List<List<int>> ciljneGrupeList =
+                  //     _formKey.currentState?.value['ciljneGrupe'];
+                  // List<int> ciljneGrupe =
+                  //     ciljneGrupeList.expand((list) => list).toList();
+                  // print(ciljneGrupe);
 
-                  List<List<int>> vrsteSadrzajaList =
-                      _formKey.currentState?.value['vrsteSadrzaja'];
-                  List<int> vrsteSadrzaja =
-                      vrsteSadrzajaList.expand((list) => list).toList();
-                  print(vrsteSadrzaja);
+                  // List<List<int>> vrsteSadrzajaList =
+                  //     _formKey.currentState?.value['vrsteSadrzaja'];
+                  // List<int> vrsteSadrzaja =
+                  //     vrsteSadrzajaList.expand((list) => list).toList();
+                  // print(vrsteSadrzaja);
 
                   var request = Map.from(_formKey.currentState!.value);
 
-                  final knjigaSlanje = {
-                    'naslov': _formKey.currentState?.value['naslov'],
-                    'godinaIzdanja':
-                        _formKey.currentState?.value['godinaIzdanja'],
-                    'brojIzdanja': _formKey.currentState?.value['brojIzdanja'],
-                    'brojStranica':
-                        _formKey.currentState?.value['brojStranica'],
-                    'isbn': _formKey.currentState?.value['isbn'],
-                    'napomena': _formKey.currentState?.value['napomena'],
-                    'uvezId': _formKey.currentState?.value['uvezId'],
-                    'izdavacId': _formKey.currentState?.value['izdavacId'],
-                    'vrsteGradeId':
-                        _formKey.currentState?.value['vrstaGradeId'],
-                    'jezikId': _formKey.currentState?.value['jezikId'],
-                    'autori': autori,
-                    'ciljneGrupe': ciljneGrupe,
-                    'vrsteSadrzaja': vrsteSadrzaja,
-                    'slika': _base64Image
-                  };
-                  // print(knjigaSlanje);
-                  knjigaProvider.insert(knjigaSlanje);
+                  request['autori'] = autori;
+                  request['ciljneGrupe'] = ciljneGrupe;
+                  request['vrsteSadrzaja'] = vrsteSadrzaja;
+                  request['jezikId'] = jezikId;
+                  request['izdavacId'] = izdavacId;
+                  request['slika'] = _base64Image;
+                  print(request);
+
+                  knjigaProvider.insert(request);
                   QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
@@ -529,25 +547,13 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                       width: 300);
                 } else if (formCheck == true) {
                   _base64Image ??= widget.knjiga?.slika;
-                  final knjigaUpdate = {
-                    'naslov': _formKey.currentState?.value['naslov'],
-                    'godinaIzdanja':
-                        _formKey.currentState?.value['godinaIzdanja'],
-                    'brojIzdanja': _formKey.currentState?.value['brojIzdanja'],
-                    'brojStranica':
-                        _formKey.currentState?.value['brojStranica'],
-                    'isbn': _formKey.currentState?.value['isbn'],
-                    'napomena': _formKey.currentState?.value['napomena'],
-                    'uvezId': _formKey.currentState?.value['uvezId'],
-                    'izdavacId': _formKey.currentState?.value['izdavacId'],
-                    'vrsteGradeId':
-                        _formKey.currentState?.value['vrstaGradeId'],
-                    'jezikId': _formKey.currentState?.value['jezikId'],
-                    'slika': _base64Image ?? widget.knjiga!.slika
-                  };
+                  var request = Map.from(_formKey.currentState!.value);
+                  request['jezikId'] = jezikId;
+                  request['izdavacId'] = izdavacId;
+                  request['slika'] = _base64Image;
 
                   // print(knjigaUpdate);
-                  knjigaProvider.update(widget.knjiga!.knjigaId!, knjigaUpdate);
+                  knjigaProvider.update(widget.knjiga!.knjigaId!, request);
                   QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
@@ -571,6 +577,19 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
       _image = File(result.files.single.path!);
       _base64Image = base64Encode(_image!.readAsBytesSync());
     }
+  }
+
+  Future<List<Jezik>> getJezici(String filter) async {
+    var result = await jezikProvider.get(
+        page: 1,
+        pageSize: 10,
+        filter: {'nazivGTE': filter},
+        orderBy: 'Naziv',
+        sortDirection: 'ascending');
+    if (result == null) {
+      return [];
+    }
+    return result.resultList;
   }
 
   Future<List<Izdavac>> getIzdavaci(String filter) async {

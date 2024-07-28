@@ -1,13 +1,18 @@
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
+import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
 import 'package:elibrary_bibliotekar/models/rezervacija.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class RezervacijeListScreen extends StatefulWidget {
   const RezervacijeListScreen({super.key});
@@ -18,6 +23,7 @@ class RezervacijeListScreen extends StatefulWidget {
 
 class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
   late RezervacijeProvider provider;
+  late KnjigaProvider knjigaProvider;
   // SearchResult<Izdavac>? result;
   // List<Izdavac> data = [];
   late RezervacijaDataSource _source;
@@ -42,7 +48,9 @@ class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
     super.initState();
 
     provider = context.read<RezervacijeProvider>();
-    _source = RezervacijaDataSource(provider: provider, context: context);
+    knjigaProvider = context.read<KnjigaProvider>();
+    _source = RezervacijaDataSource(
+        provider: provider, knjigaProvider: knjigaProvider, context: context);
   }
 
   @override
@@ -113,7 +121,32 @@ class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime"),
+                    child: Text("Ime prezime"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Knjiga"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Datum kreiranja"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Ponistena"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Odobrena"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Akcija"),
                   )),
                 ],
                 source: _source,
@@ -128,13 +161,17 @@ class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
 class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   List<Rezervacija>? data = [];
   final RezervacijeProvider provider;
+  final KnjigaProvider knjigaProvider;
   int count = 10;
   int page = 1;
   int pageSize = 10;
   String nazivGTE = "";
   dynamic filter;
   BuildContext context;
-  RezervacijaDataSource({required this.provider, required this.context});
+  RezervacijaDataSource(
+      {required this.provider,
+      required this.knjigaProvider,
+      required this.context});
 
   @override
   DataRow? getRow(int index) {
@@ -145,22 +182,123 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
     final item = data?[index];
 
     return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => AutorDetailsScreen(
-        //                     autor : item,
-        //                   ))),
-        //         }
-        //     },
+        onSelectChanged: (selected) => {
+              if (selected == true)
+                {
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => AutorDetailsScreen(
+                  //           autor : item,
+                  //         ))),
+                }
+            },
         cells: [
           DataCell(Container(
             alignment: Alignment.centerLeft,
-            child: Text(item!.citalacId.toString()),
+            child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
           )),
-          // DataCell(Text(item!.prezime.toString())),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
+          DataCell(FutureBuilder<Knjiga>(
+            future: fetchKnjiga(item!.bibliotekaKnjiga!.knjigaId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData) {
+                return Text('No data');
+              } else {
+                final knjiga = snapshot.data!;
+                return Text("${knjiga.naslov}, ${knjiga.godinaIzdanja}");
+              }
+            },
+          )),
+          DataCell(Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              DateFormat("dd.MM.yyyy. HH:mm").format(
+                DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                    .parseStrict(item!.datumKreiranja!.toString()),
+              ),
+            ),
+          )),
+          DataCell(Container(
+            alignment: Alignment.centerLeft,
+            child: Text(item.ponistena == true ? "Da" : "Ne"),
+          )),
+          DataCell(Container(
+            alignment: Alignment.centerLeft,
+            child: Text(item.odobreno == true ? "Da" : "Ne"),
+          )),
+          DataCell(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  style: const ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll<Color>(Colors.blue)),
+                  onPressed: () {
+                    // Prva akcija dugmeta
+                    QuickAlert.show(
+                        context: context,
+                        width: 450,
+                        type: QuickAlertType.confirm,
+                        title: "Jeste li sigurni?",
+                        text: "Da li želite odobriti rezervaciju?",
+                        confirmBtnText: "Da",
+                        cancelBtnText: "Ne",
+                        onConfirmBtnTap: () {
+                          print("Potvrdeno: ${item.rezervacijaId}");
+                          //TODO dodaj na api da je potvrdena,
+                          filterServerSide("");
+                          Navigator.pop(context);
+                        },
+                        onCancelBtnTap: () {
+                          print("Cancel: ${item.rezervacijaId}");
+                          Navigator.pop(context);
+                        });
+                    print(
+                        'First button pressed for item: ${item.bibliotekaKnjiga}');
+                  },
+                  child: const Text(
+                    'Odobri',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 8), // Razmak između dugmadi
+                ElevatedButton(
+                  style: const ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll<Color>(Colors.red)),
+                  onPressed: () {
+                    // Druga akcija dugmeta
+                    QuickAlert.show(
+                        context: context,
+                        width: 450,
+                        type: QuickAlertType.confirm,
+                        title: "Jeste li sigurni?",
+                        text: "Da li želite poništiti rezervaciju?",
+                        confirmBtnText: "Da",
+                        cancelBtnText: "Ne",
+                        onConfirmBtnTap: () {
+                          print("Potvrdeno: ${item.rezervacijaId}");
+                          //TODO dodaj na api da je potvrdena,
+                          filterServerSide("");
+                          Navigator.pop(context);
+                        },
+                        onCancelBtnTap: () {
+                          print("Cancel: ${item.rezervacijaId}");
+                          Navigator.pop(context);
+                        });
+                    print('Second button pressed for item: ${item.citalacId}');
+                  },
+                  child: const Text(
+                    'Poništi',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          )
         ]);
   }
 
@@ -192,12 +330,19 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
         filter: filter,
         page: page,
         pageSize: pageSize,
-        includeTables: "Citalac");
+        includeTables: "Citalac,BibliotekaKnjiga",
+        orderBy: "DatumKreiranja",
+        sortDirection: "descending");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;
       // print(data);
     }
     return RemoteDataSourceDetails(count, data!);
+  }
+
+  Future<Knjiga> fetchKnjiga(int? knjigaId) async {
+    var knjiga = await this.knjigaProvider.getById(knjigaId!);
+    return knjiga;
   }
 }

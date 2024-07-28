@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
+import 'package:elibrary_bibliotekar/models/izdavac.dart';
+import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
@@ -349,8 +351,11 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     };
     print("Metoda u get next row");
     print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
+    var result = await provider?.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize,
+        includeTables: "Jezik,Izdavac");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

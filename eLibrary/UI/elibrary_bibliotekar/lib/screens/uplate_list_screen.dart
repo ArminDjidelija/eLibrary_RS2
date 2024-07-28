@@ -5,6 +5,7 @@ import 'package:elibrary_bibliotekar/models/uplata.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class UplateListScreen extends StatefulWidget {
@@ -111,7 +112,27 @@ class _UplateListScreenState extends State<UplateListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime"),
+                    child: Text("Ime prezime"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Vrijeme uplate"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Iznos"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Valuta"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Tip uplate"),
                   )),
                 ],
                 source: _source,
@@ -153,10 +174,38 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
         //         }
         //     },
         cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.citalac!.ime.toString()),
-          )),
+          DataCell(
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
+            ),
+          ),
+          DataCell(
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
+                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                      .parseStrict(item!.datumUplate!.toString()))),
+            ),
+          ),
+          DataCell(
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.iznos!.toStringAsFixed(2)),
+            ),
+          ),
+          DataCell(
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.valuta!.naziv.toString()),
+            ),
+          ),
+          DataCell(
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.tipUplate!.naziv.toString()),
+            ),
+          ),
           // DataCell(Text(item!.prezime.toString())),
           // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);
@@ -190,7 +239,9 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
         filter: filter,
         page: page,
         pageSize: pageSize,
-        includeTables: "Citalac,Biblioteka,Valuta");
+        includeTables: "Citalac,Biblioteka,Valuta,TipUplate",
+        orderBy: "DatumUplate",
+        sortDirection: "descending");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

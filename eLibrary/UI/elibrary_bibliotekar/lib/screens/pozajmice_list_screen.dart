@@ -1,13 +1,17 @@
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
+import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
 import 'package:elibrary_bibliotekar/models/uplata.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PozajmiceListScreen extends StatefulWidget {
   const PozajmiceListScreen({super.key});
@@ -18,6 +22,7 @@ class PozajmiceListScreen extends StatefulWidget {
 
 class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
   late PozajmiceProvider provider;
+  late KnjigaProvider knjigaProvider;
   // SearchResult<Izdavac>? result;
   // List<Izdavac> data = [];
   late PozajmicaDataSource _source;
@@ -42,7 +47,9 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
     super.initState();
 
     provider = context.read<PozajmiceProvider>();
-    _source = PozajmicaDataSource(provider: provider, context: context);
+    knjigaProvider = context.read<KnjigaProvider>();
+    _source = PozajmicaDataSource(
+        provider: provider, knjigaProvider: knjigaProvider, context: context);
   }
 
   @override
@@ -113,7 +120,32 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime"),
+                    child: Text("Ime prezime"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Knjiga"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Datum preuzimanja"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Preporučeni datum vraćanja"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Vraćeno?"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Akcija"),
                   )),
                 ],
                 source: _source,
@@ -128,13 +160,17 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
 class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
   List<Pozajmica>? data = [];
   final PozajmiceProvider provider;
+  final KnjigaProvider knjigaProvider;
   int count = 10;
   int page = 1;
   int pageSize = 10;
   String nazivGTE = "";
   dynamic filter;
   BuildContext context;
-  PozajmicaDataSource({required this.provider, required this.context});
+  PozajmicaDataSource(
+      {required this.provider,
+      required this.knjigaProvider,
+      required this.context});
 
   @override
   DataRow? getRow(int index) {
@@ -157,8 +193,101 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
         cells: [
           DataCell(Container(
             alignment: Alignment.centerLeft,
-            child: Text(item!.citalacId.toString()),
+            child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
           )),
+
+          DataCell(FutureBuilder<Knjiga>(
+            future: fetchKnjiga(item!.bibliotekaKnjiga!.knjigaId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData) {
+                return Text('No data');
+              } else {
+                final knjiga = snapshot.data!;
+                return Text("${knjiga.naslov}, ${knjiga.godinaIzdanja}");
+                // return Column(
+                //   crossAxisAlignment: CrossAxisAlignment.,
+                //   children: [
+                //     // Text('Autor: ${knjiga.autor}'),
+                //     // Dodajte ostale atribute po potrebi
+                //   ],
+                // );
+              }
+            },
+          )),
+          DataCell(Container(
+              alignment: Alignment.centerLeft,
+              child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
+                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                      .parseStrict(item!.datumPreuzimanja.toString()))))),
+          DataCell(Container(
+              alignment: Alignment.centerLeft,
+              child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
+                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(
+                      item!.preporuceniDatumVracanja.toString()))))),
+          DataCell(item.stvarniDatumVracanja == null ? Text("Ne") : Text("Da")),
+          DataCell(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                item.stvarniDatumVracanja == null
+                    ? ElevatedButton(
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll<Color>(Colors.blue)),
+                        onPressed: () {
+                          // Prva akcija dugmeta
+                          print(
+                              'First button pressed for item: ${item.trajanje}');
+                          QuickAlert.show(
+                              context: context,
+                              width: 450,
+                              type: QuickAlertType.confirm,
+                              title: "Jeste li sigurni?",
+                              text:
+                                  "Da li želite potvrditi da je pozajmica uspješno vraćena?",
+                              confirmBtnText: "Da",
+                              cancelBtnText: "Ne",
+                              onConfirmBtnTap: () {
+                                print("Potvrdeno: ${item.pozajmicaId}");
+                                //TODO dodaj na api da je potvrdena,
+                                filterServerSide("");
+                                Navigator.pop(context);
+                              },
+                              onCancelBtnTap: () {
+                                print("Cancel: ${item.pozajmicaId}");
+                                Navigator.pop(context);
+                              });
+                        },
+                        child: Text(
+                          'Potvrdi vraćanje',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : Text(""),
+                SizedBox(width: 8), // Razmak između dugmadi
+                item.stvarniDatumVracanja != null
+                    ? ElevatedButton(
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll<Color>(Colors.blue)),
+                        onPressed: () {
+                          // Druga akcija dugmeta
+                          print(
+                              'Second button pressed for item: ${item.datumPreuzimanja}');
+                        },
+                        child: Text(
+                          'Dodaj penale',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : Text(""),
+              ],
+            ),
+          )
           // DataCell(Text(item!.prezime.toString())),
           // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);
@@ -183,19 +312,23 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'nazivGTE': nazivGTE};
     print("Metoda u get next row");
-    print(filter);
     var result = await provider?.get(
-        filter: filter,
         page: page,
         pageSize: pageSize,
-        includeTables: 'Citalac');
+        includeTables: 'Citalac,BibliotekaKnjiga',
+        orderBy: "DatumPreuzimanja",
+        sortDirection: "descending");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;
       // print(data);
     }
     return RemoteDataSourceDetails(count, data!);
+  }
+
+  Future<Knjiga> fetchKnjiga(int? knjigaId) async {
+    var knjiga = await this.knjigaProvider.getById(knjigaId!);
+    return knjiga;
   }
 }

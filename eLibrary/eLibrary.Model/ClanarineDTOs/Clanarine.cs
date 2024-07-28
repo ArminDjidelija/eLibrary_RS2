@@ -28,7 +28,7 @@ namespace eLibrary.Model.ClanarineDTOs
 
         public virtual Biblioteke? Biblioteka { get; set; } 
 
-        public virtual GeneralDTOs.BibliotekeDTO? Citalac { get; set; } 
+        public virtual GeneralDTOs.CitaociDTO? Citalac { get; set; } 
 
         public virtual GeneralDTOs.TipClanarineBibliotekeDTO? TipClanarineBiblioteka { get; set; } 
 

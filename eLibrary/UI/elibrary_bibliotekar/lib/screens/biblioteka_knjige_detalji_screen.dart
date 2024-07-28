@@ -104,21 +104,16 @@ class _BibliotekaKnjigaDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Detalji knjige",
-        SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                _buildKnjigaDetalji(),
-                // _buildSearch(),
-                _isLoading
-                    ? const Text("Nema podataka")
-                    : _buildPaginatedTable()
-              ],
-            ),
-          ),
-        ));
+      "Detalji knjige",
+      SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildKnjigaDetalji(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
+        ),
+      ),
+    );
   }
 
   TextEditingController _naslovEditingController = TextEditingController();
@@ -186,30 +181,20 @@ class _BibliotekaKnjigaDetailsScreenState
   }
 
   Widget _buildPaginatedTable() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 50),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: SizedBox(
-                width: double.infinity,
-                child: AdvancedPaginatedDataTable(
-                  header: const Text("Trenutne pozajmice"),
-                  columns: [
-                    const DataColumn(label: Text("Čitalac")),
-                    const DataColumn(label: Text("Datum preuzimanja")),
-                    // DataColumn(label: Text("Broj izdanja")),
-                    // DataColumn(label: Text("Broj stranica")),
-                    const DataColumn(label: Text("Preporučeni datum vraćanja")),
-                    const DataColumn(label: Text("Akcija")),
-                    // const DataColumn(label: Text("Akcija")),
-                  ],
-                  source: _source,
-                  addEmptyRows: false,
-                )),
-          ),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AdvancedPaginatedDataTable(
+        header: const Text("Trenutne pozajmice"),
+        dataRowHeight: 75,
+        columns: const [
+          DataColumn(label: Text("Čitalac")),
+          DataColumn(label: Text("Datum preuzimanja")),
+          DataColumn(label: Text("Preporučeni datum vraćanja")),
+          DataColumn(label: Text("Postavljeno trajanje (dani)")),
+          DataColumn(label: Text("Akcija")),
+        ],
+        source: _source,
+        addEmptyRows: false,
       ),
     );
   }
@@ -246,9 +231,6 @@ class _BibliotekaKnjigaDetailsScreenState
             ),
             Expanded(
               child: Container(
-                // decoration: BoxDecoration(
-                //     border: Border.all(color: Colors.black),
-                //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Column(
                   children: [
                     Table(
@@ -567,37 +549,52 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
 
     final item = data?[index];
 
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => const KnjigeListScreen())),
-        //         }
-        //     },
-        cells: [
-          DataCell(Text(
-              "${item!.citalac!.ime.toString()} ${item!.citalac!.prezime.toString()}")),
-          DataCell(Text(DateFormat("yyyy-MM-dd")
-              .parse(item!.datumPreuzimanja!.toString())
-              .toString())),
-          // .parse(DateTime.parse(item!.datumPreuzimanja!).toString())
-          DataCell(Text(item!.preporuceniDatumVracanja.toString())),
-          DataCell(ElevatedButton(
+    return DataRow(cells: [
+      DataCell(Text(
+          "${item!.citalac!.ime.toString()} ${item!.citalac!.prezime.toString()}")),
+      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
+          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+              .parseStrict(item!.datumPreuzimanja!.toString())))),
+      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
+          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+              .parseStrict(item!.preporuceniDatumVracanja!.toString())))),
+      DataCell(Text(item!.trajanje.toString())),
+      DataCell(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(Colors.blue)),
+              onPressed: () {
+                // Prva akcija dugmeta
+                print('First button pressed for item: ${item.trajanje}');
+              },
               child: Text(
-                "Detalji",
+                'Akcija 1',
                 style: TextStyle(color: Colors.white),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-              ),
+            ),
+            SizedBox(width: 8), // Razmak između dugmadi
+            ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(Colors.blue)),
               onPressed: () {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => BibliotekaKnjigaDetailsScreen(
-                //           bibliotekaKnjiga: item,
-                //         )));
-              }))
-        ]);
+                // Druga akcija dugmeta
+                print(
+                    'Second button pressed for item: ${item.datumPreuzimanja}');
+              },
+              child: Text(
+                'Akcija 2',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      )
+    ]);
   }
 
   void filterServerSide(naslovv, autorr, isbnn) {
