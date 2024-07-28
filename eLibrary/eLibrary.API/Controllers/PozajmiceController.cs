@@ -14,5 +14,11 @@ namespace eLibrary.API.Controllers
         public PozajmiceController(IPozajmiceService service) : base(service)
         {
         }
+
+        [HttpPost("potvrdi")]
+        public async Task<Model.PozajmiceDTOs.Pozajmice> Potvrdi(int id, CancellationToken cancellationToken = default)
+        {
+            return await (_service as IPozajmiceService).PotvrdiVracanje(id, cancellationToken);
+        }
     }
 }

@@ -3,6 +3,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,13 @@ namespace eLibrary.Services
 
         public override IQueryable<Uplate> AddFilter(UplateSearchObject search, IQueryable<Uplate> query)
         {
-            if(search?.CitalacId!= null)
+            if (!string.IsNullOrEmpty(search?.ImePrezimeGTE))
+            {
+                query = query
+                    .Include(x => x.Citalac)
+                    .Where(x => (x.Citalac.Ime + " " + x.Citalac.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
+            }
+            if (search?.CitalacId!= null)
             {
                 query=query.Where(x=>x.CitalacId==search.CitalacId);
             }

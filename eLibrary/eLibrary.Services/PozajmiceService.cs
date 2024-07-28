@@ -4,6 +4,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,19 @@ namespace eLibrary.Services
             {
                 query = query.Where(x => x.BibliotekaKnjigaId == search.BibliotekaKnjigaId);
             }
+            if (!string.IsNullOrEmpty(search?.ImePrezimeGTE))
+            {
+                query = query
+                    .Include(x => x.Citalac)
+                    .Where(x => (x.Citalac.Ime + " " + x.Citalac.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(search?.NaslovGTE))
+            {
+                query = query
+                    .Include(x => x.BibliotekaKnjiga)
+                    .ThenInclude(x => x.Knjiga)
+                    .Where(x => x.BibliotekaKnjiga.Knjiga.Naslov.ToLower().StartsWith(search.NaslovGTE.ToLower()));
+            }
             return query;
         }
 
@@ -43,6 +57,17 @@ namespace eLibrary.Services
             }
             entity.DatumPreuzimanja=DateTime.Now;
             entity.PreporuceniDatumVracanja = DateTime.Now.AddDays(request.Trajanje);
+        }
+
+        public async Task<Model.PozajmiceDTOs.Pozajmice> PotvrdiVracanje(int pozajmicaId, CancellationToken cancellationToken = default)
+        {
+            var pozajmica = await Context.Pozajmices.FindAsync(pozajmicaId, cancellationToken);
+            if (pozajmica == null)
+                throw new UserException("Pogrešan ID pozajmice!");
+            
+            pozajmica.StvarniDatumVracanja=DateTime.Now;
+            await Context.SaveChangesAsync(cancellationToken);
+            return Mapper.Map<Model.PozajmiceDTOs.Pozajmice>(pozajmica);
         }
     }
 }

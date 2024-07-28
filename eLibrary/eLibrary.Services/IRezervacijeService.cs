@@ -11,5 +11,7 @@ namespace eLibrary.Services
 {
     public interface IRezervacijeService:ICRUDServiceAsync<Model.RezervacijeDTOs.Rezervacije, RezervacijeSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>
     {
+        Task<Model.RezervacijeDTOs.Rezervacije> OdobriAsync(int rezervacijaId, bool potvrda, CancellationToken cancellationToken=default);
+        Task<Model.RezervacijeDTOs.Rezervacije> PonistiAsync(int rezervacijaId, CancellationToken cancellationToken = default);
     }
 }

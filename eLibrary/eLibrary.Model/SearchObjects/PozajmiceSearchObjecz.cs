@@ -9,5 +9,9 @@ namespace eLibrary.Model.SearchObjects
         public int? CitalacId { get; set; }
 
         public int? BibliotekaKnjigaId { get; set; }
+
+        public string? ImePrezimeGTE { get; set; }
+
+        public string? NaslovGTE { get; set; }
     }
 }

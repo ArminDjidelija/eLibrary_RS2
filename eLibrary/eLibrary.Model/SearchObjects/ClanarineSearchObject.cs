@@ -15,5 +15,7 @@ namespace eLibrary.Model.SearchObjects
 
         public DateTime? KrajGTE { get; set; }
         public DateTime? KrajLTE { get; set; }
+
+        public string? ImePrezimeGTE { get; set; }
     }
 }

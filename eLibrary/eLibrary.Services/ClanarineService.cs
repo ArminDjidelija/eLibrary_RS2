@@ -4,6 +4,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,25 @@ namespace eLibrary.Services
 
         public override IQueryable<Clanarine> AddFilter(ClanarineSearchObject search, IQueryable<Clanarine> query)
         {
+            if (!string.IsNullOrEmpty(search?.ImePrezimeGTE))
+            {
+                query=query
+                    .Include(x=>x.Citalac)
+                    .Where(x => (x.Citalac.Ime + " " + x.Citalac.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
+            }
+            if (search?.BibliotekaId != null)
+            {
+                query=query.Where(x=>x.BibliotekaId==search.BibliotekaId);
+            }
+            if(search?.TipClanarineBibliotekaId!= null)
+            {
+                query = query.Where(x => x.TipClanarineBibliotekaId == search.TipClanarineBibliotekaId);
+            }
+            if(search?.CitalacId != null)
+            {
+                query=query.Where(x=>x.CitalacId==search.CitalacId);    
+            }
+
             return query;
         }
 

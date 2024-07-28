@@ -19,5 +19,7 @@ namespace eLibrary.Model.SearchObjects
         public int? TipUplateId { get; set; }
 
         public int? ValutaId { get; set; }
+
+        public string? ImePrezimeGTE { get; set; }
     }
 }

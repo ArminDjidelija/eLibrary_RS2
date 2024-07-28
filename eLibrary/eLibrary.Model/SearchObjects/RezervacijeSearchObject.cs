@@ -18,5 +18,9 @@ namespace eLibrary.Model.SearchObjects
         public DateTime? RokRezervacijeLTE { get; set; }
 
         public bool? Ponistena { get; set; }
+
+        public string? ImePrezimeGTE { get; set; }
+
+        public string? NaslovGTE { get; set; }
     }
 }
