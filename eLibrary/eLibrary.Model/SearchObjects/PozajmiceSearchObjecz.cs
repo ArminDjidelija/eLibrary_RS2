@@ -13,5 +13,7 @@ namespace eLibrary.Model.SearchObjects
         public string? ImePrezimeGTE { get; set; }
 
         public string? NaslovGTE { get; set; }
+
+        public bool? Vraceno { get; set; }
     }
 }

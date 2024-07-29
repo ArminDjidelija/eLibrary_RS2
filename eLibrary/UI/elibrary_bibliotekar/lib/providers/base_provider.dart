@@ -9,12 +9,12 @@ import '../models/search_result.dart';
 import 'auth_provider.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
-  static String? _baseUrl;
+  static String? baseUrl;
   String _endpoint = "";
 
   BaseProvider(String endpoint) {
     _endpoint = endpoint;
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://localhost:5023/api/");
   }
 
@@ -26,7 +26,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       String? orderBy,
       String? sortDirection,
       String? includeTables}) async {
-    var url = "$_baseUrl$_endpoint";
+    var url = "$baseUrl$_endpoint";
 
     Map<String, dynamic> queryParams = {};
     if (filter != null) {
@@ -79,7 +79,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Future<T> getById(int id) async {
-    var url = "$_baseUrl$_endpoint/$id";
+    var url = "$baseUrl$_endpoint/$id";
 
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -99,7 +99,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Future<T> insert(dynamic request) async {
-    var url = "$_baseUrl$_endpoint";
+    var url = "$baseUrl$_endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     // print(request);
@@ -116,7 +116,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Future<T> update(int id, [dynamic request]) async {
-    var url = "$_baseUrl$_endpoint/$id";
+    var url = "$baseUrl$_endpoint/$id";
     var uri = Uri.parse(url);
     var headers = createHeaders();
 

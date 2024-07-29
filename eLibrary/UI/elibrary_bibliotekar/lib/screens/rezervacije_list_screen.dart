@@ -76,11 +76,9 @@ class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
           Expanded(
               child: TextField(
             controller: _imeEditingController,
-            decoration: const InputDecoration(labelText: "Ime"),
+            decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -88,8 +86,6 @@ class _PozajmiceListScreenState extends State<RezervacijeListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
                 _source.filterServerSide(_imeEditingController.text);
                 setState(() {});
               },
@@ -165,7 +161,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   int count = 10;
   int page = 1;
   int pageSize = 10;
-  String nazivGTE = "";
+  String imePrezimeGTE = "";
   dynamic filter;
   BuildContext context;
   RezervacijaDataSource(
@@ -302,8 +298,8 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
         ]);
   }
 
-  void filterServerSide(naziv) {
-    nazivGTE = naziv;
+  void filterServerSide(ime) {
+    imePrezimeGTE = ime;
     setNextView();
   }
 
@@ -321,9 +317,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {
-      'nazivGTE': nazivGTE,
-    };
+    filter = {'imePrezimeGTE': imePrezimeGTE};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(

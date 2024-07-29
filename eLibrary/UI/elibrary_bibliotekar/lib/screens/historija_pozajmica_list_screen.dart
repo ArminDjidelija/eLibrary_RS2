@@ -3,14 +3,11 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
-import 'package:elibrary_bibliotekar/models/uplata.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
-import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -32,7 +29,7 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
   int pageSize = 10;
   int count = 10;
   bool _isLoading = false;
-  bool? vraceno = false;
+
   @override
   // TODO: implement context
   BuildContext get context => super.context;
@@ -80,33 +77,18 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
               // page = 1;
-              _source.filterServerSide(value, vraceno);
+              _source.filterServerSide(value);
               // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
             width: 8,
           ),
-          Container(
-            width: 150,
-            child: Container(
-                width: 200,
-                child: FormBuilderCheckbox(
-                  title: Text("Vraceno"),
-                  initialValue: false,
-                  name: 'moguceProduziti',
-                  onChanged: (value) => {
-                    vraceno = value,
-                    _source.filterServerSide(
-                        _imeEditingController.text, vraceno)
-                  },
-                )),
-          ),
           ElevatedButton(
               onPressed: () async {
                 // updateFilter(_naslovEditingController.text,
                 //     _autorEditingController.text);
-                _source.filterServerSide(_imeEditingController.text, vraceno);
+                _source.filterServerSide(_imeEditingController.text);
                 setState(() {});
               },
               child: const Text("Pretraga")),
@@ -182,7 +164,6 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
   int page = 1;
   int pageSize = 10;
   String imePrezimeGTE = "";
-  bool vraceno = false;
   dynamic filter;
   BuildContext context;
   PozajmicaDataSource(
@@ -279,7 +260,7 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
                                 //TODO dodaj na api da je potvrdena,
                                 await provider
                                     .potvrdiPozajmicu(item.pozajmicaId!);
-                                filterServerSide("", null);
+                                filterServerSide("");
                                 Navigator.pop(context);
                               },
                               onCancelBtnTap: () {
@@ -335,9 +316,8 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
         ]);
   }
 
-  void filterServerSide(ime, checked) {
+  void filterServerSide(ime) {
     imePrezimeGTE = ime;
-    vraceno = checked;
     setNextView();
   }
 
@@ -356,7 +336,7 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     print("Metoda u get next row");
-    filter = {'imePrezimeGTE': imePrezimeGTE, 'vraceno': vraceno};
+    filter = {'imePrezimeGTE': imePrezimeGTE};
     var result = await provider?.get(
         page: page,
         pageSize: pageSize,

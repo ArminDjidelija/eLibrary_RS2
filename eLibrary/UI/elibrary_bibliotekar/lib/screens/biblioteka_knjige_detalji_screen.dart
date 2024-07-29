@@ -29,6 +29,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class BibliotekaKnjigaDetailsScreen extends StatefulWidget {
   BibliotekaKnjiga? bibliotekaKnjiga;
@@ -191,6 +193,7 @@ class _BibliotekaKnjigaDetailsScreenState
           DataColumn(label: Text("Datum preuzimanja")),
           DataColumn(label: Text("Preporučeni datum vraćanja")),
           DataColumn(label: Text("Postavljeno trajanje (dani)")),
+          DataColumn(label: Text("Vraćeno")),
           DataColumn(label: Text("Akcija")),
         ],
         source: _source,
@@ -559,38 +562,95 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
           DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
               .parseStrict(item!.preporuceniDatumVracanja!.toString())))),
       DataCell(Text(item!.trajanje.toString())),
+      DataCell(item.stvarniDatumVracanja == null ? Text("Ne") : Text("Da")),
       DataCell(
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Colors.blue)),
-              onPressed: () {
-                // Prva akcija dugmeta
-                print('First button pressed for item: ${item.trajanje}');
-              },
-              child: Text(
-                'Akcija 1',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            item.stvarniDatumVracanja == null
+                ? ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.blue)),
+                    onPressed: () {
+                      // Prva akcija dugmeta
+                      print('First button pressed for item: ${item.trajanje}');
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.confirm,
+                          title: "Jeste li sigurni?",
+                          text:
+                              "Da li želite potvrditi da je pozajmica uspješno vraćena?",
+                          confirmBtnText: "Da",
+                          cancelBtnText: "Ne",
+                          onConfirmBtnTap: () async {
+                            print("Potvrdeno: ${item.pozajmicaId}");
+                            //TODO dodaj na api da je potvrdena,
+                            await provider.potvrdiPozajmicu(item.pozajmicaId!);
+                            filterServerSide("", "", "");
+                            Navigator.pop(context);
+                          },
+                          onCancelBtnTap: () {
+                            print("Cancel: ${item.pozajmicaId}");
+                            Navigator.pop(context);
+                          });
+                    },
+                    child: Text(
+                      'Potvrdi vraćanje',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.blue)),
+                    onPressed: () {
+                      // Prva akcija dugmeta
+                      print('First button pressed for item: ${item.trajanje}');
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.confirm,
+                          title: "Jeste li sigurni?",
+                          text:
+                              "Da li želite potvrditi da je pozajmica uspješno vraćena?",
+                          confirmBtnText: "Da",
+                          cancelBtnText: "Ne",
+                          onConfirmBtnTap: () async {
+                            print("Potvrdeno: ${item.pozajmicaId}");
+                            //TODO dodaj na api da je potvrdena,
+                            await provider.potvrdiPozajmicu(item.pozajmicaId!);
+                            filterServerSide("", "", "");
+                            Navigator.pop(context);
+                          },
+                          onCancelBtnTap: () {
+                            print("Cancel: ${item.pozajmicaId}");
+                            Navigator.pop(context);
+                          });
+                    },
+                    child: Text(
+                      'Detalji',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
             SizedBox(width: 8), // Razmak između dugmadi
-            ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Colors.blue)),
-              onPressed: () {
-                // Druga akcija dugmeta
-                print(
-                    'Second button pressed for item: ${item.datumPreuzimanja}');
-              },
-              child: Text(
-                'Akcija 2',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            item.stvarniDatumVracanja != null
+                ? ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.red)),
+                    onPressed: () {
+                      // Druga akcija dugmeta
+                      print(
+                          'Second button pressed for item: ${item.datumPreuzimanja}');
+                    },
+                    child: Text(
+                      'Dodaj penale',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : Text(""),
           ],
         ),
       )
@@ -620,6 +680,8 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'bibliotekaId': 2,
+      'bibliotekaKnjigaId': bibliotekaKnjigaId,
+      'vraceno': false
     };
     print("Metoda u get next row");
     print(filter);
@@ -627,7 +689,9 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
         filter: filter,
         page: page,
         pageSize: pageSize,
-        includeTables: "BibliotekaKnjiga,Citalac");
+        includeTables: "BibliotekaKnjiga,Citalac",
+        orderBy: "DatumPreuzimanja",
+        sortDirection: "descending");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

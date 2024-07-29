@@ -21,6 +21,17 @@ namespace eLibrary.Services
 
         public override IQueryable<Pozajmice> AddFilter(PozajmiceSearchObject search, IQueryable<Pozajmice> query)
         {
+            if (search?.Vraceno != null)
+            {
+                if (search.Vraceno == true)
+                {
+                    query = query.Where(x => x.StvarniDatumVracanja.HasValue);
+                }
+                else
+                {
+                    query = query.Where(x => x.StvarniDatumVracanja == null);
+                }
+            }
             if (search?.CitalacId != null)
             {
                 query=query.Where(x=>x.CitalacId==search.CitalacId);

@@ -202,6 +202,7 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
         cells: [
           DataCell(Container(
             alignment: Alignment.centerLeft,
+            // child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
             child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
           )),
           DataCell(Container(
