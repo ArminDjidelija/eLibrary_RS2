@@ -8,6 +8,7 @@ import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
+import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -320,6 +321,10 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
                           // Druga akcija dugmeta
                           print(
                               'Second button pressed for item: ${item.datumPreuzimanja}');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NoviPenalScreen(
+                                    pozajmica: item,
+                                  )));
                         },
                         child: Text(
                           'Dodaj penale',
