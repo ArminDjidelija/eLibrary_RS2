@@ -1,7 +1,69 @@
+import 'dart:async';
+
+import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
+import 'package:elibrary_mobile/providers/autori_provider.dart';
+import 'package:elibrary_mobile/providers/biblioteka_knjiga_provider.dart';
+import 'package:elibrary_mobile/providers/ciljne_grupe_provider.dart';
+import 'package:elibrary_mobile/providers/citaoci_provider.dart';
+import 'package:elibrary_mobile/providers/clanarine_provider.dart';
+import 'package:elibrary_mobile/providers/izdavac_provider.dart';
+import 'package:elibrary_mobile/providers/jezici_provider.dart';
+import 'package:elibrary_mobile/providers/kanton_provider.dart';
+import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
+import 'package:elibrary_mobile/providers/knjiga_ciljna_grupa_provider.dart';
+import 'package:elibrary_mobile/providers/knjiga_provider.dart';
+import 'package:elibrary_mobile/providers/knjiga_vrste_sadrzaja_provider.dart';
+import 'package:elibrary_mobile/providers/penali_provider.dart';
+import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
+import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
+import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_mobile/providers/uplate_provider.dart';
+import 'package:elibrary_mobile/providers/uvez_provider.dart';
+import 'package:elibrary_mobile/providers/valute_provider.dart';
+import 'package:elibrary_mobile/providers/vrsta_grade_provider.dart';
+import 'package:elibrary_mobile/providers/vrste_sadrzaja_provider.dart';
+import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails errorDetails) {
+      print("ON error error: ${errorDetails.exception.toString()}");
+    };
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => KnjigaProvider()),
+      ChangeNotifierProvider(create: (_) => BibliotekaKnjigaProvider()),
+      ChangeNotifierProvider(create: (_) => JezikProvider()),
+      ChangeNotifierProvider(create: (_) => VrstaGradeProvider()),
+      ChangeNotifierProvider(create: (_) => IzdavacProvider()),
+      ChangeNotifierProvider(create: (_) => UvezProvider()),
+      ChangeNotifierProvider(create: (_) => AutoriProvider()),
+      ChangeNotifierProvider(create: (_) => VrsteSadrzajaProvider()),
+      ChangeNotifierProvider(create: (_) => CiljneGrupeProvider()),
+      ChangeNotifierProvider(create: (_) => TipClanarineBibliotekaProvider()),
+      ChangeNotifierProvider(create: (_) => ValutaProvider()),
+      ChangeNotifierProvider(create: (_) => CitaociProvider()),
+      ChangeNotifierProvider(create: (_) => PozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+      ChangeNotifierProvider(create: (_) => KantonProvider()),
+      ChangeNotifierProvider(create: (_) => UplataProvider()),
+      ChangeNotifierProvider(create: (_) => PozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaAutoriProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaVrsteSadrzajaProvider()),
+      ChangeNotifierProvider(create: (_) => KnjigaCiljnaGrupaProvider()),
+      ChangeNotifierProvider(create: (_) => ClanarineProvider()),
+      ChangeNotifierProvider(create: (_) => PenaliProvider()),
+    ], child: const MyApp()));
+  }, (error, stack) {
+    print("Error from OUT_SUDE Framerwork");
+    print("--------------------------------");
+    print("Error : $error");
+    // print("StackTrace : $stack");
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +91,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme:
-            ColorScheme.fromSeed(seedColor: Colors.blue, primary: Colors.red),
+            ColorScheme.fromSeed(seedColor: Colors.blue, primary: Colors.black),
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -39,8 +101,9 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
+  LoginPage({super.key});
+  TextEditingController _usernameController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +113,12 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: Center(
           child: Container(
-            constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
+            constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
             child: Card(
               child: Column(
                 children: [
-                  Image.network(
-                    'https://fit.ba/content/763cbb87-718d-4eca-a991-343858daf424',
+                  Image.asset(
+                    "assets/images/fit.png",
                     height: 100,
                     width: 100,
                   ),
@@ -63,6 +126,7 @@ class LoginPage extends StatelessWidget {
                     height: 10,
                   ),
                   TextField(
+                    controller: _usernameController,
                     decoration: InputDecoration(
                         labelText: "Username", prefixIcon: Icon(Icons.email)),
                   ),
@@ -70,13 +134,41 @@ class LoginPage extends StatelessWidget {
                     height: 10,
                   ),
                   TextField(
+                    controller: _passwordController,
                     decoration: InputDecoration(
                         labelText: "Password",
                         prefixIcon: Icon(Icons.password)),
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        print("Login attempt");
+                      onPressed: () async {
+                        KnjigaProvider provider = new KnjigaProvider();
+                        print(
+                            "Credentials: ${_usernameController.text} : ${_passwordController.text}");
+                        AuthProvider.username = _usernameController.text;
+                        AuthProvider.password = _passwordController.text;
+                        // provider.get();
+
+                        try {
+                          //var data = await provider.get();
+                          print("Authenticated!");
+
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  CitalacMasterScreen("", Placeholder())));
+                        } on Exception catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text("Error"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text("Ok"))
+                                    ],
+                                    content: Text(e.toString()),
+                                  ));
+                        }
                       },
                       child: Text("Login"))
                 ],
