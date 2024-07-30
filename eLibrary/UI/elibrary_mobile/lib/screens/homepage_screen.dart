@@ -1,222 +1,93 @@
-import 'dart:io';
-
-import 'package:advanced_datatable/advanced_datatable_source.dart';
-import 'package:advanced_datatable/datatable.dart';
-import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
-import 'package:elibrary_mobile/models/izdavac.dart';
-import 'package:elibrary_mobile/models/search_result.dart';
-import 'package:elibrary_mobile/providers/autori_provider.dart';
-import 'package:elibrary_mobile/providers/izdavac_provider.dart';
-import 'package:elibrary_mobile/screens/autor_details_screen.dart';
+import 'package:elibrary_mobile/layouts/base_mobile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../models/autor.dart';
-
-class IzdavaciListScreen extends StatefulWidget {
-  const IzdavaciListScreen({super.key});
+class HomepageScreen extends StatefulWidget {
+  const HomepageScreen({super.key});
 
   @override
-  State<IzdavaciListScreen> createState() => _IzdavaciListScreenState();
+  State<HomepageScreen> createState() => _HomepageScreenState();
 }
 
-class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
-  late IzdavacProvider provider;
-  SearchResult<Izdavac>? result;
-  List<Izdavac> data = [];
-  late IzdavacDataSource _source;
-  int page = 1;
-  int pageSize = 10;
-  int count = 10;
-  bool _isLoading = false;
-
-  @override
-  // TODO: implement context
-  BuildContext get context => super.context;
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    provider = context.read<IzdavacProvider>();
-    _source = IzdavacDataSource(provider: provider, context: context);
-    // updateFilter("");
-  }
-
+class _HomepageScreenState extends State<HomepageScreen> {
   @override
   Widget build(BuildContext context) {
-    return CitalacMasterScreen(
-        "Izdavači",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
-        ));
+    return BaseMobileScreen(
+      title: "Homepage",
+      widget: _buildPage(),
+      appBarWidget: _buildAppBarHeader(),
+    );
   }
 
-  Future<void> updateFilter(String imePrezime) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {'nazivGTE': imePrezime, 'page': page, 'pageSize': pageSize};
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(filter: filter);
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-        // print(data);
-      }
-      _isLoading = false;
-    });
-  }
-
-  TextEditingController _nazivEditingController = TextEditingController();
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+  Widget _buildAppBarHeader() {
+    return Expanded(
+        child: Container(
+      margin: const EdgeInsets.only(left: 8, right: 8),
+      decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.all(Radius.circular(15))),
       child: Row(
         children: [
-          Expanded(
-              child: TextField(
-            controller: _nazivEditingController,
-            decoration: const InputDecoration(labelText: "Naziv"),
-            onChanged: (value) async {
-              // page = 1;
-              _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
-            },
-          )),
-          const SizedBox(
-            width: 8,
+          // IconButton(
+          //   icon: Icon(Icons.arrow_back),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
+          const Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Pretraži eLibrary',
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+              ),
+            ),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
-                _source.filterServerSide(_nazivEditingController.text);
-                setState(() {});
+          Padding(
+            padding: const EdgeInsets.only(right: 45.0),
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // Implement search functionality here
               },
-              child: const Text("Pretraga")),
-          const SizedBox(
-            width: 8,
+            ),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen()));
-              },
-              child: const Text("Novi izdavac")),
         ],
       ),
-    );
+    ));
   }
 
-  Widget _buildPaginatedTable() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: SizedBox(
-              width: double.infinity,
-              child: AdvancedPaginatedDataTable(
-                columns: [
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Naziv"),
-                  )),
+  Widget _buildPage() {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(left: 8, right: 8),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Preporučene knjige",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ],
-                source: _source,
-                addEmptyRows: false,
-              )),
+              ),
+              Row(
+                children: [
+                  _buildPreporuceneKnjige(),
+                ],
+              ),
+            ],
+          ),
         ),
-      ), // Spacer(),
+      ],
     );
   }
-}
 
-class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
-  List<Izdavac>? data = [];
-  final IzdavacProvider provider;
-  int count = 10;
-  int page = 1;
-  int pageSize = 10;
-  String nazivGTE = "";
-  dynamic filter;
-  BuildContext context;
-  IzdavacDataSource({required this.provider, required this.context});
-
-  @override
-  DataRow? getRow(int index) {
-    if (index >= (count - ((page - 1) * pageSize))) {
-      return null;
-    }
-
-    final item = data?[index];
-
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => AutorDetailsScreen(
-        //                     autor : item,
-        //                   ))),
-        //         }
-        //     },
-        cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.naziv.toString()),
-          )),
-          // DataCell(Text(item!.prezime.toString())),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
-        ]);
-  }
-
-  void filterServerSide(naziv) {
-    nazivGTE = naziv;
-    setNextView();
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => count;
-
-  @override
-  int get selectedRowCount => 0;
-
-  @override
-  Future<RemoteDataSourceDetails<Izdavac>> getNextPage(
-      NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
-    page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'nazivGTE': nazivGTE};
-    print("Metoda u get next row");
-    print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
-    }
-    return RemoteDataSourceDetails(count, data!);
+  Widget _buildPreporuceneKnjige() {
+    return Placeholder();
   }
 }

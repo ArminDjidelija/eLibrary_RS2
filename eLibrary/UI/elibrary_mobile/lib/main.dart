@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:elibrary_mobile/layouts/citalac_homepage_screen.dart';
 import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
 import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/autori_provider.dart';
@@ -153,8 +154,7 @@ class LoginPage extends StatelessWidget {
                           print("Authenticated!");
 
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  CitalacMasterScreen("", Placeholder())));
+                              builder: (context) => HomePage()));
                         } on Exception catch (e) {
                           showDialog(
                               context: context,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:elibrary_mobile/layouts/base_mobile_screen.dart';
 import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
 import 'package:elibrary_mobile/models/autor.dart';
 import 'package:elibrary_mobile/models/ciljna_grupa.dart';
@@ -23,6 +24,7 @@ import 'package:elibrary_mobile/providers/vrste_sadrzaja_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -128,12 +130,46 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Detail screen")),
-      body: Column(
+    return BaseMobileScreen(
+      title: "Detail screen",
+      widget: Column(
         children: [isLoading ? Container() : _buildForm(), _saveRow()],
       ),
+      appBarWidget: _buildAppBarHeader(),
     );
+    // return Scaffold(
+    //   appBar: AppBar(title: Text("Detail screen")),
+    //   body:
+    // );
+  }
+
+  Widget _buildAppBarHeader() {
+    return Expanded(
+        child: Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Pretraga...',
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+            ),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            // Implement search functionality here
+          },
+        ),
+      ],
+    ));
   }
 
   Widget _buildForm() {

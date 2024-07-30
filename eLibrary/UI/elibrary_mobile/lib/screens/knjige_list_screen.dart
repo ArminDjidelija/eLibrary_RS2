@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
+import 'package:elibrary_mobile/layouts/base_mobile_screen.dart';
 import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
 import 'package:elibrary_mobile/models/izdavac.dart';
 import 'package:elibrary_mobile/models/jezik.dart';
@@ -51,14 +52,54 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return BaseMobileScreen(
+      title: "Knjige",
+      widget: Column(
         children: [
           _buildSearch(),
           _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
         ],
       ),
+      appBarWidget: _buildAppBarHeader(),
     );
+    // return Scaffold(
+    //   appBar: AppBar(title: Text('knjige')),
+    //   body: Column(
+    //     children: [
+    //       _buildSearch(),
+    //       _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+    //     ],
+    //   ),
+    // );
+  }
+
+  Widget _buildAppBarHeader() {
+    return Expanded(
+        child: Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Pretraga...',
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+            ),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            // Implement search functionality here
+          },
+        ),
+      ],
+    ));
   }
 
   TextEditingController _naslovEditingController = TextEditingController();
