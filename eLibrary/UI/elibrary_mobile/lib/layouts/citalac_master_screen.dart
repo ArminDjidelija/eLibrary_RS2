@@ -1,6 +1,7 @@
 import 'package:elibrary_mobile/main.dart';
 import 'package:elibrary_mobile/screens/citaoci_list_screen.dart';
 import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
+import 'package:elibrary_mobile/screens/pocetna_knjiga_pretraga_screen.dart';
 import 'package:elibrary_mobile/screens/nova_pozajmica_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,7 +30,7 @@ class _CitalacMasterScreenState extends State<CitalacMasterScreen> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> body = [
     KnjigeListScreen(),
-    Icon(Icons.abc),
+    PocetnaKnjigaPretragaScreen(),
     Icon(Icons.aspect_ratio),
     Icon(Icons.scale),
     Icon(Icons.r_mobiledata),

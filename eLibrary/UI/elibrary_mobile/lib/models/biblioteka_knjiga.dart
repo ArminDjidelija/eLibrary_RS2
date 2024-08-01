@@ -1,3 +1,4 @@
+import 'package:elibrary_mobile/models/biblioteka.dart';
 import 'package:elibrary_mobile/models/knjiga.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'biblioteka_knjiga.g.dart';
@@ -12,7 +13,8 @@ class BibliotekaKnjiga {
   String? lokacija;
   int? dostupnoCitaonica;
   int? dostupnoPozajmica;
-  // Biblioteka? biblioteka;
+  int? trenutnoDostupno;
+  Biblioteka? biblioteka;
   Knjiga? knjiga;
   // List<Pozajmices>? pozajmices;
   // List<Rezervacijes>? rezervacijes;

@@ -52,15 +52,11 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseMobileScreen(
-      title: "Knjige",
-      widget: Column(
-        children: [
-          _buildSearch(),
-          _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-        ],
-      ),
-      appBarWidget: _buildAppBarHeader(),
+    return Column(
+      children: [
+        _buildSearch(),
+        _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+      ],
     );
     // return Scaffold(
     //   appBar: AppBar(title: Text('knjige')),

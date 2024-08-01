@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace eLibrary.Services
@@ -70,6 +71,18 @@ namespace eLibrary.Services
         {
             entity.DatumDodavanja = DateTime.Now;
 
+        }
+
+        public override async Task CustomMapPagedResponseAsync(List<Model.BibliotekaKnjigeDTOs.BibliotekaKnjige> result, CancellationToken cancellationToken = default)
+        {
+            foreach (var item in result)
+            {
+                var ukupnoPozajmljeno = await Context
+                    .Pozajmices
+                    .Where(x => x.BibliotekaKnjigaId == item.BibliotekaKnjigaId && x.StvarniDatumVracanja == null)
+                    .CountAsync(cancellationToken);
+                item.TrenutnoDostupno = item.DostupnoPozajmica-ukupnoPozajmljeno;
+            }
         }
     }
 }

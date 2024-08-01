@@ -49,6 +49,7 @@ namespace eLibrary.Services.BaseServices
             var list = await query.ToListAsync(cancellationToken);
 
             result = Mapper.Map(list, result);
+            await CustomMapPagedResponseAsync(result, cancellationToken);
 
             PagedResult<TModel> pagedResult = new PagedResult<TModel>();
             pagedResult.ResultList = result;
@@ -56,6 +57,8 @@ namespace eLibrary.Services.BaseServices
 
             return pagedResult;
         }
+
+        public virtual async Task CustomMapPagedResponseAsync(List<TModel> result, CancellationToken cancellationToken = default) { }
 
         private IQueryable<TDbEntity> ApplyIncludes(IQueryable<TDbEntity> query, string includes)
         {
@@ -118,13 +121,17 @@ namespace eLibrary.Services.BaseServices
 
             if (entity != null)
             {
-                return Mapper.Map<TModel>(entity);
+                var mappedObj = Mapper.Map<TModel>(entity);
+                await CustomMapResponseAsync(mappedObj,cancellationToken);
+                return mappedObj;
             }
             else
             {
                 return null;
             }
         }
+
+        public virtual async Task CustomMapResponseAsync(TModel mappedObj, CancellationToken cancellationToken = default) { }
 
         //public async Task<TModel> GetFirstOrDefaultForSearchObjectAsync(TSearch search, CancellationToken cancellationToken = default)
         //{

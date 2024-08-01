@@ -24,6 +24,8 @@ namespace eLibrary.Model.BibliotekaKnjigeDTOs
 
         public int? DostupnoPozajmica { get; set; }
 
+        public int? TrenutnoDostupno { get; set; }
+
         public virtual Biblioteke Biblioteka { get; set; } = null!;
 
         public virtual GeneralDTOs.KnjigeDTO Knjiga { get; set; } = null!;
@@ -31,5 +33,7 @@ namespace eLibrary.Model.BibliotekaKnjigeDTOs
         public virtual ICollection<GeneralDTOs.PozajmiceDTO> Pozajmices { get; set; } = new List<GeneralDTOs.PozajmiceDTO>();
 
         public virtual ICollection<GeneralDTOs.RezervacijeDTO> Rezervacijes { get; set; } = new List<GeneralDTOs.RezervacijeDTO>();
+
+
     }
 }

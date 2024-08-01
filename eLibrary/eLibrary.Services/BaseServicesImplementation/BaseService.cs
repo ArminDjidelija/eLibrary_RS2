@@ -48,6 +48,7 @@ namespace eLibrary.Services.BaseServices
             var list = query.ToList();
 
             result = Mapper.Map(list, result);
+            CustomMapPagedResponse(result);
 
             PagedResult<TModel> pagedResult = new PagedResult<TModel>();
             pagedResult.ResultList = result;
@@ -55,6 +56,9 @@ namespace eLibrary.Services.BaseServices
 
             return pagedResult;
         }
+
+        public virtual void CustomMapPagedResponse(List<TModel> result) { }
+
         private IQueryable<TDbEntity> ApplyIncludes(IQueryable<TDbEntity> query, string includes)
         {
             try
@@ -116,13 +120,17 @@ namespace eLibrary.Services.BaseServices
 
             if (entity != null)
             {
-                return Mapper.Map<TModel>(entity);
+                var mappedObj = Mapper.Map<TModel>(entity);
+                CustomMapResponse(mappedObj);
+                return mappedObj;
             }
             else
             {
                 return null;
             }
         }
+
+        public virtual void CustomMapResponse(TModel mappedObj) { }
 
         //public TModel GetFirstOrDefaultForSearchObject(TSearch search)
         //{

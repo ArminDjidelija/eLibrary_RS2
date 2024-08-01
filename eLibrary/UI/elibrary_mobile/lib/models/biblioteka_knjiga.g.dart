@@ -17,6 +17,10 @@ BibliotekaKnjiga _$BibliotekaKnjigaFromJson(Map<String, dynamic> json) =>
       ..lokacija = json['lokacija'] as String?
       ..dostupnoCitaonica = (json['dostupnoCitaonica'] as num?)?.toInt()
       ..dostupnoPozajmica = (json['dostupnoPozajmica'] as num?)?.toInt()
+      ..trenutnoDostupno = (json['trenutnoDostupno'] as num?)?.toInt()
+      ..biblioteka = json['biblioteka'] == null
+          ? null
+          : Biblioteka.fromJson(json['biblioteka'] as Map<String, dynamic>)
       ..knjiga = json['knjiga'] == null
           ? null
           : Knjiga.fromJson(json['knjiga'] as Map<String, dynamic>);
@@ -31,5 +35,7 @@ Map<String, dynamic> _$BibliotekaKnjigaToJson(BibliotekaKnjiga instance) =>
       'lokacija': instance.lokacija,
       'dostupnoCitaonica': instance.dostupnoCitaonica,
       'dostupnoPozajmica': instance.dostupnoPozajmica,
+      'trenutnoDostupno': instance.trenutnoDostupno,
+      'biblioteka': instance.biblioteka,
       'knjiga': instance.knjiga,
     };
