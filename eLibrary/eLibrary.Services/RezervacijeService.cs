@@ -36,11 +36,25 @@ namespace eLibrary.Services
             }
             if (search?.Odobreno != null)
             {
-                query = query.Where(x => x.Odobreno == search.Odobreno);
+                if (search.Odobreno == false)
+                {
+                    query = query.Where(x => x.Odobreno == false || x.Odobreno == null);
+                }
+                else
+                {
+                    query = query.Where(x => x.Odobreno == true);
+                }
             }
             if (search?.Ponistena != null)
             {
-                query=query.Where(x=>x.Ponistena==search.Ponistena);
+                if (search.Ponistena == true)
+                {
+                    query = query.Where(x => x.Ponistena == true);
+                }
+                else
+                {
+                    query=query.Where(x=>x.Ponistena==false || x.Ponistena==null);
+                }
             }
             if(search?.BibliotekaKnjigaId != null)
             {

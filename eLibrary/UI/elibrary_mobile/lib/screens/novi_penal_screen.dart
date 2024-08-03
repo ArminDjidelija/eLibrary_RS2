@@ -35,10 +35,11 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
 
   @override
   void initState() {
+    super.initState();
+
     penaliProvider = context.read<PenaliProvider>();
     kantonProvider = context.read<KantonProvider>();
     // TODO: implement initState
-    super.initState();
 
     initForm();
   }

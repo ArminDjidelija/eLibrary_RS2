@@ -4,8 +4,10 @@ import 'package:elibrary_mobile/models/search_result.dart';
 import 'package:elibrary_mobile/models/vrsta_grade.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/vrsta_grade_provider.dart';
+import 'package:elibrary_mobile/screens/napredna_pretraga_knjige_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class PocetnaKnjigaPretragaScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _PocetnaKnjigaPretragaScreenState
     extends State<PocetnaKnjigaPretragaScreen> {
   late VrstaGradeProvider vrstaGradeProvider;
   SearchResult<VrstaGrade>? vrstaGradeResult;
+  int _selectedVrstaGrade = 0;
 
   late KnjigaProvider knjigaProvider;
 
@@ -45,58 +48,10 @@ class _PocetnaKnjigaPretragaScreenState
     vrstaGradeProvider = context.read<VrstaGradeProvider>();
 
     _initForm();
-    // _firstLoad();
-    // scrollController = ScrollController()..addListener(_loadMore);
-    // _initForm();
-  }
-
-  void _firstLoad() async {
-    setState(() {
-      isFirstLoadRunning = true;
-    });
-
-    var knjigeResult = await knjigaProvider.get(page: page, pageSize: 3);
-    if (knjigeResult != null) {
-      knjige = knjigeResult!.resultList;
-    }
-
-    setState(() {
-      isFirstLoadRunning = false;
-    });
-  }
-
-  void _loadMore() async {
-    if (hasNextPage == true &&
-        isFirstLoadRunning == false &&
-        isLoadMoreRunning == false) {
-      setState(() {
-        isLoadMoreRunning = true;
-      });
-
-      page += 1;
-      var knjigeResult = await knjigaProvider.get(page: page, pageSize: 3);
-      if (knjigeResult.resultList.isNotEmpty) {
-        knjige.addAll(knjigeResult!.resultList);
-      } else {
-        setState(() {
-          hasNextPage = false;
-        });
-      }
-
-      setState(() {
-        isLoadMoreRunning = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // return BaseMobileScreen(
-    //   title: "Homepage",
-    //   widget: _buildPage(),
-    //   appBarWidget: _buildAppBarHeader(),
-    // );
-
     return Column(
       children: [
         _buildAppBarHeader(),
@@ -107,29 +62,37 @@ class _PocetnaKnjigaPretragaScreenState
     );
   }
 
+  TextEditingController _naslovEditingController = TextEditingController();
+
   Widget _buildAppBarHeader() {
     return Container(
       margin: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
       height: 50,
       decoration: BoxDecoration(
         border: Border.all(),
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
       ),
       child: Row(
         children: [
           Expanded(
             child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Pretraga...',
+              controller: _naslovEditingController,
+              decoration: const InputDecoration(
+                hintText: 'Naslov knjige',
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
               ),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               // Implement search functionality here
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NaprednaPretragaKnjiga(
+                        vrstaGradeId: _selectedVrstaGrade,
+                        naslov: _naslovEditingController.text,
+                      )));
             },
           ),
         ],
@@ -139,7 +102,7 @@ class _PocetnaKnjigaPretragaScreenState
 
   Widget _buildPage() {
     return SingleChildScrollView(
-      child: Column(
+      child: Stack(
         children: [
           Container(
               width: double.infinity,
@@ -148,19 +111,51 @@ class _PocetnaKnjigaPretragaScreenState
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(),
-                borderRadius: BorderRadius.all(Radius.circular(15)),
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
               ),
               child: vrstaGradeResult?.resultList != null
                   ? ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: vrstaGradeResult!.resultList!
-                          .map((e) => Text(e.naziv.toString()))
+                          .map((e) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: RadioListTile<int>(
+                                  title: Text(
+                                    e.naziv.toString(),
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  value: e.vrstaGradeId!,
+                                  groupValue: _selectedVrstaGrade,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedVrstaGrade =
+                                          value!; // Sačuvajte odabranu vrednost
+                                      print(_selectedVrstaGrade);
+                                    });
+                                  },
+                                ),
+                              ))
                           .toList(),
                     )
-                  : Center(
+                  : const Center(
                       child: Text("Nema podataka"),
-                    ))
+                    )),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NaprednaPretragaKnjiga(
+                          vrstaGradeId: _selectedVrstaGrade,
+                          naslov: _naslovEditingController.text,
+                        )));
+              },
+              child: Icon(Icons.search),
+            ),
+          )
         ],
       ),
     );
@@ -168,47 +163,15 @@ class _PocetnaKnjigaPretragaScreenState
 
   Future _initForm() async {
     vrstaGradeResult = await vrstaGradeProvider.get(retrieveAll: true);
-
+    var pocetni = VrstaGrade();
+    pocetni.vrstaGradeId = 0;
+    pocetni.naziv = "Bilo koji tip građe";
+    if (vrstaGradeResult?.resultList != null) {
+      vrstaGradeResult?.resultList!.insert(0, pocetni);
+    } else {
+      // Ako je resultList null, inicijalizirajte ga s novim elementom
+      vrstaGradeResult?.resultList = [pocetni];
+    }
     setState(() {});
   }
-
-  // Widget _buildPage() {
-  //   return isFirstLoadRunning
-  //       ? const Center(
-  //           child: CircularProgressIndicator(),
-  //         )
-  //       : Column(
-  //           children: [
-  //             Expanded(
-  //               child: ListView.builder(
-  //                 itemCount: knjige.length,
-  //                 controller: scrollController,
-  //                 itemBuilder: (_, index) => Card(
-  //                   margin:
-  //                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-  //                   child: ListTile(
-  //                     title: Text(knjige[index].naslov!),
-  //                     subtitle: Text(knjige[index].godinaIzdanja.toString()),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //             if (isLoadMoreRunning == true)
-  //               const Padding(
-  //                 padding: EdgeInsets.only(top: 10, bottom: 40),
-  //                 child: Center(
-  //                   child: CircularProgressIndicator(),
-  //                 ),
-  //               ),
-  //             if (hasNextPage == false)
-  //               Container(
-  //                 padding: EdgeInsets.only(top: 30, bottom: 40),
-  //                 color: Colors.amber,
-  //                 child: const Center(
-  //                   child: Text("Pregledali ste sve knjige!"),
-  //                 ),
-  //               )
-  //           ],
-  //         );
-  // }
 }

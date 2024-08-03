@@ -1,6 +1,9 @@
+import 'package:elibrary_mobile/screens/citalac_profil_screen.dart';
 import 'package:elibrary_mobile/screens/homepage_screen.dart';
 import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
+import 'package:elibrary_mobile/screens/moj_elibrary_screen.dart';
 import 'package:elibrary_mobile/screens/pocetna_knjiga_pretraga_screen.dart';
+import 'package:elibrary_mobile/screens/pozajmice_citalac_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage2 extends StatefulWidget {
@@ -16,9 +19,9 @@ class _HomePageState extends State<HomePage2> {
   final List<Widget> _pages = [
     HomepageScreen(),
     PocetnaKnjigaPretragaScreen(),
-    KnjigeListScreen(),
-    PocetnaKnjigaPretragaScreen(),
-    KnjigeListScreen(),
+    PozajmiceCitalacScreen(),
+    CitalacProfilScreen(),
+    MojElibraryScreen(),
   ];
 
   void _navigateBottomBar(int index) {

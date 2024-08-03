@@ -356,7 +356,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
               color: Colors.blue,
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'Ustanova ${title}',
+                'Ustanova: ${title}',
                 style: TextStyle(color: Colors.white),
               ),
             ),

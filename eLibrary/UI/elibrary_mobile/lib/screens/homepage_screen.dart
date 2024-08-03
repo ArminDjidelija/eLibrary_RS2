@@ -13,6 +13,7 @@ import 'package:elibrary_mobile/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:elibrary_mobile/screens/knjiga_screen.dart';
+import 'package:elibrary_mobile/screens/napredna_pretraga_knjige_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -76,6 +77,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
     );
   }
 
+  TextEditingController _naslovEditingController = TextEditingController();
+
   Widget _buildAppBarHeader() {
     return Container(
       height: 50,
@@ -88,6 +91,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
         children: [
           Expanded(
             child: TextField(
+              controller: _naslovEditingController,
               decoration: InputDecoration(
                 hintText: 'Pretraži eLibrary',
                 border: InputBorder.none,
@@ -98,7 +102,11 @@ class _HomepageScreenState extends State<HomepageScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              // Implement search functionality here
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NaprednaPretragaKnjiga(
+                        vrstaGradeId: 0,
+                        naslov: _naslovEditingController.text,
+                      )));
             },
           ),
         ],

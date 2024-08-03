@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         PersistentTabItem(
           tab: PocetnaKnjigaPretragaScreen(),
           icon: Icons.menu,
-          title: 'Moj eLibrary',
+          title: 'Moj eLibraryy',
           navigatorkey: _tab5navigatorKey,
         ),
       ],

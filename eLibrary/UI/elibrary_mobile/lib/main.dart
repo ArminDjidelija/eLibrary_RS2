@@ -6,6 +6,7 @@ import 'package:elibrary_mobile/layouts/citalac_master_screen.dart';
 import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/autori_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_knjiga_provider.dart';
+import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/ciljne_grupe_provider.dart';
 import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/clanarine_provider.dart';
@@ -59,6 +60,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => KnjigaCiljnaGrupaProvider()),
       ChangeNotifierProvider(create: (_) => ClanarineProvider()),
       ChangeNotifierProvider(create: (_) => PenaliProvider()),
+      ChangeNotifierProvider(create: (_) => BibliotekaProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framerwork");
