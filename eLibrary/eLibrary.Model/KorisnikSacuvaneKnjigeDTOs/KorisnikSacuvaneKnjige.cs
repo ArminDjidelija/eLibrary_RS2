@@ -16,6 +16,6 @@ namespace eLibrary.Model.KorisnikSacuvaneKnjigeDTOs
 
         public virtual GeneralDTOs.CitaociDTO? Citalac { get; set; }
 
-        public virtual GeneralDTOs.KnjigeDTO? Knjiga { get; set; } 
+        public virtual Knjiga_KorisnikSacuvanaKnjigaDTO? Knjiga { get; set; } 
     }
 }

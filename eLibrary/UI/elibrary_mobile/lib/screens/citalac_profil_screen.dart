@@ -44,20 +44,14 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildAppBarHeader(),
-        Expanded(
-          child: _buildPage(),
-        ),
-      ],
+    return Scaffold(
+      appBar: AppBar(),
+      body: _buildPage(),
     );
   }
 
   Widget _buildAppBarHeader() {
     return Container(
-      // color: Colors.blue,
-      // margin: EdgeInsets.only(bottom: 5),
       height: 75,
       decoration: const BoxDecoration(
           color: Colors.blue,

@@ -3,6 +3,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,19 @@ namespace eLibrary.Services
     {
         public KorisnikSacuvaneKnjigeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+        public override IQueryable<KorisnikSacuvanaKnjiga> AddFilter(KorisnikSacuvanaKnjigaSearchObject search, IQueryable<KorisnikSacuvanaKnjiga> query)
+        {
+            if(search?.CitalacId != null)
+            {
+                query=query.Where(x=>x.CitalacId.Equals(search.CitalacId));
+            }
+            if(search?.KnjigaId != null)
+            {
+                query=query.Where(x=>x.KnjigaId.Equals(search.KnjigaId));
+            }
+            return query;
         }
     }
 }

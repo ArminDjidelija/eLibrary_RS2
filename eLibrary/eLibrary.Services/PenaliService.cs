@@ -1,4 +1,5 @@
-﻿using eLibrary.Model.Requests;
+﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
@@ -33,10 +34,33 @@ namespace eLibrary.Services
                     .ThenInclude(x => x.BibliotekaKnjiga)
                     .Where(x => x.Pozajmica.BibliotekaKnjiga.BibliotekaId == search.BibliotekaId);
             }
+            if (search?.Placeno != null)
+            {
+                if(search.Placeno==true)
+                {
+                    query = query.Where(x => x.UplataId != null);
+                }
+                else
+                {
+                    query = query.Where(x => x.UplataId == null);
+                }
+            }
             return query;
         }
 
+        public async Task<Model.BibliotekeDTOs.Biblioteke> GetBibliotekaByPenalAsync(int penalId, CancellationToken cancellationToken = default)
+        {
+            var penal=await Context
+                .Penalis
+                .Include(x=>x.Pozajmica)
+                .ThenInclude(x=>x.BibliotekaKnjiga)
+                .ThenInclude(x=>x.Biblioteka)
+                .Where(x=>x.PenalId==penalId).FirstOrDefaultAsync(cancellationToken);
+            if (penal == null)
+                throw new UserException("Pogrešan penal ID");
+            var biblioteka = penal.Pozajmica.BibliotekaKnjiga.Biblioteka;
 
-
+            return Mapper.Map<Model.BibliotekeDTOs.Biblioteke>(biblioteka);
+        }
     }
 }

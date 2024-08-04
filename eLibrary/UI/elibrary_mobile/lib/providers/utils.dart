@@ -22,6 +22,13 @@ String formatDateTimeToLocal(String date) {
       .toString();
 }
 
+String formatDateToLocal(String date) {
+  return DateFormat("dd.MM.yyyy.")
+      .format(
+          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(date.toString()))
+      .toString();
+}
+
 extension ShowDataInOwnFormat on DateTime {
   String showDateInOwnFormat() {
     return '$day.$month.$year. $hour:$minute';

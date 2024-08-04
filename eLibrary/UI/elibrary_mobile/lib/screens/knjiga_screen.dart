@@ -18,6 +18,7 @@ import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_ciljna_grupa_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_vrste_sadrzaja_provider.dart';
+import 'package:elibrary_mobile/providers/korisnik_sacuvana_knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +45,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   late JezikProvider jezikProvider;
   late KnjigaCiljnaGrupaProvider knjigaCiljnaGrupaProvider;
   late KantonProvider kantonProvider;
+  late KorisnikSacuvanaKnjigaProvider korisnikSacuvanaKnjigaProvider;
   late TabController _tabController;
 
   SearchResult<Knjiga>? knjigeResult;
@@ -70,6 +72,8 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     jezikProvider = context.read<JezikProvider>();
     knjigaCiljnaGrupaProvider = context.read<KnjigaCiljnaGrupaProvider>();
     bibliotekaKnjigaProvider = context.read<BibliotekaKnjigaProvider>();
+    korisnikSacuvanaKnjigaProvider =
+        context.read<KorisnikSacuvanaKnjigaProvider>();
     kantonProvider = context.read<KantonProvider>();
 
     _tabController = TabController(length: 2, vsync: this);
@@ -125,14 +129,18 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Container(
+          alignment: Alignment.bottomRight,
+          child: InkWell(
+            onTap: () {
+              _addSacuvanaKnjiga(widget.knjiga.knjigaId!);
+            },
+            child: Icon(Icons.bookmark_outline),
+          ),
+        ),
+      ),
       body: _buildPage(),
-    );
-
-    return BaseMobileScreen(
-      title: "Homepage",
-      widget: _buildPage(),
-      appBarWidget: _buildAppBarHeader(),
     );
   }
 
@@ -247,7 +255,8 @@ class _KnjigaScreenState extends State<KnjigaScreen>
                   ? const Text("Nema jezika")
                   : Text("Jezik: ${jezik?.naziv}"),
               Text("Isbn: ${widget.knjiga!.isbn}"),
-              Text("Godina izdanja: ${widget.knjiga!.godinaIzdanja}")
+              Text("Godina izdanja: ${widget.knjiga!.godinaIzdanja}"),
+              // Spacer(),
             ],
           ),
         ),
@@ -605,5 +614,14 @@ class _KnjigaScreenState extends State<KnjigaScreen>
 
   Widget _emptyDetalji() {
     return Center(child: Text('Nema dostupnih biblioteka'));
+  }
+
+  Future _addSacuvanaKnjiga(int knjigaId) async {
+    await korisnikSacuvanaKnjigaProvider
+        .insert({'citalacId': 1, 'knjigaId': knjigaId});
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        text: "Uspješno dodata knjiga");
   }
 }

@@ -1,3 +1,8 @@
+import 'package:elibrary_mobile/layouts/citalac2_homepage_screen.dart';
+import 'package:elibrary_mobile/screens/citalac_profil_screen.dart';
+import 'package:elibrary_mobile/screens/obavijesti_list_screen.dart';
+import 'package:elibrary_mobile/screens/penali_citalac_screen.dart';
+import 'package:elibrary_mobile/screens/sacuvane_knjige_citalac_screen.dart';
 import 'package:flutter/material.dart';
 
 class MojElibraryScreen extends StatefulWidget {
@@ -52,42 +57,51 @@ class _MojElibraryScreenState extends State<MojElibraryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _baseMojSettingsRow("Članarine", Icons.euro),
-          _baseMojSettingsRow("Članarine", Icons.euro),
-          _baseMojSettingsRow("Članarine", Icons.euro),
-          _baseMojSettingsRow("Članarine", Icons.euro),
+          _baseMojSettingsRow("Profil", Icons.euro, CitalacProfilScreen()),
+          _baseMojSettingsRow(
+              "Penali", Icons.money_outlined, PenaliCitalacScreen()),
+          _baseMojSettingsRow("Sačuvane knjige", Icons.bookmark_outline,
+              SacuvaneKnjigeCitalacScreen()),
+          _baseMojSettingsRow(
+              "Obavijesti", Icons.notifications_outlined, ObavijestiScreen()),
         ],
       ),
     );
   }
 
-  Widget _baseMojSettingsRow(String naslov, IconData ikonica) {
-    return Container(
-      margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-          width: 2.0,
+  Widget _baseMojSettingsRow(String naslov, IconData ikonica, Widget next) {
+    return InkWell(
+      onTap: () => {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => next))
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10.0),
+          ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-      ),
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Icon(ikonica),
-            SizedBox(
-              width: 8,
-            ),
-            Text(
-              naslov,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Icon(ikonica),
+              SizedBox(
+                width: 8,
+              ),
+              Text(
+                naslov,
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -99,7 +99,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     // print("response: ${response.request} ${response.statusCode}, ${response.body}");
   }
 
-  Future<T> insert(dynamic request) async {
+  Future insert(dynamic request) async {
     var url = "$baseUrl$_endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -108,10 +108,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     // print(jsonRequest);
     var response = await http.post(uri, headers: headers, body: jsonRequest);
 
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-      return fromJson(data);
-    } else {
+    if (!isValidResponse(response)) {
       throw new Exception("Unknown error");
     }
   }
@@ -127,6 +124,23 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknown error");
+    }
+  }
+
+  Future<T> delete(int id) async {
+    var url = "$baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.delete(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      // QuickAlert.show(
+      //     context: context, type: QuickAlertType.success, title: "Uspješno");
       return fromJson(data);
     } else {
       throw new Exception("Unknown error");

@@ -1,6 +1,5 @@
-import 'package:elibrary_mobile/screens/citalac_profil_screen.dart';
+import 'package:elibrary_mobile/screens/clanarine_citalac_screen.dart';
 import 'package:elibrary_mobile/screens/homepage_screen.dart';
-import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
 import 'package:elibrary_mobile/screens/moj_elibrary_screen.dart';
 import 'package:elibrary_mobile/screens/pocetna_knjiga_pretraga_screen.dart';
 import 'package:elibrary_mobile/screens/pozajmice_citalac_screen.dart';
@@ -17,11 +16,11 @@ class _HomePageState extends State<HomePage2> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    HomepageScreen(),
+    const HomepageScreen(),
     PocetnaKnjigaPretragaScreen(),
-    PozajmiceCitalacScreen(),
-    CitalacProfilScreen(),
-    MojElibraryScreen(),
+    const PozajmiceCitalacScreen(),
+    const ClanarineCitalacScreen(),
+    const MojElibraryScreen(),
   ];
 
   void _navigateBottomBar(int index) {
@@ -38,12 +37,12 @@ class _HomePageState extends State<HomePage2> {
         currentIndex: _selectedIndex,
         onTap: _navigateBottomBar,
         type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Početna"),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: "Pretraga"),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month), label: "Pozajmice"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
+          BottomNavigationBarItem(icon: Icon(Icons.euro), label: "Članarine"),
           BottomNavigationBarItem(
               icon: Icon(Icons.menu), label: "Moj eLibrary"),
         ],

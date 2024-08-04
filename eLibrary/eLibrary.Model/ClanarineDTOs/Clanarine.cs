@@ -32,6 +32,6 @@ namespace eLibrary.Model.ClanarineDTOs
 
         public virtual GeneralDTOs.TipClanarineBibliotekeDTO? TipClanarineBiblioteka { get; set; } 
 
-        public virtual GeneralDTOs.UplateDTO? Uplate { get; set; } 
+        public virtual Uplate_ClanarineDTO Uplate { get; set; } 
     }
 }

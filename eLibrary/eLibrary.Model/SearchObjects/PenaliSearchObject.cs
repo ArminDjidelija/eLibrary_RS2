@@ -8,5 +8,6 @@ namespace eLibrary.Model.SearchObjects
     {
         public int? CitalacId { get; set; }
         public int? BibliotekaId {  get; set; }
+        public bool? Placeno {  get; set; }
     }
 }
