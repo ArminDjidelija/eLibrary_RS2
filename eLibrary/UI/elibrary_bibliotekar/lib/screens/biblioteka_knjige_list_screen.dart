@@ -207,42 +207,32 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
 
     final item = data?[index];
 
-    return DataRow(
-        onSelectChanged: (selected) => {
-              if (selected == true)
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => KnjigeListScreen())),
-                }
-            },
-        cells: [
-          DataCell(Text(item!.knjiga!.naslov.toString())),
-          DataCell(Text(item!.knjiga!.isbn.toString())),
-          DataCell(Text(item!.knjiga!.godinaIzdanja.toString())),
-          // DataCell(Text(item!.knjiga!.brojIzdanja.toString())),
-          // DataCell(Text(item!.knjiga!.brojStranica.toString())),
-          DataCell(item!.knjiga!.slika != null
-              ? Container(
-                  width: 75,
-                  height: 75,
-                  child: imageFromString(item.knjiga!.slika!),
-                )
-              : const Text("")),
-          DataCell(ElevatedButton(
-              child: Text(
-                "Detalji",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => BibliotekaKnjigaDetailsScreen(
-                          bibliotekaKnjiga: item,
-                        )));
-              }))
-        ]);
+    return DataRow(cells: [
+      DataCell(Text(item!.knjiga!.naslov.toString())),
+      DataCell(Text(item!.knjiga!.isbn.toString())),
+      DataCell(Text(item!.knjiga!.godinaIzdanja.toString())),
+      DataCell(item!.knjiga!.slika != null
+          ? Container(
+              width: 75,
+              height: 75,
+              child: imageFromString(item.knjiga!.slika!),
+            )
+          : const Text("")),
+      DataCell(ElevatedButton(
+          child: Text(
+            "Detalji",
+            style: TextStyle(color: Colors.white),
+          ),
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+          ),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BibliotekaKnjigaDetailsScreen(
+                      bibliotekaKnjiga: item,
+                    )));
+          }))
+    ]);
   }
 
   void filterServerSide(naslovv, autorr, isbnn) {

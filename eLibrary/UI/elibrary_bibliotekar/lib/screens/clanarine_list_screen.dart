@@ -4,6 +4,7 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/clanarina.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
+import 'package:elibrary_bibliotekar/screens/nova_clanarina_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -118,10 +119,9 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
               onPressed: () async {
                 //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        TipClanarineBibliotekaDetailsScreen()));
+                    builder: (context) => NovaClanarinaScreen()));
               },
-              child: const Text("Novi tip clanarine")),
+              child: const Text("Nova clanarina")),
         ],
       ),
     );

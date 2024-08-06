@@ -193,14 +193,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container(
-          //   alignment: Alignment.centerLeft,
-          //   margin: EdgeInsets.only(left: 10, top: 5),
-          //   child: Text(
-          //     "Trenutne pozajmice",
-          //     style: TextStyle(fontSize: 24),
-          //   ),
-          // ),
           Container(
             alignment: Alignment.centerLeft,
             margin: EdgeInsets.only(left: 10, top: 5),
@@ -374,17 +366,13 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
             margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: DropdownSearch<TipClanarineBiblioteka>(
               selectedItem: odabraniTipClanarine,
-              popupProps: PopupPropsMultiSelection.menu(
-                  // isFilterOnline: true,
-                  // showSearchBox: true,
-                  // searchDelay: Duration(milliseconds: 5),
-                  ),
-              // dropdownDecoratorProps: const DropDownDecoratorProps(
-              //   dropdownSearchDecoration: InputDecoration(
-              //     labelText: "Odaberi tip clanarine",
-              //     hintText: "Unesite naziv ",
-              //   ),
-              // ),
+              popupProps: PopupPropsMultiSelection.menu(),
+              dropdownDecoratorProps: const DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Odaberi člnarinu",
+                  hintText: "Unesite naziv biblioteke",
+                ),
+              ),
               asyncItems: (String filter) async {
                 var tipovi = await getTipoviClanarina();
                 return tipovi;

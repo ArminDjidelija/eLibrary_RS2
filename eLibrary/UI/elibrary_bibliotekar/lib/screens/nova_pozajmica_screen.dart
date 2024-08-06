@@ -179,9 +179,9 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                 ),
               ],
             ),
-            Row(
-              children: [],
-            )
+            // Row(
+            //   children: [],
+            // )
           ],
         ),
       ),

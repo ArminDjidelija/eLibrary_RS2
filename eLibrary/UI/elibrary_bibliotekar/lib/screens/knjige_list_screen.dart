@@ -9,6 +9,7 @@ import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
+import 'package:elibrary_bibliotekar/screens/nova_biblioteka_knjiga.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -155,66 +156,6 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     }
   }
 
-  Widget _buildResultView() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: 2,
-            ),
-            DataTable(
-              columns: const [
-                // DataColumn(label: Text("Id"), numeric: true),
-                DataColumn(
-                  label: Text("Naziv"),
-                ),
-                DataColumn(label: Text("ISBN")),
-                DataColumn(label: Text("Godina izdanja")),
-                DataColumn(label: Text("Broj izdanja")),
-                DataColumn(label: Text("Broj stranica")),
-                DataColumn(label: Text("Slika")),
-              ],
-              rows: result?.resultList
-                      .map((e) => DataRow(
-                              onSelectChanged: (selected) => {
-                                    if (selected == true)
-                                      {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    KnjigaDetailsScreen(
-                                                      knjiga: e,
-                                                    ))),
-                                      }
-                                  },
-                              cells: [
-                                // DataCell(Text(e.knjigaId.toString())),
-                                DataCell(Text(e.naslov.toString() ?? "")),
-                                DataCell(Text(e.isbn.toString() ?? "")),
-                                DataCell(
-                                    Text(e.godinaIzdanja.toString() ?? "")),
-                                DataCell(Text(e.brojIzdanja.toString() ?? "")),
-                                DataCell(Text(e.brojStranica.toString() ?? "")),
-                                DataCell(e.slika != null
-                                    ? Container(
-                                        width: 50,
-                                        height: 50,
-                                        child: imageFromString(e.slika!),
-                                      )
-                                    : const Text("")),
-                              ]))
-                      .toList()
-                      .cast<DataRow>() ??
-                  [],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildPaginatedTable() {
     return Expanded(
       child: Padding(
@@ -231,6 +172,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
                   DataColumn(label: Text("Broj izdanja")),
                   DataColumn(label: Text("Broj stranica")),
                   DataColumn(label: Text("Slika")),
+                  DataColumn(label: Text("Akcija")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -322,6 +264,17 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
                   child: imageFromString(item.slika!),
                 )
               : const Text("")),
+          DataCell(
+            ElevatedButton(
+                onPressed: () async {
+                  //
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => NovaBibliotekaKnjigaScreen(
+                            knjiga: item,
+                          )));
+                },
+                child: const Text("Dodaj u biblioteku")),
+          )
         ]);
   }
 

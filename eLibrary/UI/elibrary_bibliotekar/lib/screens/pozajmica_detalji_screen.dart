@@ -301,7 +301,7 @@ class PenaliDataSource extends AdvancedDataTableSource<Penal> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'bibliotekaId': 2, 'pozajmicaId': pozajmicaId};
+    filter = {'pozajmicaId': pozajmicaId};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(

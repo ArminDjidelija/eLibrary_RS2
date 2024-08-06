@@ -1,34 +1,24 @@
-import 'dart:io';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/izdavac.dart';
-import 'package:elibrary_bibliotekar/models/search_result.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
-import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
+import 'package:elibrary_bibliotekar/models/biblioteka.dart';
+import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/izdavac_details_screen.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteka_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/autor.dart';
-
-class IzdavaciListScreen extends StatefulWidget {
-  const IzdavaciListScreen({super.key});
+class BibliotekeListScreen extends StatefulWidget {
+  const BibliotekeListScreen({super.key});
 
   @override
-  State<IzdavaciListScreen> createState() => _IzdavaciListScreenState();
+  State<BibliotekeListScreen> createState() => _BibliotekeListScreenState();
 }
 
-class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
-  late IzdavacProvider provider;
-  SearchResult<Izdavac>? result;
-  List<Izdavac> data = [];
-  late IzdavacDataSource _source;
-  int page = 1;
-  int pageSize = 10;
-  int count = 10;
+class _BibliotekeListScreenState extends State<BibliotekeListScreen> {
+  late BibliotekeProvider provider;
+  late BibliotekeDataSource _source;
+
   bool _isLoading = false;
 
   @override
@@ -46,15 +36,16 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
     // TODO: implement initState
     super.initState();
 
-    provider = context.read<IzdavacProvider>();
-    _source = IzdavacDataSource(provider: provider, context: context);
-    // updateFilter("");
+    provider = context.read<BibliotekeProvider>();
+    _source = BibliotekeDataSource(provider: provider, context: context);
+    setState(() {});
+    //updateFilter("");
   }
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Izdavači",
+        "Biblioteke",
         Container(
           child: Column(
             children: [
@@ -65,26 +56,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
         ));
   }
 
-  Future<void> updateFilter(String imePrezime) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {'nazivGTE': imePrezime, 'page': page, 'pageSize': pageSize};
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(filter: filter);
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-        // print(data);
-      }
-      _isLoading = false;
-    });
-  }
-
-  TextEditingController _nazivEditingController = TextEditingController();
+  TextEditingController _imePrezimeEditingController = TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -92,8 +64,8 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
         children: [
           Expanded(
               child: TextField(
-            controller: _nazivEditingController,
-            decoration: const InputDecoration(labelText: "Naziv"),
+            controller: _imePrezimeEditingController,
+            decoration: const InputDecoration(labelText: "Naziv biblioteke"),
             onChanged: (value) async {
               // page = 1;
               _source.filterServerSide(value);
@@ -105,9 +77,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
-                _source.filterServerSide(_nazivEditingController.text);
+                _source.filterServerSide(_imePrezimeEditingController.text);
                 setState(() {});
               },
               child: const Text("Pretraga")),
@@ -118,9 +88,9 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
               onPressed: () async {
                 //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen()));
+                    builder: (context) => BibliotekaDetailsScreen()));
               },
-              child: const Text("Novi izdavac")),
+              child: const Text("Nova biblioteka")),
         ],
       ),
     );
@@ -140,6 +110,21 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Naziv"),
                   )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Adresa"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Kanton"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Akcija"),
+                  )),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -150,16 +135,16 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
   }
 }
 
-class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
-  List<Izdavac>? data = [];
-  final IzdavacProvider provider;
+class BibliotekeDataSource extends AdvancedDataTableSource<Biblioteka> {
+  List<Biblioteka>? data = [];
+  final BibliotekeProvider provider;
   int count = 10;
   int page = 1;
   int pageSize = 10;
   String nazivGTE = "";
   dynamic filter;
   BuildContext context;
-  IzdavacDataSource({required this.provider, required this.context});
+  BibliotekeDataSource({required this.provider, required this.context});
 
   @override
   DataRow? getRow(int index) {
@@ -169,22 +154,34 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
 
     final item = data?[index];
 
-    return DataRow(
-        onSelectChanged: (selected) => {
-              if (selected == true)
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => IzdavacDetailsScreen(
-                            izdavac: item,
-                          ))),
-                }
-            },
-        cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.naziv.toString()),
-          )),
-        ]);
+    return DataRow(cells: [
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item!.naziv.toString()),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item!.adresa.toString()),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item!.kanton!.naziv.toString()),
+      )),
+      DataCell(ElevatedButton(
+        style: const ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BibliotekaDetailsScreen(
+                    biblioteka: item,
+                  )));
+        },
+        child: const Text(
+          'Uredi biblioteku',
+          style: TextStyle(color: Colors.white),
+        ),
+      )),
+    ]);
   }
 
   void filterServerSide(naziv) {
@@ -202,15 +199,20 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
   int get selectedRowCount => 0;
 
   @override
-  Future<RemoteDataSourceDetails<Izdavac>> getNextPage(
+  Future<RemoteDataSourceDetails<Biblioteka>> getNextPage(
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'nazivGTE': nazivGTE};
+    filter = {
+      'nazivGTE': nazivGTE,
+    };
     print("Metoda u get next row");
     print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
+    var result = await provider?.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize,
+        includeTables: "Kanton");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

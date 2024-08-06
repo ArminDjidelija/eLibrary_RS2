@@ -1,9 +1,11 @@
 import 'package:elibrary_bibliotekar/screens/autori_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_knjige_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteke_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/citaoci_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/clanarine_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/izdavaci_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/korisnici_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmice_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/rezervacije_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
@@ -255,6 +257,42 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => RezervacijeListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.apartment,
+                          color: Colors.white,
+                        ),
+                        title: const Text(
+                          "Biblioteke",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => BibliotekeListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.person_outline_rounded,
+                          color: Colors.white,
+                        ),
+                        title: const Text(
+                          "Korisnici",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => KorisniciListScreen()));
                         },
                       ),
                     ],

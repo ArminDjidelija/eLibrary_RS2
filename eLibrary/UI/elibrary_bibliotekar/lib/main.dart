@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/providers/ciljne_grupe_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
@@ -13,6 +14,7 @@ import 'package:elibrary_bibliotekar/providers/knjiga_autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_ciljna_grupa_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.dart';
+import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
@@ -30,7 +32,7 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     FlutterError.onError = (FlutterErrorDetails errorDetails) {
-      print("ON error error: ${errorDetails.exception.toString()}");
+      print("ON error error prvi error: ${errorDetails.exception.toString()}");
     };
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => KnjigaProvider()),
@@ -56,9 +58,11 @@ void main() {
       ChangeNotifierProvider(create: (_) => KnjigaCiljnaGrupaProvider()),
       ChangeNotifierProvider(create: (_) => ClanarineProvider()),
       ChangeNotifierProvider(create: (_) => PenaliProvider()),
+      ChangeNotifierProvider(create: (_) => BibliotekeProvider()),
+      ChangeNotifierProvider(create: (_) => KorisnikProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
-    print("Error from OUT_SUDE Framerwork");
+    print("Error from OUT_SUDE Framework");
     print("--------------------------------");
     print("Error : $error");
     // print("StackTrace : $stack");
