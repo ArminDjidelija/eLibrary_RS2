@@ -21,6 +21,10 @@ namespace eLibrary.Services
 
         public override IQueryable<Penali> AddFilter(PenaliSearchObject search, IQueryable<Penali> query)
         {
+            if(search?.PozajmicaId != null)
+            {
+                query=query.Where(x=> x.PozajmicaId == search.PozajmicaId);   
+            }
             if(search?.CitalacId != null)
             {
                 query = query

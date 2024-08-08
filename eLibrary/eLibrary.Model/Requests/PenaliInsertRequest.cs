@@ -13,5 +13,7 @@ namespace eLibrary.Model.Requests
         public decimal Iznos { get; set; }
 
         public int? UplataId { get; set; }
+
+        public int? ValutaId { get; set; }
     }
 }

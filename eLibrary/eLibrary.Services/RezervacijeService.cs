@@ -76,6 +76,19 @@ namespace eLibrary.Services
             {
                 query = query.Where(x => x.RokRezervacije < search.RokRezervacijeLTE);
             }
+            if(search?.Aktivna != null)
+            {
+                if (search.Aktivna == true)
+                {
+                    query = query
+                        .Where(x => (x.RokRezervacije == null || x.RokRezervacije < DateTime.Now) && x.Ponistena != true);
+                }
+                else
+                {
+                    query = query
+                        .Where(x => (x.RokRezervacije != null || x.RokRezervacije > DateTime.Now) && (x.Ponistena == true || x.Odobreno == false));
+                }
+            } 
 
             return query;
         }

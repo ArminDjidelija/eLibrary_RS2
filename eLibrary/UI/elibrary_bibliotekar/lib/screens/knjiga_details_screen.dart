@@ -356,26 +356,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     onSaved: (newValue) => {
                       if (newValue != null) {print(newValue.length)}
                     },
-                  )
-                      //      FormBuilderCheckboxGroup<List<int>>(
-                      //   // name: "autorId",
-                      //   name: "autori",
-                      //   decoration: InputDecoration(labelText: "Autori"),
-                      //   // valueTransformer: (value) => value ?? [],
-                      //   validator: (value) {
-                      //     return null;
-                      //   },
-
-                      //   options: autoriResult?.resultList
-                      //           .map((e) => FormBuilderFieldOption(
-                      //               value: [e.autorId!],
-                      //               child: Text(
-                      //                   "${e.ime} ${e.prezime}, ${e.godinaRodjenja}" ??
-                      //                       "")))
-                      //           .toList() ??
-                      //       [],
-                      // )
-                      ),
+                  )),
                   SizedBox(
                     width: 10,
                   ),
@@ -450,24 +431,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     onSaved: (newValue) => {
                       if (newValue != null) {print(newValue.length)}
                     },
-                  )
-                      //      FormBuilderCheckboxGroup<List<int>>(
-                      //   // name: "autorId",
-                      //   name: "vrsteSadrzaja",
-                      //   decoration: InputDecoration(labelText: "Vrste sadrzaja"),
-                      //   // valueTransformer: (value) => value ?? [],
-                      //   validator: (value) {
-                      //     return null;
-                      //   },
-
-                      //   options: vrsteSadrzajaResult?.resultList
-                      //           .map((e) => FormBuilderFieldOption(
-                      //               value: [e.vrstaSadrzajaId!],
-                      //               child: Text(e.naziv ?? "")))
-                      //           .toList() ??
-                      //       [],
-                      // )
-                      )
+                  ))
                 ],
               ],
             ),
@@ -489,6 +453,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                           ),
                         );
                       },
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(
+                            errorText: "Slika je obavezna"),
+                      ]),
                     ))
               ],
             )

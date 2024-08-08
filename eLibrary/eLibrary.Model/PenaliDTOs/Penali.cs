@@ -18,8 +18,12 @@ namespace eLibrary.Model.PenaliDTOs
 
         public int? UplataId { get; set; }
 
+        public int? ValutaId { get; set; }
+
         public virtual GeneralDTOs.PozajmiceDTO Pozajmica { get; set; } 
 
         public virtual GeneralDTOs.UplateDTO? Uplata { get; set; }
+
+        public virtual ValuteDTOs.Valute? Valuta { get; set; }
     }
 }

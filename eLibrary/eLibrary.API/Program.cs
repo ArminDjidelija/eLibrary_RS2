@@ -53,7 +53,7 @@ builder.Services.AddTransient<ICiljneGrupeValidator, CiljneGrupeValidator>();
 builder.Services.AddTransient<IJeziciValidator, JeziciValidator>();
 builder.Services.AddTransient<IKorisniciValidator, KorisniciValidator>();
 
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<ICurrentUserServiceAsync, CurrentUserServiceAsync>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 builder.Services.AddControllers(x =>

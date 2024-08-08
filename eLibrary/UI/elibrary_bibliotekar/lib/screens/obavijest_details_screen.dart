@@ -1,23 +1,25 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/autor.dart';
+import 'package:elibrary_bibliotekar/models/obavijest.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
+import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
-class AutorDetailsScreen extends StatefulWidget {
-  Autor? autor;
-  AutorDetailsScreen({super.key, this.autor});
+class ObavijestDetailsScreen extends StatefulWidget {
+  Obavijest? obavijest;
+  ObavijestDetailsScreen({super.key, this.obavijest});
 
   @override
-  State<AutorDetailsScreen> createState() => _AutorDetailsScreenState();
+  State<ObavijestDetailsScreen> createState() => _ObavijestDetailsScreenState();
 }
 
-class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
+class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
-  late AutoriProvider autoriProvider;
+  late ObavijestiProvider obavijestiProvider;
 
   bool isLoading = true;
   bool isEditing = false;
@@ -28,40 +30,26 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
 
   @override
   void initState() {
-    autoriProvider = context.read<AutoriProvider>();
+    obavijestiProvider = context.read<ObavijestiProvider>();
+    // TODO: implement initState
     super.initState();
     _initialValue = {
-      'autorId': widget.autor?.autorId.toString(),
-      'ime': widget.autor?.ime.toString(),
-      'prezime': widget.autor?.prezime.toString(),
-      'godinaRodjenja': widget.autor?.godinaRodjenja.toString(),
+      'obavijestId': widget.obavijest?.obavijestId.toString(),
+      'bibliotekaId': widget.obavijest?.biblioteka.toString(),
+      'naslov': widget.obavijest?.naslov.toString(),
+      'tekst': widget.obavijest?.tekst.toString(),
     };
-    if (widget.autor?.autorId != null) {
+    if (widget.obavijest?.obavijestId != null) {
       isEditing = true;
     } else {
       isEditing = false;
     }
-    //initForm();
   }
-
-  // Future initForm() async {
-  //   jeziciResult = await jezikProvider.get();
-  //   vrsteGradeResult = await vrstaGradeProvider.get();
-  //   izdavaciResult = await izdavacProvider.get();
-  //   uveziResult = await uvezProvider.get();
-  //   autoriResult = await autoriProvider.get();
-  //   ciljneGrupeResult = await ciljneGrupeProvider.get();
-  //   vrsteSadrzajaResult = await vrsteSadrzajaProvider.get();
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   print("retreived jezici: ${jeziciResult?.resultList.length}");
-  // }
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Autor detalji",
+        "Obavijest detalji",
         Column(
           children: [_buildForm(), _saveRow()],
         ));
@@ -79,36 +67,32 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Ime"),
-                  name: 'ime',
+                  decoration: InputDecoration(labelText: "Naslov"),
+                  name: 'naslov',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                   ]),
-                )),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Prezime"),
-                  name: 'prezime',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                )),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Godina rođenja"),
-                  name: 'godinaRodjenja',
                 )),
                 SizedBox(
                   width: 10,
                 ),
               ],
             ),
+            Row(
+              children: [
+                Expanded(
+                    child: FormBuilderTextField(
+                  decoration: InputDecoration(labelText: "Tekst"),
+                  name: 'tekst',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
+                )),
+                SizedBox(
+                  width: 10,
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -124,13 +108,14 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
           ElevatedButton(
               onPressed: () {
                 var formCheck = _formKey.currentState?.saveAndValidate();
-                if (formCheck == true) {
-                  var request = Map.from(_formKey.currentState!.value);
-                  if (widget.autor == null) {
-                    autoriProvider.insert(request);
-                  } else {
-                    autoriProvider.update(widget.autor!.autorId!, request);
-                  }
+                var request = Map.from(_formKey.currentState!.value);
+                print(formCheck);
+                if (widget.obavijest == null) {
+                  request['bibliotekaId'] = 2;
+                  obavijestiProvider.insert(request);
+                } else {
+                  obavijestiProvider.update(
+                      widget.obavijest!.obavijestId!, request);
                 }
                 // print(knjigaSlanje);
               },

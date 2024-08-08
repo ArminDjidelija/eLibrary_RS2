@@ -6,6 +6,7 @@ import 'package:elibrary_bibliotekar/screens/clanarine_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/izdavaci_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/korisnici_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/obavijesti_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmice_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/rezervacije_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
@@ -293,6 +294,24 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => KorisniciListScreen()));
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.notifications_active_outlined,
+                          color: Colors.white,
+                        ),
+                        title: const Text(
+                          "Obavijesti",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ObavijestiListScreen()));
                         },
                       ),
                     ],

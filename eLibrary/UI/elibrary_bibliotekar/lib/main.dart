@@ -15,6 +15,7 @@ import 'package:elibrary_bibliotekar/providers/knjiga_ciljna_grupa_provider.dart
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
+import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
@@ -27,6 +28,7 @@ import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 void main() {
   runZonedGuarded(() async {
@@ -60,6 +62,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => PenaliProvider()),
       ChangeNotifierProvider(create: (_) => BibliotekeProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikProvider()),
+      ChangeNotifierProvider(create: (_) => ObavijestiProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framework");
@@ -144,7 +147,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () async {
-                        KnjigaProvider provider = new KnjigaProvider();
+                        var provider = new KorisnikProvider();
                         print(
                             "Credentials: ${_usernameController.text} : ${_passwordController.text}");
                         AuthProvider.username = _usernameController.text;
@@ -152,24 +155,18 @@ class LoginPage extends StatelessWidget {
                         // provider.get();
 
                         try {
-                          //var data = await provider.get();
+                          await provider.login(
+                              AuthProvider.username!, AuthProvider.password!);
                           print("Authenticated!");
 
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => KnjigeListScreen()));
                         } on Exception catch (e) {
-                          showDialog(
+                          QuickAlert.show(
                               context: context,
-                              builder: (context) => AlertDialog(
-                                    title: Text("Error"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text("Ok"))
-                                    ],
-                                    content: Text(e.toString()),
-                                  ));
+                              type: QuickAlertType.error,
+                              text: "Pogrešni kredencijali za login",
+                              title: "Greška");
                         }
                       },
                       child: Text("Login"))

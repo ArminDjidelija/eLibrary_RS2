@@ -18,11 +18,11 @@ namespace eLibrary.Services
 {
     public class AutoriService : BaseCRUDServiceAsync<Model.AutoriDTOs.Autori, AutoriSearchObject, Database.Autori, AutoriUpsertRequest, AutoriUpsertRequest>, IAutoriService
     {
-        private readonly ICurrentUserService userService;
+        private readonly ICurrentUserServiceAsync userService;
         private readonly IAutoriValidator autoriValidator;
 
-        public AutoriService(ELibraryContext context, IMapper mapper, 
-            ICurrentUserService userService,
+        public AutoriService(ELibraryContext context, IMapper mapper,
+            ICurrentUserServiceAsync userService,
             IAutoriValidator autoriValidator) : base(context, mapper)
         {
             this.userService = userService;

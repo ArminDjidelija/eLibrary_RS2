@@ -12,5 +12,7 @@ namespace eLibrary.Model.SearchObjects
         public DateTime? DatumLTE { get; set; }
 
         public int? CitalacId { get; set; }
+
+        public bool? GeneralnaObavijest {  get; set; }
     }
 }

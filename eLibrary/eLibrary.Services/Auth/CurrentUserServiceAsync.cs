@@ -1,5 +1,7 @@
-﻿using eLibrary.Services.Database;
+﻿using eLibrary.Model.Exceptions;
+using eLibrary.Services.Database;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,31 +13,46 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services.Auth
 {
-    public class CurrentUserService:ICurrentUserService
+    public class CurrentUserServiceAsync : ICurrentUserServiceAsync
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ELibraryContext _context;
 
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor, ELibraryContext context)
+        public CurrentUserServiceAsync(IHttpContextAccessor httpContextAccessor, ELibraryContext context)
         {
-            this._httpContextAccessor = httpContextAccessor;
-            this._context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
 
-        public int? GetCitaocId()
+        public async Task<int> GetBibliotekaIdFromUserAsync(CancellationToken cancellationToken = default)
+        {
+            var userId = await GetUserIdAsync(cancellationToken);
+            if(userId == null)
+            {
+                throw new UserException("Niste prijavljeni!");
+            }
+            var biblioteka = await _context.BibliotekaUposlenis.FirstOrDefaultAsync(x=>x.KorisnikId== userId, cancellationToken);
+            if(biblioteka==null)
+            {
+                throw new UserException("Ne postoji biblioteka za ovog korisnika!");
+            }
+            return biblioteka.BibliotekaId;
+        }
+
+        public async Task<int?> GetCitaocIdAsync(CancellationToken cancellationToken = default)
         {
             var citaocPrincipal = _httpContextAccessor.HttpContext?.User;
             var role = citaocPrincipal?.FindFirstValue(ClaimTypes.Role);
             if (role == "Citalac")
             {
                 var username = citaocPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var citaoc = _context.Citaocis.Find(username);
-                return citaoc.CitalacId;
+                var citalac = await _context.Citaocis.FirstOrDefaultAsync(x=>x.KorisnickoIme==username);
+                return citalac.CitalacId;
             }
             return null;
         }
 
-        public int? GetUserId()
+        public async Task<int?> GetUserIdAsync(CancellationToken cancellationToken = default)
         {
             var korisnikPrincipal = _httpContextAccessor.HttpContext?.User;
             var role = korisnikPrincipal?.FindFirstValue(ClaimTypes.Role);
@@ -50,14 +67,14 @@ namespace eLibrary.Services.Auth
             return null;
         }
 
-        public string? GetUserName()
+        public async Task<string?> GetUserNameAsync(CancellationToken cancellationToken = default)
         {
             var korisnikPrincipal = _httpContextAccessor.HttpContext?.User;
             var username = korisnikPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier);
             return username;
         }
 
-        public string? GetUserType()
+        public async Task<string?> GetUserTypeAsync(CancellationToken cancellationToken = default)
         {
             var principal = _httpContextAccessor.HttpContext?.User;
             var role = principal?.FindFirstValue(ClaimTypes.Role);

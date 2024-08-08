@@ -1,5 +1,7 @@
-﻿using eLibrary.Model.Requests;
+﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
@@ -15,8 +17,11 @@ namespace eLibrary.Services
 {
     public class BibliotekaKnjigeService : BaseCRUDServiceAsync<Model.BibliotekaKnjigeDTOs.BibliotekaKnjige, BibliotekaKnjigeSearchObject, Database.BibliotekaKnjige, BibliotekaKnjigeInsertRequest, BibliotekaKnjigeUpdateRequest>, IBibliotekaKnjigeService
     {
-        public BibliotekaKnjigeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserServiceAsync currentUserService;
+
+        public BibliotekaKnjigeService(ELibraryContext context, IMapper mapper, ICurrentUserServiceAsync currentUserService) : base(context, mapper)
         {
+            this.currentUserService = currentUserService;
         }
 
         public override IQueryable<BibliotekaKnjige> AddFilter(BibliotekaKnjigeSearchObject search, IQueryable<BibliotekaKnjige> query)
@@ -69,8 +74,15 @@ namespace eLibrary.Services
 
         public override async Task BeforeInsertAsync(BibliotekaKnjigeInsertRequest request, BibliotekaKnjige entity, CancellationToken cancellationToken = default)
         {
-            entity.DatumDodavanja = DateTime.Now;
+            var bk = await Context
+                .BibliotekaKnjiges
+                .Where(x => x.KnjigaId == request.KnjigaId && x.BibliotekaId == request.BibliotekaId)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (bk != null)
+                throw new UserException("Vec imate ovu knjigu u fondovima biblioteke");
 
+            var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync();
+            entity.BibliotekaId = bibliotekaId;
         }
 
         public override async Task CustomMapPagedResponseAsync(List<Model.BibliotekaKnjigeDTOs.BibliotekaKnjige> result, CancellationToken cancellationToken = default)

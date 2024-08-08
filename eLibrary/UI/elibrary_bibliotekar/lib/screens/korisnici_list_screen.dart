@@ -48,7 +48,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Čitaoci",
+        "Korisnici",
         Container(
           child: Column(
             children: [

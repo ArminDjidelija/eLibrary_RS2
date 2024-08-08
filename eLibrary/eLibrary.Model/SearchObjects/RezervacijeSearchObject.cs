@@ -21,6 +21,7 @@ namespace eLibrary.Model.SearchObjects
 
         public string? ImePrezimeGTE { get; set; }
 
+        public bool? Aktivna {  get; set; }
         public string? NaslovGTE { get; set; }
     }
 }

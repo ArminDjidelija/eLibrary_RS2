@@ -1,6 +1,7 @@
 ﻿using eLibrary.Model.Exceptions;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
@@ -15,8 +16,11 @@ namespace eLibrary.Services
 {
     public class ClanarineService : BaseCRUDServiceAsync<Model.ClanarineDTOs.Clanarine, ClanarineSearchObject, Database.Clanarine, ClanarineInsertRequest, ClanarineUpdateRequest>, IClanarineService
     {
-        public ClanarineService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserServiceAsync currentUserService;
+
+        public ClanarineService(ELibraryContext context, IMapper mapper, ICurrentUserServiceAsync currentUserService) : base(context, mapper)
         {
+            this.currentUserService = currentUserService;
         }
 
         public override IQueryable<Clanarine> AddFilter(ClanarineSearchObject search, IQueryable<Clanarine> query)
