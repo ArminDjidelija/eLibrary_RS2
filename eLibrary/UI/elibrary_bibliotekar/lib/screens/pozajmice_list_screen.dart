@@ -4,6 +4,7 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
 import 'package:elibrary_bibliotekar/models/uplata.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
@@ -153,7 +154,7 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Preporučeni datum vraćanja"),
+                    child: Text("Preporučeni rok vraćanja"),
                   )),
                   DataColumn(
                       label: Container(
@@ -214,29 +215,32 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
             alignment: Alignment.centerLeft,
             child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
           )),
-
-          DataCell(FutureBuilder<Knjiga>(
-            future: fetchKnjiga(item!.bibliotekaKnjiga!.knjigaId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData) {
-                return Text('No data');
-              } else {
-                final knjiga = snapshot.data!;
-                return Text("${knjiga.naslov}, ${knjiga.godinaIzdanja}");
-                // return Column(
-                //   crossAxisAlignment: CrossAxisAlignment.,
-                //   children: [
-                //     // Text('Autor: ${knjiga.autor}'),
-                //     // Dodajte ostale atribute po potrebi
-                //   ],
-                // );
-              }
-            },
+          DataCell(Container(
+            alignment: Alignment.centerLeft,
+            child: Text(item.bibliotekaKnjiga!.knjiga!.naslov.toString()),
           )),
+          // DataCell(FutureBuilder<Knjiga>(
+          //   future: fetchKnjiga(item!.bibliotekaKnjiga!.knjigaId),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return CircularProgressIndicator();
+          //     } else if (snapshot.hasError) {
+          //       return Text('Error: ${snapshot.error}');
+          //     } else if (!snapshot.hasData) {
+          //       return Text('No data');
+          //     } else {
+          //       final knjiga = snapshot.data!;
+          //       return Text("${knjiga.naslov}, ${knjiga.godinaIzdanja}");
+          //       // return Column(
+          //       //   crossAxisAlignment: CrossAxisAlignment.,
+          //       //   children: [
+          //       //     // Text('Autor: ${knjiga.autor}'),
+          //       //     // Dodajte ostale atribute po potrebi
+          //       //   ],
+          //       // );
+          //     }
+          //   },
+          // )),
           DataCell(Container(
               alignment: Alignment.centerLeft,
               child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
@@ -280,7 +284,7 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
                                 //TODO dodaj na api da je potvrdena,
                                 await provider
                                     .potvrdiPozajmicu(item.pozajmicaId!);
-                                filterServerSide("", null);
+                                filterServerSide("", vraceno);
                                 Navigator.pop(context);
                               },
                               onCancelBtnTap: () {
@@ -361,11 +365,15 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     print("Metoda u get next row");
-    filter = {'imePrezimeGTE': imePrezimeGTE, 'vraceno': vraceno};
+    filter = {
+      'imePrezimeGTE': imePrezimeGTE,
+      'vraceno': vraceno,
+      'bibliotekaId': AuthProvider.bibliotekaId
+    };
     var result = await provider?.get(
         page: page,
         pageSize: pageSize,
-        includeTables: 'Citalac,BibliotekaKnjiga',
+        includeTables: "Citalac,BibliotekaKnjiga.Knjiga",
         orderBy: "DatumPreuzimanja",
         sortDirection: "descending",
         filter: filter);

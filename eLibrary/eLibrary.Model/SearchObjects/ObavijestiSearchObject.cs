@@ -14,5 +14,7 @@ namespace eLibrary.Model.SearchObjects
         public int? CitalacId { get; set; }
 
         public bool? GeneralnaObavijest {  get; set; }
+
+        public string? NaslovGTE { get; set; }
     }
 }

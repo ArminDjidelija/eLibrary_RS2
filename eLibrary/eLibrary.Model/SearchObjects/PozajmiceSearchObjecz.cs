@@ -15,5 +15,7 @@ namespace eLibrary.Model.SearchObjects
         public string? NaslovGTE { get; set; }
 
         public bool? Vraceno { get; set; }
+
+        public int? BibliotekaId { get; set; }
     }
 }

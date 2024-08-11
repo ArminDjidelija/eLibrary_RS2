@@ -18,7 +18,14 @@ namespace eLibrary.Services
 
         public override IQueryable<TipClanarineBiblioteke> AddFilter(TipClanarineBibliotekeSearchObject search, IQueryable<TipClanarineBiblioteke> query)
         {
-            if(search?.BibliotekaId != null)
+            //var user = currentUserService.GetUserType();
+            //if (user == "Bibliotekar" || user == "Menadzer")
+            //{
+            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
+            //    query = query.Where(x => x.BibliotekaId == bibliotekaId);
+            //}
+
+            if (search?.BibliotekaId != null)
             {
                 query=query.Where(x=>x.BibliotekaId==search.BibliotekaId);
             }
@@ -37,7 +44,7 @@ namespace eLibrary.Services
             }
             if (search?.TrajanjeLTE != null)
             {
-                query = query.Where(x => x.Trajanje > search.TrajanjeLTE);
+                query = query.Where(x => x.Trajanje < search.TrajanjeLTE);
             }
             return query;
         }

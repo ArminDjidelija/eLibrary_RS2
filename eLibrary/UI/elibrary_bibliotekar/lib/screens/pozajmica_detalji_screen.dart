@@ -12,6 +12,7 @@ import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -68,34 +69,45 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
       "Detalji pozajmice",
-      SingleChildScrollView(
+      Container(
         child: Column(
           children: [
             _buildPozajmicaDetalji(),
-            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+            _isLoading
+                ? const Text("Nema podataka")
+                : Expanded(
+                    child: SingleChildScrollView(
+                        dragStartBehavior: DragStartBehavior.start,
+                        child: _buildPaginatedTable()))
           ],
         ),
       ),
     );
-  }
 
-  TextEditingController _naslovEditingController = TextEditingController();
-  TextEditingController _autorEditingController = TextEditingController();
-  TextEditingController _isbnEditingController = TextEditingController();
+    // return BibliotekarMasterScreen(
+    //   "Detalji pozajmice",
+    //   SingleChildScrollView(
+    //     dragStartBehavior: DragStartBehavior.start,
+    //     child: Column(
+    //       children: [
+    //         _buildPozajmicaDetalji(),
+    //         _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+    //       ],
+    //     ),
+    //   ),
+    // );
+  }
 
   Widget _buildPaginatedTable() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: AdvancedPaginatedDataTable(
-        header: const Text("Trenutne pozajmice"),
+        header: const Text("Penali za pozajmicu"),
         dataRowHeight: 75,
         columns: const [
           DataColumn(label: Text("Opis")),
           DataColumn(label: Text("Iznos")),
           DataColumn(label: Text("Uplata")),
-          // DataColumn(label: Text("Postavljeno trajanje (dani)")),
-          // DataColumn(label: Text("Vraćeno")),
-          // DataColumn(label: Text("Akcija")),
         ],
         source: _source,
         addEmptyRows: false,

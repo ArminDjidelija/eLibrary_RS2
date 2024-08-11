@@ -1,6 +1,7 @@
 ﻿using eLibrary.Model.Exceptions;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
@@ -15,12 +16,30 @@ namespace eLibrary.Services
 {
     public class PozajmiceService : BaseCRUDServiceAsync<Model.PozajmiceDTOs.Pozajmice, PozajmiceSearchObject, Database.Pozajmice, PozajmiceInsertRequest, PozajmiceUpdateRequest>, IPozajmiceService
     {
-        public PozajmiceService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserService currentUserService;
+
+        public PozajmiceService(ELibraryContext context, IMapper mapper, ICurrentUserService currentUserService) : base(context, mapper)
         {
+            this.currentUserService = currentUserService;
         }
 
         public override IQueryable<Pozajmice> AddFilter(PozajmiceSearchObject search, IQueryable<Pozajmice> query)
         {
+            //var user = currentUserService.GetUserType();
+            //if (user == "Bibliotekar" || user == "Menadzer")
+            //{
+            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
+            //    query = query
+            //        .Include(x=>x.BibliotekaKnjiga)
+            //        .Where(x => x.BibliotekaKnjiga.BibliotekaId == bibliotekaId);
+            //}
+
+            if(search?.BibliotekaId != null)
+            {
+                query = query
+                    .Include(x => x.BibliotekaKnjiga)
+                    .Where(x => x.BibliotekaKnjiga.BibliotekaId == search.BibliotekaId);
+            }
             if (search?.Vraceno != null)
             {
                 if (search.Vraceno == true)

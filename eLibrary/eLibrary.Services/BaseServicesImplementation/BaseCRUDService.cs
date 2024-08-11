@@ -71,6 +71,10 @@ namespace eLibrary.Services.BaseServices
             }
 
             Context.SaveChanges();
+
+            AfterDelete(entity);
         }
+
+        public virtual void AfterDelete(TDbEntity entity) { }
     }
 }

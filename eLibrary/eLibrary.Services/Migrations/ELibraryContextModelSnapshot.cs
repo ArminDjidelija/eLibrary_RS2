@@ -246,6 +246,32 @@ namespace eLibrary.Services.Migrations
                     b.ToTable("CiljneGrupe", (string)null);
                 });
 
+            modelBuilder.Entity("eLibrary.Services.Database.CitalacKnjigaLog", b =>
+                {
+                    b.Property<int>("CitalacKnjigaLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CitalacKnjigaLogId"));
+
+                    b.Property<int>("CitalacId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CitaociCitalacId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KnjigaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CitalacKnjigaLogId");
+
+                    b.HasIndex("CitaociCitalacId");
+
+                    b.HasIndex("KnjigaId");
+
+                    b.ToTable("CitalacKnjigaLogs");
+                });
+
             modelBuilder.Entity("eLibrary.Services.Database.Citaoci", b =>
                 {
                     b.Property<int>("CitalacId")
@@ -915,6 +941,9 @@ namespace eLibrary.Services.Migrations
                     b.Property<DateTime?>("RokRezervacije")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("VrijemeBrisanja")
                         .HasColumnType("datetime2");
 
@@ -1274,6 +1303,25 @@ namespace eLibrary.Services.Migrations
                         .HasConstraintName("FKBiblioteke432909");
 
                     b.Navigation("Kanton");
+                });
+
+            modelBuilder.Entity("eLibrary.Services.Database.CitalacKnjigaLog", b =>
+                {
+                    b.HasOne("eLibrary.Services.Database.Citaoci", "Citaoci")
+                        .WithMany()
+                        .HasForeignKey("CitaociCitalacId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eLibrary.Services.Database.Knjige", "Knjiga")
+                        .WithMany()
+                        .HasForeignKey("KnjigaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Citaoci");
+
+                    b.Navigation("Knjiga");
                 });
 
             modelBuilder.Entity("eLibrary.Services.Database.Citaoci", b =>

@@ -1,8 +1,10 @@
 ﻿using eLibrary.Model.Exceptions;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.RezervacijeStateMachine;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,12 +17,35 @@ namespace eLibrary.Services
 {
     public class RezervacijeService : BaseCRUDServiceAsync<Model.RezervacijeDTOs.Rezervacije, RezervacijeSearchObject, Database.Rezervacije, RezervacijeInsertRequest, RezervacijeUpdateRequest>, IRezervacijeService
     {
-        public RezervacijeService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserService currentUserService;
+        public BaseRezervacijeState BaseRezervacijeState { get; set; }
+
+        public RezervacijeService(ELibraryContext context, 
+            IMapper mapper, 
+            ICurrentUserService currentUserService,
+            BaseRezervacijeState baseRezervacijeState) : base(context, mapper)
         {
+            this.currentUserService = currentUserService;
+            BaseRezervacijeState = baseRezervacijeState;
         }
 
         public override IQueryable<Rezervacije> AddFilter(RezervacijeSearchObject search, IQueryable<Rezervacije> query)
         {
+            //var user = currentUserService.GetUserType();
+            //if (user == "Bibliotekar" || user == "Menadzer")
+            //{
+            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
+            //    query = query
+            //        .Include(x=>x.BibliotekaKnjiga)
+            //        .Where(x => x.BibliotekaKnjiga.BibliotekaId == bibliotekaId);
+            //}
+
+            if(search?.BibliotekaId != null)
+            {
+                query=query
+                    .Include(x=>x.BibliotekaKnjiga)
+                    .Where(x=>x.BibliotekaKnjiga.BibliotekaId==search.BibliotekaId);
+            }
             if (!string.IsNullOrEmpty(search?.ImePrezimeGTE))
             {
                 query = query
@@ -93,25 +118,25 @@ namespace eLibrary.Services
             return query;
         }
 
+        public override Task<Model.RezervacijeDTOs.Rezervacije> InsertAsync(RezervacijeInsertRequest request, CancellationToken cancellationToken = default)
+        {
+            var state = BaseRezervacijeState.CreateState("Initial");
+            return state.Insert(request);
+        }
         public override async Task BeforeInsertAsync(RezervacijeInsertRequest request, Rezervacije entity, CancellationToken cancellationToken = default)
         {
             entity.DatumKreiranja = DateTime.Now;
 
         }
 
-        public async Task<Model.RezervacijeDTOs.Rezervacije> OdobriAsync(int rezervacijaId, bool potvrda, CancellationToken cancellationToken = default)
+        public async Task<Model.RezervacijeDTOs.Rezervacije> OdobriAsync(int rezervacijaId, CancellationToken cancellationToken = default)
         {
             var rezervacija = await Context.Rezervacijes.FindAsync(rezervacijaId, cancellationToken);
             if (rezervacija == null)
                 throw new UserException("Pogrešan rezervacija id");
-            //TODO provjera biblioteke i bibliotekara
-            rezervacija.Odobreno=potvrda;
-            if(potvrda==true)
-            {
-                rezervacija.RokRezervacije=DateTime.Now.AddDays(1);
-            }
-            await Context.SaveChangesAsync(cancellationToken);
-            return Mapper.Map<Model.RezervacijeDTOs.Rezervacije>(rezervacija);
+
+            var state = BaseRezervacijeState.CreateState(rezervacija.State);
+            return await state.Odobri(rezervacija);
         }
 
         public async Task<Model.RezervacijeDTOs.Rezervacije> PonistiAsync(int rezervacijaId, CancellationToken cancellationToken = default)
@@ -119,10 +144,39 @@ namespace eLibrary.Services
             var rezervacija = await Context.Rezervacijes.FindAsync(rezervacijaId, cancellationToken);
             if (rezervacija == null)
                 throw new UserException("Pogrešan rezervacija id");
-            //TODO provjera korisnika
-            rezervacija.Ponistena = true;
-            await Context.SaveChangesAsync(cancellationToken);
-            return Mapper.Map<Model.RezervacijeDTOs.Rezervacije>(rezervacija);
+
+            var state = BaseRezervacijeState.CreateState(rezervacija.State);
+            return await state.Ponisti(rezervacija);
+        }
+
+        public async Task<Model.RezervacijeDTOs.Rezervacije> ObnoviAsync(int rezervacijaId, CancellationToken cancellationToken = default)
+        {
+            var rezervacija = await Context.Rezervacijes.FindAsync(rezervacijaId, cancellationToken);
+            if (rezervacija == null)
+                throw new UserException("Pogrešan rezervacija id");
+
+            var state = BaseRezervacijeState.CreateState(rezervacija.State);
+            return await state.Obnovi(rezervacija);
+        }
+
+        public async Task<Model.RezervacijeDTOs.Rezervacije> ZavrsiAsync(int rezervacijaId, CancellationToken cancellationToken = default)
+        {
+            var rezervacija = await Context.Rezervacijes.FindAsync(rezervacijaId, cancellationToken);
+            if (rezervacija == null)
+                throw new UserException("Pogrešan rezervacija id");
+
+            var state = BaseRezervacijeState.CreateState(rezervacija.State);
+            return await state.Zavrsi(rezervacija);
+        }
+
+        public async Task<List<string>> AllowedActions(int rezervacijaId, CancellationToken cancellationToken = default)
+        {
+            var rezervacija = await Context.Rezervacijes.FindAsync(rezervacijaId, cancellationToken);
+            if (rezervacija == null)
+                throw new UserException("Pogrešan rezervacija id");
+
+            var state = BaseRezervacijeState.CreateState(rezervacija.State);
+            return state.AllowedActions(rezervacija);
         }
     }
 }

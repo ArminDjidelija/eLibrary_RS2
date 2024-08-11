@@ -2,6 +2,7 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/uplata.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -232,6 +233,7 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezimeGTE,
+      'bibliotekaId': AuthProvider.bibliotekaId
     };
     print("Metoda u get next row");
     print(filter);

@@ -91,19 +91,19 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          // Expanded(
-          //     child: TextField(
-          //   controller: _imePrezimeEditingController,
-          //   decoration: const InputDecoration(labelText: "Ime prezime"),
-          //   onChanged: (value) async {
-          //     // page = 1;
-          //     _source.filterServerSide(value);
-          //     // await updateFilter(value, _autorEditingController.text);
-          //   },
-          // )),
-          // const SizedBox(
-          //   width: 8,
-          // ),
+          Expanded(
+              child: TextField(
+            controller: _imePrezimeEditingController,
+            decoration: const InputDecoration(labelText: "Ime prezime"),
+            onChanged: (value) async {
+              // page = 1;
+              _source.filterServerSide(value);
+              // await updateFilter(value, _autorEditingController.text);
+            },
+          )),
+          const SizedBox(
+            width: 8,
+          ),
           // ElevatedButton(
           //     onPressed: () async {
           //       // updateFilter(_naslovEditingController.text,
@@ -178,6 +178,7 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
   int page = 1;
   int pageSize = 10;
   dynamic filter;
+  dynamic imePrezimeGTE = null;
   BuildContext context;
   ClanarinaDataSource({required this.provider, required this.context});
 
@@ -235,7 +236,8 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
         ]);
   }
 
-  void filterServerSide() {
+  void filterServerSide(imePrezime) {
+    imePrezimeGTE = imePrezime;
     setNextView();
   }
 
@@ -253,14 +255,11 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    // filter = {
-    //   'page': page,
-    //   'pageSize': pageSize,
-    //   'includeTables': 'Biblioteka,Valuta'
-    // };
+    filter = {'imePrezimeGTE': imePrezimeGTE};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(
+        filter: filter,
         page: page,
         pageSize: pageSize,
         includeTables: "Citalac,Uplate,TipClanarineBiblioteka");

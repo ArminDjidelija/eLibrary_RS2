@@ -5,6 +5,7 @@ import 'package:elibrary_bibliotekar/models/biblioteka.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_details_screen.dart';
+import 'package:elibrary_bibliotekar/screens/novi_uposleni_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -110,11 +111,11 @@ class _BibliotekeListScreenState extends State<BibliotekeListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Naziv"),
                   )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Adresa"),
-                  )),
+                  // DataColumn(
+                  //     label: Container(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Text("Adresa"),
+                  // )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
@@ -159,27 +160,48 @@ class BibliotekeDataSource extends AdvancedDataTableSource<Biblioteka> {
         alignment: Alignment.centerLeft,
         child: Text(item!.naziv.toString()),
       )),
-      DataCell(Container(
-        alignment: Alignment.centerLeft,
-        child: Text(item!.adresa.toString()),
-      )),
+      // DataCell(Container(
+      //   alignment: Alignment.centerLeft,
+      //   child: Text(item!.adresa.toString()),
+      // )),
       DataCell(Container(
         alignment: Alignment.centerLeft,
         child: Text(item!.kanton!.naziv.toString()),
       )),
-      DataCell(ElevatedButton(
-        style: const ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BibliotekaDetailsScreen(
-                    biblioteka: item,
-                  )));
-        },
-        child: const Text(
-          'Uredi biblioteku',
-          style: TextStyle(color: Colors.white),
-        ),
+      DataCell(Row(
+        children: [
+          ElevatedButton(
+            style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => BibliotekaDetailsScreen(
+                        biblioteka: item,
+                      )));
+            },
+            child: const Text(
+              'Detalji',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          ElevatedButton(
+            style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NoviUposleniScreen(
+                        bibliotekaId: item.bibliotekaId,
+                      )));
+            },
+            child: const Text(
+              'Dodaj uposlenika',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       )),
     ]);
   }

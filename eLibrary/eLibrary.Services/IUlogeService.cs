@@ -5,5 +5,6 @@ namespace eLibrary.Services
 {
     public interface IUlogeService:IServiceAsync<Model.UlogeDTOs.Uloge, UlogeSearchObject>
     {
+        Database.Uloge? GetByNaziv(string naziv);
     }
 }

@@ -22,6 +22,8 @@ namespace eLibrary.Model.RezervacijeDTOs
 
         public bool? Ponistena { get; set; }
 
+        public string? State { get; set; }
+
         public virtual BibliotekaKnjige BibliotekaKnjiga { get; set; }
 
         public virtual GeneralDTOs.CitaociDTO Citalac { get; set; }

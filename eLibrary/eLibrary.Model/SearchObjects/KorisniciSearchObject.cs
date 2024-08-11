@@ -12,7 +12,7 @@ namespace eLibrary.Model.SearchObjects
 
         public string? ImePrezimeGTE { get; set; }
 
-        public string? Email { get; set; }
+        public string? EmailGTE { get; set; }
 
         public string? Telefon { get; set; }
 

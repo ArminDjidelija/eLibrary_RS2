@@ -151,6 +151,11 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Godina rodjenja"),
                   )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Akcija"),
+                  )),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -181,15 +186,15 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
     final item = data?[index];
 
     return DataRow(
-        onSelectChanged: (selected) => {
-              if (selected == true)
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AutorDetailsScreen(
-                            autor: item,
-                          ))),
-                }
-            },
+        // onSelectChanged: (selected) => {
+        //       if (selected == true)
+        //         {
+        //           Navigator.of(context).push(MaterialPageRoute(
+        //               builder: (context) => AutorDetailsScreen(
+        //                     autor: item,
+        //                   ))),
+        //         }
+        //     },
         cells: [
           DataCell(Container(
             alignment: Alignment.centerLeft,
@@ -203,6 +208,20 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
             alignment: Alignment.centerLeft,
             child: Text(item!.godinaRodjenja.toString()),
           )),
+          DataCell(ElevatedButton(
+              child: Text(
+                "Detalji",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AutorDetailsScreen(
+                          autor: item,
+                        )));
+              }))
           // DataCell(Text(item!.prezime.toString())),
           // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);

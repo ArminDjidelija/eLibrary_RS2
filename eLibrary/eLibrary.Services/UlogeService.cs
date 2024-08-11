@@ -24,5 +24,11 @@ namespace eLibrary.Services
             }
             return query;
         }
+
+        public Uloge? GetByNaziv(string naziv)
+        {
+            var uloga = Context.Uloges.FirstOrDefault(x=>x.Naziv.ToLower()==naziv.ToLower());
+            return uloga;
+        }
     }
 }

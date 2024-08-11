@@ -6,7 +6,7 @@ part 'korisnik_uloga.g.dart';
 class KorisnikUloga {
   int? korisnikUlogaId;
   int? ulogaId;
-  String? korisnikId;
+  int? korisnikId;
 
   KorisnikUloga();
 

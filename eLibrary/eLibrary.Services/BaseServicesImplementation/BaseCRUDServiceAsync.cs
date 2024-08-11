@@ -73,6 +73,10 @@ namespace eLibrary.Services.BaseServices
             }
 
             await Context.SaveChangesAsync(cancellationToken);
+
+            await AfterDeleteAsync(entity,  cancellationToken);
         }
+
+        public virtual async Task AfterDeleteAsync(TDbEntity entity, CancellationToken cancellationToken) { }
     }
 }

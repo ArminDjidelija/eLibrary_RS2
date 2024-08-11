@@ -2,6 +2,7 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/obavijest.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
@@ -67,11 +68,9 @@ class _ObavijestiListScreenState extends State<ObavijestiListScreen> {
           Expanded(
               child: TextField(
             controller: _naslovEditingController,
-            decoration: const InputDecoration(labelText: "Ime prezime"),
+            decoration: const InputDecoration(labelText: "Naslov"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -138,7 +137,7 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
   int count = 10;
   int page = 1;
   int pageSize = 10;
-  String imePrezimeGTE = "";
+  String naslovGTE = "";
   dynamic filter;
   BuildContext context;
   ObavijestiDataSource({required this.provider, required this.context});
@@ -164,26 +163,43 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
           child: Text(formatDateTimeToLocal(item.datum.toString())),
         ),
       ),
-      DataCell(
-        ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
-            onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ObavijestDetailsScreen(
-                        obavijest: item,
-                      )));
-            },
-            child: const Text(
-              "Uredi",
-              style: TextStyle(color: Colors.white),
-            )),
-      )
+      DataCell(Row(
+        children: [
+          ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(Colors.blue)),
+              onPressed: () async {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ObavijestDetailsScreen(
+                          obavijest: item,
+                        )));
+              },
+              child: const Text(
+                "Uredi",
+                style: TextStyle(color: Colors.white),
+              )),
+          SizedBox(
+            width: 8,
+          ),
+          ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
+              onPressed: () async {
+                await provider.delete(item.obavijestId!);
+                filterServerSide("");
+              },
+              child: const Text(
+                "Izbrisi",
+                style: TextStyle(color: Colors.white),
+              )),
+        ],
+      ))
     ]);
   }
 
-  void filterServerSide(ime) {
-    imePrezimeGTE = ime;
+  void filterServerSide(String naslov) {
+    naslovGTE = naslov;
     setNextView();
   }
 
@@ -202,7 +218,8 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
-      'imePrezimeGTE': imePrezimeGTE,
+      'naslovGTE': naslovGTE,
+      'bibliotekaId': AuthProvider.bibliotekaId
     };
     print("Metoda u get next row");
     print(filter);

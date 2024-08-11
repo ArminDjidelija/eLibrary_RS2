@@ -3,6 +3,7 @@ using eLibrary.API.Filters;
 using eLibrary.Services;
 using eLibrary.Services.Auth;
 using eLibrary.Services.Database;
+using eLibrary.Services.RezervacijeStateMachine;
 using eLibrary.Services.Validators.Implementation;
 using eLibrary.Services.Validators.Interfaces;
 using Mapster;
@@ -53,7 +54,17 @@ builder.Services.AddTransient<ICiljneGrupeValidator, CiljneGrupeValidator>();
 builder.Services.AddTransient<IJeziciValidator, JeziciValidator>();
 builder.Services.AddTransient<IKorisniciValidator, KorisniciValidator>();
 
+builder.Services.AddTransient<BaseRezervacijeState>();
+builder.Services.AddTransient<InitialRezervacijaState>();
+builder.Services.AddTransient<PonistenaRezervacijaState>();
+builder.Services.AddTransient<OdobrenaRezervacijaState>();
+builder.Services.AddTransient<ObnovljenaRezervacijaState>();
+builder.Services.AddTransient<KreiranaRezervacijaState>();
+builder.Services.AddTransient<ZavrsenaRezervacijaState>();
+
+
 builder.Services.AddScoped<ICurrentUserServiceAsync, CurrentUserServiceAsync>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 builder.Services.AddControllers(x =>

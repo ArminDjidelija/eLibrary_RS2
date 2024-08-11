@@ -26,12 +26,17 @@ namespace eLibrary.Services
 
         public override IQueryable<BibliotekaKnjige> AddFilter(BibliotekaKnjigeSearchObject search, IQueryable<BibliotekaKnjige> query)
         {
+            //var user = currentUserService.GetUserType();
+            //if(user == "Bibliotekar" || user == "Menadzer")
+            //{
+            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
+            //    query=query.Where(x=>x.BibliotekaId == bibliotekaId);
+            //}
             if (!string.IsNullOrEmpty(search?.Isbn))
             {
                 query = query
                     .Include(x => x.Knjiga)
-                    .Where(x => x.Knjiga.Isbn == search.Isbn || 
-                    (x.Knjiga.Isbn.Replace("-", "")==search.Isbn));
+                    .Where(x => x.Knjiga.Isbn.Replace("-", "").StartsWith(search.Isbn.Replace("-", "")));
             }
             if (!string.IsNullOrEmpty(search?.NaslovGTE))
             {

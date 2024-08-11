@@ -10,7 +10,7 @@ KorisnikUloga _$KorisnikUlogaFromJson(Map<String, dynamic> json) =>
     KorisnikUloga()
       ..korisnikUlogaId = (json['korisnikUlogaId'] as num?)?.toInt()
       ..ulogaId = (json['ulogaId'] as num?)?.toInt()
-      ..korisnikId = json['korisnikId'] as String?;
+      ..korisnikId = (json['korisnikId'] as num?)?.toInt();
 
 Map<String, dynamic> _$KorisnikUlogaToJson(KorisnikUloga instance) =>
     <String, dynamic>{

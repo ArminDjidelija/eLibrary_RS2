@@ -7,6 +7,7 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
@@ -140,13 +141,11 @@ class _BibliotekaKnjigeListScreenState
       _isLoading = true;
     });
 
-    var filter = {
-      'bibliotekaId': 2,
-    };
+    var filter = {};
     print("Metoda u updatefilter");
     print(filter);
     result = await provider.get(
-        filter: filter,
+        // filter: filter,
         page: page,
         pageSize: pageSize,
         includeTables: "Knjiga");
@@ -260,7 +259,7 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
       'naslovGTE': naslov,
       'autorGTE': autor,
       'isbn': isbn,
-      'bibliotekaId': 2,
+      'bibliotekaId': AuthProvider.bibliotekaId
     };
     print("Metoda u get next row");
     print(filter);

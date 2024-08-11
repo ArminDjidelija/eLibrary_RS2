@@ -5,6 +5,7 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_details_screen.dart';
@@ -91,33 +92,40 @@ class _TipClanarinaBibliotekaListScreenState
     });
   }
 
-  TextEditingController _imePrezimeEditingController = TextEditingController();
+  TextEditingController _trajanjeOdEditingController = TextEditingController();
+  TextEditingController _trajanjeDoEditingController = TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          // Expanded(
-          //     child: TextField(
-          //   controller: _imePrezimeEditingController,
-          //   decoration: const InputDecoration(labelText: "Ime prezime"),
-          //   onChanged: (value) async {
-          //     // page = 1;
-          //     _source.filterServerSide(value);
-          //     // await updateFilter(value, _autorEditingController.text);
-          //   },
-          // )),
-          // const SizedBox(
-          //   width: 8,
-          // ),
-          // ElevatedButton(
-          //     onPressed: () async {
-          //       // updateFilter(_naslovEditingController.text,
-          //       //     _autorEditingController.text);
-          //       _source.filterServerSide(_imePrezimeEditingController.text);
-          //       setState(() {});
-          //     },
-          //     child: const Text("Pretraga")),
+          Container(
+              width: 200,
+              child: TextField(
+                controller: _trajanjeOdEditingController,
+                decoration: const InputDecoration(labelText: "Trajanje od"),
+                onChanged: (value) async {
+                  // page = 1;
+                  _source.filterServerSide(_trajanjeOdEditingController.text,
+                      _trajanjeDoEditingController.text);
+                  // await updateFilter(value, _autorEditingController.text);
+                },
+              )),
+          const SizedBox(
+            width: 8,
+          ),
+          Container(
+              width: 200,
+              child: TextField(
+                controller: _trajanjeDoEditingController,
+                decoration: const InputDecoration(labelText: "Trajanje do"),
+                onChanged: (value) async {
+                  // page = 1;
+                  _source.filterServerSide(_trajanjeOdEditingController.text,
+                      _trajanjeDoEditingController.text);
+                  // await updateFilter(value, _autorEditingController.text);
+                },
+              )),
           const SizedBox(
             width: 8,
           ),
@@ -186,6 +194,8 @@ class TipClanarinaBibliotekaDataSource
   int page = 1;
   int pageSize = 10;
   dynamic filter;
+  dynamic trajanjeGTE = null;
+  dynamic trajanjeLTE = null;
   BuildContext context;
   TipClanarinaBibliotekaDataSource(
       {required this.provider, required this.context});
@@ -235,7 +245,9 @@ class TipClanarinaBibliotekaDataSource
         ]);
   }
 
-  void filterServerSide() {
+  void filterServerSide(trajanjeOd, trajanjeDo) {
+    trajanjeGTE = trajanjeOd;
+    trajanjeLTE = trajanjeDo;
     setNextView();
   }
 
@@ -253,15 +265,18 @@ class TipClanarinaBibliotekaDataSource
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    // filter = {
-    //   'page': page,
-    //   'pageSize': pageSize,
-    //   'includeTables': 'Biblioteka,Valuta'
-    // };
+    filter = {
+      'bibliotekaId': AuthProvider.bibliotekaId,
+      'trajanjeGTE': trajanjeGTE,
+      'trajanjeLTE': trajanjeLTE
+    };
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(
-        page: page, pageSize: pageSize, includeTables: "Biblioteka,Valuta");
+        filter: filter,
+        page: page,
+        pageSize: pageSize,
+        includeTables: "Biblioteka,Valuta");
     if (result != null) {
       data = result!.resultList;
       count = result!.count;

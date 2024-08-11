@@ -10,6 +10,8 @@ namespace eLibrary.Model.SearchObjects
 
         public int? BibliotekaKnjigaId { get; set; }
 
+        public int? BibliotekaId { get; set; }
+
         public DateTime? DatumKreiranjaGTE { get; set; }
         public DateTime? DatumKreiranjaLTE { get; set; }
 

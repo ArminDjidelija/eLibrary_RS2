@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:elibrary_bibliotekar/models/korisnik.dart';
 import 'package:elibrary_bibliotekar/providers/base_provider.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +13,7 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     return Korisnik.fromJson(data);
   }
 
-  Future login(String username, String password) async {
+  Future<Korisnik> login(String username, String password) async {
     var url =
         "${BaseProvider.baseUrl}Korisnici/Login?username=${username}&password=${password}";
     var uri = Uri.parse(url);
@@ -20,6 +22,12 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     var response = await http.post(uri, headers: headers);
     if (response.body == "") {
       throw new Exception("Pogrešan username ili lozinka");
+    }
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknown error");
     }
   }
 }

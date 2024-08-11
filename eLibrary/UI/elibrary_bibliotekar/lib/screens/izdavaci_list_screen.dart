@@ -118,7 +118,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
               onPressed: () async {
                 //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen()));
+                    builder: (context) => IzdavacDetailsScreen()));
               },
               child: const Text("Novi izdavac")),
         ],
@@ -139,6 +139,11 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
                       label: Container(
                     alignment: Alignment.centerLeft,
                     child: Text("Naziv"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Akcija"),
                   )),
                 ],
                 source: _source,
@@ -169,22 +174,26 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
 
     final item = data?[index];
 
-    return DataRow(
-        onSelectChanged: (selected) => {
-              if (selected == true)
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => IzdavacDetailsScreen(
-                            izdavac: item,
-                          ))),
-                }
-            },
-        cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.naziv.toString()),
-          )),
-        ]);
+    return DataRow(cells: [
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item!.naziv.toString()),
+      )),
+      DataCell(ElevatedButton(
+          child: Text(
+            "Detalji",
+            style: TextStyle(color: Colors.white),
+          ),
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+          ),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => IzdavacDetailsScreen(
+                      izdavac: item,
+                    )));
+          }))
+    ]);
   }
 
   void filterServerSide(naziv) {

@@ -1,5 +1,6 @@
 ﻿using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using MapsterMapper;
@@ -14,12 +15,21 @@ namespace eLibrary.Services
 {
     public class UplateService : BaseCRUDServiceAsync<Model.UplateDTOs.Uplate, UplateSearchObject, Database.Uplate, UplateInsertRequest, UplateUpdateRequest>, IUplateService
     {
-        public UplateService(ELibraryContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICurrentUserService currentUserService;
+
+        public UplateService(ELibraryContext context, IMapper mapper, ICurrentUserService currentUserService) : base(context, mapper)
         {
+            this.currentUserService = currentUserService;
         }
 
         public override IQueryable<Uplate> AddFilter(UplateSearchObject search, IQueryable<Uplate> query)
         {
+            //var user = currentUserService.GetUserType();
+            //if (user == "Bibliotekar")
+            //{
+            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
+            //    query = query.Where(x => x.BibliotekaId == bibliotekaId);
+            //}
             if (!string.IsNullOrEmpty(search?.ImePrezimeGTE))
             {
                 query = query

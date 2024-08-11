@@ -89,18 +89,6 @@ class _TipClanarineBibliotekaDetailsScreenState
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Biblioteka"),
-                  name: 'bibliotekaId',
-                  // validator: FormBuilderValidators.compose([
-                  //   FormBuilderValidators.required(),
-                  //   FormBuilderValidators.email(),
-                  // ]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Naziv"),
                   name: 'naziv',
                   // validator: FormBuilderValidators.compose([
@@ -159,6 +147,10 @@ class _TipClanarineBibliotekaDetailsScreenState
                 if (widget.tipClanarineBiblioteka == null) {
                   tipClanarineBibliotekaProvider.insert(request);
                 } else {
+                  if (widget.tipClanarineBiblioteka != null) {
+                    request['bibliotekaId'] =
+                        widget.tipClanarineBiblioteka!.bibliotekaId;
+                  }
                   tipClanarineBibliotekaProvider.update(
                       widget.tipClanarineBiblioteka!.tipClanarineBibliotekaId!,
                       request);

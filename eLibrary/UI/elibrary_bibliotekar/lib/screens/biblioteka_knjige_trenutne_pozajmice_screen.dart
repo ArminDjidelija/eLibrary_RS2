@@ -592,12 +592,12 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
-      'bibliotekaId': 2,
+      // 'bibliotekaId': 2,
     };
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(
-        filter: filter,
+        // filter: filter,
         page: page,
         pageSize: pageSize,
         includeTables: "BibliotekaKnjiga,Citalac");

@@ -16,14 +16,20 @@ namespace eLibrary.Services
     {
         private readonly ILogger<KorisniciService> _logger;
         private readonly IPasswordService _passwordService;
+        private readonly ICurrentUserServiceAsync currentUserService;
+        private readonly IUlogeService ulogeService;
 
         public KorisniciService(ELibraryContext context, 
             IMapper mapper, 
             ILogger<KorisniciService> logger,
-            IPasswordService passwordService) : base(context, mapper)
+            IPasswordService passwordService,
+            ICurrentUserServiceAsync currentUserService,
+            IUlogeService ulogeService) : base(context, mapper)
         {
             _logger = logger;
             this._passwordService = passwordService;
+            this.currentUserService = currentUserService;
+            this.ulogeService = ulogeService;
         }
 
         public override IQueryable<Korisnici> AddFilter(KorisniciSearchObject search, IQueryable<Korisnici> query)
@@ -49,9 +55,9 @@ namespace eLibrary.Services
                 query = query.Where(x => x.Telefon==search.Telefon);
             }
 
-            if (!string.IsNullOrEmpty(search?.Email))
+            if (!string.IsNullOrEmpty(search?.EmailGTE))
             {
-                query = query.Where(x => x.Email == search.Email);
+                query = query.Where(x => x.Email.ToLower().StartsWith(search.EmailGTE.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(search?.KorisnickoIme))
@@ -77,13 +83,19 @@ namespace eLibrary.Services
             if (request.Lozinka != request.LozinkaPotvrda)
                 throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
 
+            var user = await Context.Korisnicis.FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
+            if (user != null)
+                throw new UserException("Korisnik sa ovim korisničkim imenom već postoji!");
+            
             entity.LozinkaSalt = _passwordService.GenerateSalt();
             entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+
+
         }
 
         public override async Task AfterInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken = default)
         {
-            if (request.Uloge != null)
+            if (request.Uloge != null && request.Uloge.Count>0)
             {
                 foreach (var u in request.Uloge)
                 {
@@ -95,12 +107,19 @@ namespace eLibrary.Services
                 }
                 await Context.SaveChangesAsync(cancellationToken);
             }
+           
         }
 
         public override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnici entity, CancellationToken cancellationToken = default)
         {
+            
             if(request.Lozinka!=null && request.LozinkaPotvrda != null)
             {
+                if (request.StaraLozinka == null)
+                    throw new UserException("Morate poslati staru lozinku!");
+                var lozinkaCheck = _passwordService.GenerateHash(entity.LozinkaSalt, request.StaraLozinka) == entity.LozinkaHash;
+                if (lozinkaCheck == false)
+                    throw new UserException("Pogrešna stara lozinka");
                 if (request.Lozinka == request.LozinkaPotvrda)
                 {
                     entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
@@ -122,14 +141,19 @@ namespace eLibrary.Services
                 return null; 
             }
 
-            var hash= _passwordService.GenerateHash(entity.LozinkaSalt, password);
+            var hash = _passwordService.GenerateHash(entity.LozinkaSalt, password);
 
             if (hash != entity.LozinkaHash)
             {
                 return null;
             }
+            var mapped = this.Mapper.Map<Model.KorisniciDTOs.Korisnici>(entity);
+            
+            var biblioteka = Context.BibliotekaUposlenis.FirstOrDefault(x => x.KorisnikId == entity.KorisnikId);
+            if (biblioteka != null)
+                mapped.BibliotekaId = biblioteka.BibliotekaId;
 
-            return this.Mapper.Map<Model.KorisniciDTOs.Korisnici>(entity);
+            return mapped;
         }
     }
 }

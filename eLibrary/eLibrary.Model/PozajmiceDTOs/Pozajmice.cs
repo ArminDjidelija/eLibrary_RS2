@@ -26,7 +26,7 @@ namespace eLibrary.Model.PozajmiceDTOs
 
         public bool MoguceProduziti { get; set; }
 
-        public virtual GeneralDTOs.BibliotekaKnjigeDTO? BibliotekaKnjiga { get; set; }
+        public virtual BibliotekaKnjige? BibliotekaKnjiga { get; set; }
 
         public virtual Citaoci? Citalac { get; set; } 
 

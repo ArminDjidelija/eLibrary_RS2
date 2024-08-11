@@ -12,6 +12,8 @@ namespace eLibrary.Model.Requests
 
         public string Telefon { get; set; }
 
+        public string? StaraLozinka { get; set; }
+
         public string? Lozinka { get; set; }
 
         public string? LozinkaPotvrda { get; set; }

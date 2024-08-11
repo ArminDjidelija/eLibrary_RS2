@@ -3,7 +3,9 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
+import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
   Map<String, dynamic> _initialValue = {};
   late TipClanarineBibliotekaProvider tipClanarineBibliotekaProvider;
   late CitaociProvider citaociProvider;
+  late ClanarineProvider clanarineProvider;
   List<TipClanarineBiblioteka> tipoviClanarina = [];
 
   Citalac? pocetniCitalac;
@@ -43,14 +46,14 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
     tipClanarineBibliotekaProvider =
         context.read<TipClanarineBibliotekaProvider>();
     citaociProvider = context.read<CitaociProvider>();
+    clanarineProvider = context.read<ClanarineProvider>();
 
     initForm();
   }
 
   Future initForm() async {
     var tipoviClanarinaResult = await tipClanarineBibliotekaProvider.get(
-      retrieveAll: true,
-    );
+        retrieveAll: true, filter: {'bibliotekaId': AuthProvider.bibliotekaId});
     tipoviClanarina = tipoviClanarinaResult.resultList;
     setState(() {
       isLoading = false;
@@ -60,7 +63,7 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Nova",
+        "Nova članarina",
         Column(
           children: [_buildForm(), _saveRow()],
         ));
@@ -76,18 +79,6 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
           children: [
             Row(
               children: [
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Biblioteka"),
-                  name: 'bibliotekaId',
-                  // validator: FormBuilderValidators.compose([
-                  //   FormBuilderValidators.required(),
-                  //   FormBuilderValidators.email(),
-                  // ]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
                 Expanded(
                     child: FormBuilderDropdown(
                   name: "tipClanarineId",
@@ -170,18 +161,12 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formCheck == true) {
-                  // if (widget.tipClanarineBiblioteka == null) {
-                  //   tipClanarineBibliotekaProvider.insert(request);
-                  // } else {
-                  //   tipClanarineBibliotekaProvider.update(
-                  //       widget
-                  //           .tipClanarineBiblioteka!.tipClanarineBibliotekaId!,
-                  //       request);
-                  // }
+                  request['bibliotekaId'] = AuthProvider.bibliotekaId;
+                  await clanarineProvider.insert(request);
                 }
                 // print(knjigaSlanje);
               },

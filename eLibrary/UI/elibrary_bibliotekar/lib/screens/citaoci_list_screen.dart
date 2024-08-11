@@ -3,6 +3,7 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/screens/novi_citalac_screen.dart';
 import 'package:flutter/material.dart';
@@ -196,6 +197,7 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
     filter = {
       'imePrezimeGTE': imePrezime,
       'emailContains': email,
+      'bibliotekaId': AuthProvider.bibliotekaId
     };
     print("Metoda u get next row");
     print(filter);

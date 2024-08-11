@@ -1,6 +1,7 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/obavijest.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:flutter/material.dart';
@@ -110,12 +111,15 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 print(formCheck);
-                if (widget.obavijest == null) {
-                  request['bibliotekaId'] = 2;
-                  obavijestiProvider.insert(request);
-                } else {
-                  obavijestiProvider.update(
-                      widget.obavijest!.obavijestId!, request);
+                if (formCheck == true) {
+                  if (widget.obavijest == null) {
+                    request['bibliotekaId'] = AuthProvider.bibliotekaId;
+                    obavijestiProvider.insert(request);
+                  } else {
+                    request['bibliotekaId'] = AuthProvider.bibliotekaId;
+                    obavijestiProvider.update(
+                        widget.obavijest!.obavijestId!, request);
+                  }
                 }
                 // print(knjigaSlanje);
               },

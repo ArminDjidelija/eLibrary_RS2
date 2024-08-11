@@ -16,11 +16,9 @@ class Korisnik {
   String? telefon;
   String? korisnickoIme;
   bool? status;
+  int? bibliotekaId;
   List<BibliotekaUposleni>? bibliotekaUposlenis;
   List<KorisnikUloga>? korisniciUloges;
-
-  TipUplate? tipUplate;
-  Valuta? valuta;
 
   Korisnik();
 

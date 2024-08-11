@@ -16,16 +16,34 @@ namespace eLibrary.API.Controllers
         {
         }
 
-        [HttpPost("odobri")]
-        public async Task<Model.RezervacijeDTOs.Rezervacije> Odobri(int id, bool potvrda, CancellationToken cancellationToken=default)
+        [HttpPut("{id}/odobri")]
+        public Task<Model.RezervacijeDTOs.Rezervacije> Odobri(int id, CancellationToken cancellationToken=default)
         {
-            return await (_service as IRezervacijeService).OdobriAsync(id, potvrda, cancellationToken);
+            return (_service as IRezervacijeService).OdobriAsync(id, cancellationToken);
         }
 
-        [HttpPost("ponisti")]
-        public async Task<Model.RezervacijeDTOs.Rezervacije> Ponisti(int id, CancellationToken cancellationToken = default)
+        [HttpPut("{id}/ponisti")]
+        public Task<Model.RezervacijeDTOs.Rezervacije> Ponisti(int id, CancellationToken cancellationToken = default)
         {
-            return await (_service as IRezervacijeService).PonistiAsync(id, cancellationToken);
+            return (_service as IRezervacijeService).PonistiAsync(id, cancellationToken);
+        }
+
+        [HttpPut("{id}/obnovi")]
+        public Task<Model.RezervacijeDTOs.Rezervacije> Obnovi(int id, CancellationToken cancellationToken = default)
+        {
+            return (_service as IRezervacijeService).ObnoviAsync(id, cancellationToken);
+        }
+
+        [HttpPut("{id}/zavrsi")]
+        public Task<Model.RezervacijeDTOs.Rezervacije> Zavrsi(int id, CancellationToken cancellationToken = default)
+        {
+            return (_service as IRezervacijeService).ZavrsiAsync(id, cancellationToken);
+        }
+
+        [HttpGet("{id}/allowedActions")]
+        public Task<List<string>> AllowedActions(int id, CancellationToken cancellationToken = default)
+        {
+            return (_service as IRezervacijeService).AllowedActions(id, cancellationToken);
         }
     }
 }

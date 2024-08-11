@@ -19,6 +19,8 @@ public partial class Rezervacije : ISoftDeletable
 
     public bool? Ponistena { get; set; }
 
+    public string? State { get; set; }
+
     public virtual BibliotekaKnjige BibliotekaKnjiga { get; set; } = null!;
 
     public virtual Citaoci Citalac { get; set; } = null!;

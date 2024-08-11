@@ -11,6 +11,7 @@ class Rezervacija {
   String? datumKreiranja;
   bool? odobreno;
   String? rokRezervacije;
+  String? state;
   bool? ponistena;
   Citalac? citalac;
   BibliotekaKnjiga? bibliotekaKnjiga;

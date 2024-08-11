@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class NovaBibliotekaKnjigaScreen extends StatefulWidget {
   Knjiga knjiga;
@@ -38,7 +40,7 @@ class _NovaBibliotekaKnjigaScreenState
     bibliotekaKnjigaProvider = context.read<BibliotekaKnjigaProvider>();
     _initialValue = {
       'knjigaId': widget.knjiga?.knjigaId.toString(),
-      'bibliotekaId': 2,
+      // 'bibliotekaId': 2,
     };
     //initForm();
   }
@@ -164,7 +166,14 @@ class _NovaBibliotekaKnjigaScreenState
                 print(request);
 
                 if (formCheck == true) {
-                  bibliotekaKnjigaProvider.insert(request);
+                  try {
+                    bibliotekaKnjigaProvider.insert(request);
+                  } on Exception catch (e) {
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        text: e.toString());
+                  }
                 }
 
                 // print(knjigaSlanje);

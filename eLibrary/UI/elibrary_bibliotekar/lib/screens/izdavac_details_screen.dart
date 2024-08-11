@@ -1,7 +1,5 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,20 +43,6 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
     }
     //initForm();
   }
-
-  // Future initForm() async {
-  //   jeziciResult = await jezikProvider.get();
-  //   vrsteGradeResult = await vrstaGradeProvider.get();
-  //   izdavaciResult = await izdavacProvider.get();
-  //   uveziResult = await uvezProvider.get();
-  //   autoriResult = await autoriProvider.get();
-  //   ciljneGrupeResult = await ciljneGrupeProvider.get();
-  //   vrsteSadrzajaResult = await vrsteSadrzajaProvider.get();
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   print("retreived jezici: ${jeziciResult?.resultList.length}");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +100,6 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
                     izdavacProvider.update(widget.izdavac!.izdavacId!, request);
                   }
                 }
-                // print(knjigaSlanje);
               },
               child: Text("Sacuvaj"))
         ],

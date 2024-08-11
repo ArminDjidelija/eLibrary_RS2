@@ -678,11 +678,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {
-      'bibliotekaId': 2,
-      'bibliotekaKnjigaId': bibliotekaKnjigaId,
-      'vraceno': false
-    };
+    filter = {'bibliotekaKnjigaId': bibliotekaKnjigaId, 'vraceno': false};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(

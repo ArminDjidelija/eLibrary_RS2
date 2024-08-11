@@ -49,6 +49,9 @@ namespace eLibrary.Services
 
         public override async Task BeforeInsertAsync(ClanarineInsertRequest request, Clanarine entity, CancellationToken cancellationToken = default)
         {
+            var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync(cancellationToken);
+            entity.BibliotekaId=bibliotekaId;
+
             var tipClanarine = await Context.TipClanarineBibliotekes.FindAsync(request.TipClanarineBibliotekaId);
             if(tipClanarine== null)
             {
@@ -58,6 +61,8 @@ namespace eLibrary.Services
             {
                 throw new UserException("Pogrešna biblioteka i tip članarine!");
             }
+
+            //TODO stripe payment
 
             var uplata = new Database.Uplate()
             {
@@ -75,7 +80,6 @@ namespace eLibrary.Services
             }
             catch (Exception)
             {
-
                 throw new UserException("Greška sa kreiranjem uplate");
             }
 

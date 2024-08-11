@@ -23,14 +23,15 @@ namespace eLibrary.Services
 
         public override IQueryable<Obavijesti> AddFilter(ObavijestiSearchObject search, IQueryable<Obavijesti> query)
         {
-            if (search?.BibliotekaId != null && search?.CitalacId!=null)
+            if (search?.NaslovGTE!=null)
             {
-                return query;
+                query = query
+                    .Where(x => x.Naslov.ToLower().StartsWith(search.NaslovGTE.ToLower()));
             }
 
             if (search?.BibliotekaId != null)
             {
-                query=query.Where(x=>x.ObavijestId==search.BibliotekaId);
+                query=query.Where(x=>x.BibliotekaId==search.BibliotekaId);
             }
             if(search?.CitalacId != null)
             {

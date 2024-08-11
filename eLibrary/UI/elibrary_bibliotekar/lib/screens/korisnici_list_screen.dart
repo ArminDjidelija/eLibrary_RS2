@@ -1,14 +1,13 @@
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/korisnik.dart';
-import 'package:elibrary_bibliotekar/models/search_result.dart';
-import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/screens/novi_citalac_screen.dart';
+import 'package:elibrary_bibliotekar/screens/novi_korisnik_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KorisniciListScreen extends StatefulWidget {
   const KorisniciListScreen({super.key});
@@ -43,7 +42,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   }
 
   TextEditingController _imePrezimeEditingController = TextEditingController();
-  TextEditingController _autorEditingController = TextEditingController();
+  TextEditingController _emailEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +68,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
             controller: _imePrezimeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              _source.filterServerSide(value, _autorEditingController.text);
+              _source.filterServerSide(value, _emailEditingController.text);
             },
           )),
           const SizedBox(
@@ -77,7 +76,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           ),
           Expanded(
               child: TextField(
-            controller: _autorEditingController,
+            controller: _emailEditingController,
             decoration: const InputDecoration(labelText: "Email"),
             onChanged: (value) async {
               // page = 1;
@@ -89,7 +88,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           ElevatedButton(
               onPressed: () async {
                 _source.filterServerSide(_imePrezimeEditingController.text,
-                    _autorEditingController.text);
+                    _emailEditingController.text);
                 setState(() {});
               },
               child: const Text("Pretraga")),
@@ -100,9 +99,9 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
               onPressed: () async {
                 //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => NoviCitalacScreen()));
+                    builder: (context) => NoviKorisnikScreen()));
               },
-              child: const Text("Novi čitalac")),
+              child: const Text("Novi korisnik")),
         ],
       ),
     );
@@ -119,9 +118,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                 columns: const [
                   DataColumn(label: Text("Ime")),
                   DataColumn(label: Text("Prezime")),
+                  DataColumn(label: Text("Korisnicko ime")),
                   DataColumn(label: Text("Email")),
                   DataColumn(label: Text("Broj telefona")),
-                  DataColumn(label: Text("Korisnicko ime")),
+                  DataColumn(label: Text("Akcija")),
                   // DataColumn(label: Text("Slika")),
                 ],
                 source: _source,
@@ -140,7 +140,7 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
   int page = 1;
   int pageSize = 10;
   String imePrezime = "";
-  String korisnickoIme = "";
+  String email = "";
   dynamic filter;
   BuildContext context;
   KorisnikDataSource({required this.provider, required this.context});
@@ -153,28 +153,40 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
 
     final item = data?[index];
 
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => KnjigaDetailsScreen(
-        //                     knjiga: item,
-        //                   ))),
-        //         }
-        //     },
-        cells: [
-          DataCell(Text(item!.ime.toString())),
-          DataCell(Text(item!.prezime.toString())),
-          DataCell(Text(item!.email.toString())),
-          DataCell(Text(item!.telefon.toString())),
-          DataCell(Text(item!.korisnickoIme.toString())),
-        ]);
+    return DataRow(cells: [
+      DataCell(Text(item!.ime.toString())),
+      DataCell(Text(item.prezime.toString())),
+      DataCell(Text(item.korisnickoIme.toString())),
+      DataCell(Text(item.email.toString())),
+      DataCell(Text(item.telefon.toString())),
+      DataCell(ElevatedButton(
+        onPressed: () {
+          QuickAlert.show(
+              context: context,
+              type: QuickAlertType.confirm,
+              text: "Da li ste sigurni da želite izbrisati ovog korisnika?",
+              headerBackgroundColor: Colors.red,
+              onConfirmBtnTap: () async => {
+                    await provider.delete(item.korisnikId!),
+                    Navigator.pop(context),
+                    print("confirm"),
+                    filterServerSide("", "")
+                  },
+              onCancelBtnTap: () async => {Navigator.pop(context)});
+        },
+        style: const ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
+        child: const Text(
+          "Izbrisi korisnika",
+          style: TextStyle(color: Colors.white),
+        ),
+      ))
+    ]);
   }
 
-  void filterServerSide(imePrezimeGTE, username) {
+  void filterServerSide(imePrezimeGTE, mail) {
     imePrezime = imePrezimeGTE;
-    korisnickoIme = username;
+    email = mail;
     setNextView();
   }
 
@@ -190,19 +202,19 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
   @override
   Future<RemoteDataSourceDetails<Korisnik>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezime,
-      'korisnickoIme': korisnickoIme,
+      'email': email,
     };
     print("Metoda u get next row");
     print(filter);
     var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
+        await provider.get(filter: filter, page: page, pageSize: pageSize);
+    print(result);
     if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
+      data = result.resultList;
+      count = result.count;
       // print(data);
     }
     return RemoteDataSourceDetails(count, data!);

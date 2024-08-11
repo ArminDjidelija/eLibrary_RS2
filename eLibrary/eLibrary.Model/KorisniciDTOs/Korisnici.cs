@@ -20,6 +20,8 @@ namespace eLibrary.Model.KorisniciDTOs
 
         public bool Status { get; set; }
 
+        public int? BibliotekaId { get; set; }
+
         public virtual ICollection<BibliotekaUposleniDTO> BibliotekaUposlenis { get; set; } = new List<BibliotekaUposleniDTO>();
 
         public virtual ICollection<KorisniciUlogeDTO> KorisniciUloges { get; set; } = new List<KorisniciUlogeDTO>();

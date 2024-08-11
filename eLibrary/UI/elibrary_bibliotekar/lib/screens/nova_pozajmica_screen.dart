@@ -3,10 +3,13 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
 import 'package:elibrary_bibliotekar/models/citalac.dart';
+import 'package:elibrary_bibliotekar/models/rezervacija.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
+import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
+import 'package:elibrary_bibliotekar/screens/pozajmice_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,7 +21,10 @@ import 'package:quickalert/quickalert.dart';
 
 class NovaPozajmicaScreen extends StatefulWidget {
   BibliotekaKnjiga? bibliotekaKnjiga;
-  NovaPozajmicaScreen({super.key, this.bibliotekaKnjiga});
+  Citalac? citalac;
+  Rezervacija? rezervacija;
+  NovaPozajmicaScreen(
+      {super.key, this.bibliotekaKnjiga, this.citalac, this.rezervacija});
 
   @override
   State<NovaPozajmicaScreen> createState() => _NovaPozajmicaScreenState();
@@ -30,6 +36,7 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
   late AutoriProvider autoriProvider;
   late CitaociProvider citaociProvider;
   late PozajmiceProvider pozajmiceProvider;
+  late RezervacijeProvider rezervacijeProvider;
   Citalac? citalac;
   SearchResult<Citalac>? citaociResult;
   List<Citalac> citaoci = [];
@@ -45,9 +52,14 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
     autoriProvider = context.read<AutoriProvider>();
     citaociProvider = context.read<CitaociProvider>();
     pozajmiceProvider = context.read<PozajmiceProvider>();
+    rezervacijeProvider = context.read<RezervacijeProvider>();
     // TODO: implement initState
     super.initState();
-
+    citalac = widget.citalac;
+    _initialValue = {
+      'citalacId': widget.citalac?.citalacId,
+      'bibliotekaKnjigaId': widget.bibliotekaKnjiga?.bibliotekaId
+    };
     initForm();
   }
 
@@ -147,6 +159,8 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                 ),
                 Expanded(
                     child: DropdownSearch<Citalac>(
+                  selectedItem: citalac,
+                  enabled: citalac == null,
                   popupProps: PopupPropsMultiSelection.menu(
                       // showSelectedItems: true,
                       isFilterOnline: true,
@@ -208,7 +222,14 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                         context: context,
                         type: QuickAlertType.success,
                         text: "Uspješno dodata nova pozajmica");
-
+                    if (citalac?.citalacId == widget.citalac?.citalacId) {
+                      if (widget.rezervacija != null) {
+                        rezervacijeProvider
+                            .zavrsi(widget.rezervacija!.rezervacijaId!);
+                      }
+                    }
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const PozajmiceListScreen()));
                     print(request);
                   }
                 } else {
