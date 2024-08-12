@@ -1,5 +1,6 @@
 ﻿using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
+using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
 using eLibrary.Services.Validators.Interfaces;
@@ -19,15 +20,18 @@ namespace eLibrary.Services
         private readonly IAutoriValidator autoriValidator;
         private readonly ICiljneGrupeValidator ciljneGrupeValidator;
         private readonly IVrsteSadrzajaValidator vrsteSadrzajaValidator;
+        private readonly ICurrentUserServiceAsync currentUserService;
 
         public KnjigeService(ELibraryContext context, IMapper mapper,
             IAutoriValidator autoriValidator,
             ICiljneGrupeValidator ciljneGrupeValidator,
-            IVrsteSadrzajaValidator vrsteSadrzajaValidator) : base(context, mapper)
+            IVrsteSadrzajaValidator vrsteSadrzajaValidator,
+            ICurrentUserServiceAsync currentUserService) : base(context, mapper)
         {
             this.autoriValidator = autoriValidator;
             this.ciljneGrupeValidator = ciljneGrupeValidator;
             this.vrsteSadrzajaValidator = vrsteSadrzajaValidator;
+            this.currentUserService = currentUserService;
         }
 
         public override IQueryable<Knjige> AddFilter(KnjigeSearchObject search, IQueryable<Knjige> query)
@@ -171,6 +175,19 @@ namespace eLibrary.Services
             }
         }
 
+        public override async Task<Model.KnjigeDTOs.Knjige> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var citalacId = await currentUserService.GetCitaocIdAsync();
+            if (citalacId != null)
+            {
+                await Context.CitalacKnjigaLogs.AddAsync(new CitalacKnjigaLog
+                {
+                    KnjigaId=id,
+                    CitalacId=citalacId.Value
+                });
+            }
+            return await base.GetByIdAsync(id, cancellationToken);
+        }
         public override async Task BeforeUpdateAsync(KnjigeUpdateRequest request, Knjige entity, CancellationToken cancellationToken = default)
         {
             //if (!string.IsNullOrEmpty(request?.Slika))

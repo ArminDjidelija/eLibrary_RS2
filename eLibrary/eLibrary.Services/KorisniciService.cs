@@ -1,12 +1,16 @@
 ﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.Messages;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.RabbitMqService;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -18,22 +22,26 @@ namespace eLibrary.Services
         private readonly IPasswordService _passwordService;
         private readonly ICurrentUserServiceAsync currentUserService;
         private readonly IUlogeService ulogeService;
+        private readonly IRabbitMqService rabbitMqService;
 
         public KorisniciService(ELibraryContext context, 
             IMapper mapper, 
             ILogger<KorisniciService> logger,
             IPasswordService passwordService,
             ICurrentUserServiceAsync currentUserService,
-            IUlogeService ulogeService) : base(context, mapper)
+            IUlogeService ulogeService,
+            IRabbitMqService rabbitMqService) : base(context, mapper)
         {
             _logger = logger;
-            this._passwordService = passwordService;
+            _passwordService = passwordService;
             this.currentUserService = currentUserService;
             this.ulogeService = ulogeService;
+            this.rabbitMqService = rabbitMqService;
         }
 
         public override IQueryable<Korisnici> AddFilter(KorisniciSearchObject search, IQueryable<Korisnici> query)
         {
+           
             if (!string.IsNullOrEmpty(search?.ImeGTE))
             {
                 query = query.Where(x => x.Ime.ToLower().StartsWith(search.ImeGTE.ToLower()));
@@ -73,6 +81,7 @@ namespace eLibrary.Services
             return query;
         }
 
+        
         public override async Task BeforeInsertAsync(KorisniciInsertRequest request, Korisnici entity, CancellationToken cancellationToken=default)
         {
             _logger.LogInformation($"Adding user: {entity.KorisnickoIme}");
@@ -107,7 +116,7 @@ namespace eLibrary.Services
                 }
                 await Context.SaveChangesAsync(cancellationToken);
             }
-           
+          
         }
 
         public override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnici entity, CancellationToken cancellationToken = default)
@@ -127,7 +136,19 @@ namespace eLibrary.Services
             }
         }
 
-        
+        public override async Task<Model.KorisniciDTOs.Korisnici> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            await rabbitMqService.SendAnEmail(new EmailDTO
+            {
+                EmailTo = "didelija.armin@gmail.com",
+                Message = DateTime.Now.ToString(),
+                ReceiverName = "Armin",
+                Subject = "Naslov"
+            });
+
+            return await base.GetByIdAsync(id, cancellationToken);
+        }
+
 
         public Model.KorisniciDTOs.Korisnici Login(string username, string password)
         {

@@ -3,6 +3,8 @@ using eLibrary.API.Filters;
 using eLibrary.Services;
 using eLibrary.Services.Auth;
 using eLibrary.Services.Database;
+using eLibrary.Services.RabbitMqService;
+using eLibrary.Services.Recommender;
 using eLibrary.Services.RezervacijeStateMachine;
 using eLibrary.Services.Validators.Implementation;
 using eLibrary.Services.Validators.Interfaces;
@@ -66,6 +68,8 @@ builder.Services.AddTransient<ZavrsenaRezervacijaState>();
 builder.Services.AddScoped<ICurrentUserServiceAsync, CurrentUserServiceAsync>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
+builder.Services.AddScoped<IRecommendService, RecommendService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -93,6 +97,8 @@ builder.Services.AddSwaggerGen(c =>
     } });
 
 });
+
+DotNetEnv.Env.Load();
 
 var connectionString = builder.Configuration.GetConnectionString("eLibraryConnection");
 builder.Services.AddDbContext<ELibraryContext>(options =>

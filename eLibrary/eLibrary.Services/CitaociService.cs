@@ -7,6 +7,7 @@ using eLibrary.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.ML;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,6 +116,11 @@ namespace eLibrary.Services
             }
 
             return this.Mapper.Map<Model.CitaociDTOs.Citaoci>(entity);
+        }
+
+        public async Task<Model.KnjigeDTOs.Knjige> Recommend(int id)
+        {
+            MLContext mlContext = new MLContext();
         }
     }
 }

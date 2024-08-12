@@ -21,7 +21,7 @@ namespace eLibrary.Services.BaseServices
             Mapper = mapper;
         }
 
-        public async Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default)
+        public virtual async Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default)
         {
             List<TModel> result = new List<TModel>();
 
@@ -115,7 +115,7 @@ namespace eLibrary.Services.BaseServices
         }
 
 
-        public async Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var entity = await Context.Set<TDbEntity>().FindAsync(id, cancellationToken);
 
