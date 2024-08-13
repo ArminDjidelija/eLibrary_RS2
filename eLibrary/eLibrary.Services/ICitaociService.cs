@@ -12,6 +12,6 @@ namespace eLibrary.Services
     public interface ICitaociService:ICRUDServiceAsync<Model.CitaociDTOs.Citaoci, CitaociSearchObject, CitaociInsertRequest, CitaociUpdateRequest>
     {
         Model.CitaociDTOs.Citaoci Login(string username, string password);
-        Task<Model.KnjigeDTOs.Knjige> Recommend(int id);
+        Task<List<Model.KnjigeDTOs.Knjige>> Recommend(int id);
     }
 }

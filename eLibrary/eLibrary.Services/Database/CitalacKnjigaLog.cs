@@ -12,6 +12,6 @@ namespace eLibrary.Services.Database
         public int KnjigaId { get; set; }
         public virtual Knjige Knjiga { get; set; }
         public int CitalacId { get; set; }
-        public virtual Citaoci Citaoci { get; set; }
+        public virtual Citaoci Citalac { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.Recommender;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,14 +21,17 @@ namespace eLibrary.Services
     {
         private readonly ILogger<CitaociService> _logger;
         private readonly IPasswordService _passwordService;
+        private readonly IRecommendService recommendService;
 
         public CitaociService(ELibraryContext context,
             IMapper mapper,
             ILogger<CitaociService> logger,
-            IPasswordService passwordService) : base(context, mapper)
+            IPasswordService passwordService,
+            IRecommendService recommendService) : base(context, mapper)
         {
             this._logger = logger;
             this._passwordService = passwordService;
+            this.recommendService = recommendService;
         }
         public override IQueryable<Citaoci> AddFilter(CitaociSearchObject search, IQueryable<Citaoci> query)
         {
@@ -118,9 +122,10 @@ namespace eLibrary.Services
             return this.Mapper.Map<Model.CitaociDTOs.Citaoci>(entity);
         }
 
-        public async Task<Model.KnjigeDTOs.Knjige> Recommend(int id)
+        public async Task<List<Model.KnjigeDTOs.Knjige>> Recommend(int id)
         {
-            MLContext mlContext = new MLContext();
+            var knjige = await recommendService.GetRecommendedBooks(id);
+            return knjige;
         }
     }
 }

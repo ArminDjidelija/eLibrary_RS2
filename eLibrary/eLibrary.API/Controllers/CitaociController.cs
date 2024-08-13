@@ -22,5 +22,12 @@ namespace eLibrary.API.Controllers
         {
             return (_service as ICitaociService).Login(username, password);
         }
+
+        [AllowAnonymous]
+        [HttpGet("recommended")]
+        public Task<List<Model.KnjigeDTOs.Knjige>> Recommend(int citalacId)
+        {
+            return (_service as ICitaociService).Recommend(citalacId);
+        }
     }
 }
