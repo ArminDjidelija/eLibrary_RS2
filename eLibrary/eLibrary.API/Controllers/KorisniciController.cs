@@ -22,6 +22,12 @@ namespace eLibrary.API.Controllers
             return (_service as IKorisniciService).Login(username, password);
         }
 
+        [HttpGet("info")]
+        public Task<Model.KorisniciDTOs.Korisnici> GetInfo(CancellationToken cancellationToken = default)
+        {
+            return (_service as IKorisniciService).GetInfo(cancellationToken);
+        }
+
       
     }
 }

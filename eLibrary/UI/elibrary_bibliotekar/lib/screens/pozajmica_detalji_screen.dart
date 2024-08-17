@@ -8,13 +8,17 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/penal.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
+import 'package:elibrary_bibliotekar/models/tip_uplate.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
+import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -31,7 +35,9 @@ class PozajmicaDetailsScreen extends StatefulWidget {
 class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
   late PozajmiceProvider provider;
   late PenaliProvider penaliProvider;
+  late TipUplateProvider tipUplateProvider;
 
+  List<TipUplate> tipoviUplata = [];
   // late Jezi? knjiga;
   // late Knjiga? knjiga;
   // late Knjiga? knjiga;
@@ -58,11 +64,11 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
 
     provider = context.read<PozajmiceProvider>();
     penaliProvider = context.read<PenaliProvider>();
+    tipUplateProvider = context.read<TipUplateProvider>();
     _source = PenaliDataSource(
         provider: penaliProvider,
         context: context,
         pozajmicaId: widget.pozajmica!.pozajmicaId);
-    // initForm();
   }
 
   @override
@@ -83,19 +89,6 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
         ),
       ),
     );
-
-    // return BibliotekarMasterScreen(
-    //   "Detalji pozajmice",
-    //   SingleChildScrollView(
-    //     dragStartBehavior: DragStartBehavior.start,
-    //     child: Column(
-    //       children: [
-    //         _buildPozajmicaDetalji(),
-    //         _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _buildPaginatedTable() {
@@ -108,6 +101,7 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
           DataColumn(label: Text("Opis")),
           DataColumn(label: Text("Iznos")),
           DataColumn(label: Text("Uplata")),
+          DataColumn(label: Text("Akcija")),
         ],
         source: _source,
         addEmptyRows: false,
@@ -261,19 +255,24 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
 class PenaliDataSource extends AdvancedDataTableSource<Penal> {
   List<Penal>? data = [];
   final PenaliProvider provider;
+  final _formKey = GlobalKey<FormBuilderState>();
   int count = 10;
   int page = 1;
   int pageSize = 10;
   int? pozajmicaId;
+  int tipUplateId = 0;
   String autor = "";
   String naslov = "";
   String isbn = "";
+  List<TipUplate> tipoviUplata = [];
   dynamic filter;
   BuildContext context;
   PenaliDataSource(
       {required this.provider,
       required this.context,
-      required this.pozajmicaId});
+      required this.pozajmicaId}) {
+    getTipovi();
+  }
 
   @override
   DataRow? getRow(int index) {
@@ -289,7 +288,76 @@ class PenaliDataSource extends AdvancedDataTableSource<Penal> {
       DataCell(
         item!.uplataId == null ? Text("Nije uplaćeno") : Text("Uplaćen penal"),
       ),
+      DataCell(
+        item!.uplataId == null
+            ? ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Dodaj uplatu za penal"),
+                        content: FormBuilder(
+                            key: _formKey,
+                            child: FormBuilderDropdown(
+                              name: "tipUplateId",
+                              initialValue: tipUplateId,
+                              decoration:
+                                  InputDecoration(labelText: "Tip uplate"),
+                              items: tipoviUplata
+                                      .map((e) => DropdownMenuItem(
+                                          value: e.tipUplateId.toString(),
+                                          child: Text(e.naziv ?? "")))
+                                      .toList() ??
+                                  [],
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(
+                                    errorText: "Obavezno polje"),
+                              ]),
+                            )),
+                        actions: [
+                          TextButton(
+                            child: Text("Odustani"),
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Zatvara dijalog
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Potvrdi"),
+                            onPressed: () async {
+                              var formaCheck =
+                                  _formKey.currentState?.saveAndValidate();
+                              if (formaCheck == true) {
+                                var tipUplateId = _formKey
+                                    .currentState!.fields['tipUplateId']?.value;
+                                await plati(
+                                    item.penalId!, int.parse(tipUplateId));
+                                page = 1;
+                                filterServerSide("", "", "");
+                                Navigator.of(context).pop(); // Zatvara dijalog
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Text("Dodaj uplatu za penal"),
+              )
+            : Container(),
+      )
     ]);
+  }
+
+  Future plati(int penalId, int tipUplateId) async {
+    await provider.Plati(penalId, tipUplateId);
+  }
+
+  Future getTipovi() async {
+    var tipUplateProvider = new TipUplateProvider();
+    var tipUplateResult = await tipUplateProvider.get(retrieveAll: true);
+    tipoviUplata = tipUplateResult.resultList;
   }
 
   void filterServerSide(naslovv, autorr, isbnn) {

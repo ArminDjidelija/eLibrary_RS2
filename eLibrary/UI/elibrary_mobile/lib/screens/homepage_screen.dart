@@ -314,36 +314,40 @@ class _HomepageScreenState extends State<HomepageScreen> {
                             ),
                           ),
                           Spacer(),
-                          Container(
-                            child: Column(
-                              children: [
-                                FutureBuilder<int?>(
-                                  future: _calculateDaysLeft(
-                                      e.preporuceniDatumVracanja!),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const Center(
-                                          child: CircularProgressIndicator());
-                                    } else if (snapshot.hasError) {
-                                      return Center(
-                                          child:
-                                              Text('Error: ${snapshot.error}'));
-                                    } else if (!snapshot.hasData) {
-                                      return Center(
-                                          child: Text('Nema podataka'));
-                                    } else {
-                                      final daysLeft = snapshot.data!;
-                                      if (daysLeft > 0) {
-                                        return Text('Još $daysLeft dana');
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  FutureBuilder<int?>(
+                                    future: _calculateDaysLeft(
+                                        e.preporuceniDatumVracanja!),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                            child: Text(
+                                                'Error: ${snapshot.error}'));
+                                      } else if (!snapshot.hasData) {
+                                        return Center(
+                                            child: Text('Nema podataka'));
                                       } else {
-                                        return Text(
-                                            'Molim Vas da vratite knjigu!');
+                                        final daysLeft = snapshot.data!;
+                                        if (daysLeft > 0) {
+                                          return Text('Još $daysLeft dana');
+                                        } else {
+                                          return Text(
+                                              'Molim Vas da vratite knjigu!');
+                                        }
                                       }
-                                    }
-                                  },
-                                ),
-                              ],
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         ],

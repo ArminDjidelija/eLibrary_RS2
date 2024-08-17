@@ -1,6 +1,7 @@
 import 'package:elibrary_mobile/models/biblioteka.dart';
 import 'package:elibrary_mobile/models/korisnik_sacuvana_knjiga.dart';
 import 'package:elibrary_mobile/models/penal.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/korisnik_sacuvana_knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/penali_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
@@ -56,6 +57,7 @@ class _SacuvaneKnjigeCitalacScreenState
     });
 
     var sacuvaneKnjigeResult = await korisnikSacuvanaKnjigaProvider.get(
+        filter: {'citalacId': AuthProvider.citalacId},
         page: page,
         pageSize: 10,
         includeTables: 'Knjiga.Uvez,Knjiga.Jezik,Knjiga.Izdavac');
@@ -87,6 +89,7 @@ class _SacuvaneKnjigeCitalacScreenState
 
       var sacuvaneKnjigeResult = await korisnikSacuvanaKnjigaProvider.get(
           page: page,
+          filter: {'citalacId': AuthProvider.citalacId},
           pageSize: 10,
           includeTables: 'Knjiga.Uvez,Knjiga.Jezik,Knjiga.Izdavac');
 

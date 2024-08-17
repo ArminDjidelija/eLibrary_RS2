@@ -1,4 +1,9 @@
+import 'package:elibrary_bibliotekar/models/biblioteka.dart';
+import 'package:elibrary_bibliotekar/models/uloga.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
+import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autori_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteka_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_knjige_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_uposleni_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteke_list_screen.dart';
@@ -85,120 +90,135 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                         const KnjigeListScreen()));
                               },
                             ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.menu_book,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Biblioteka knjige",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.menu_book,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Biblioteka knjige",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const BibliotekaKnjigeListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BibliotekaKnjigeListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.person_4_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Autori",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.person_4_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Autori",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AutoriListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AutoriListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.apartment,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Izdavači",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.apartment,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Izdavači",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const IzdavaciListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const IzdavaciListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.card_membership_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Tipovi članarina",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.card_membership_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Tipovi članarina",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TipClanarineBibliotekaListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const TipClanarineBibliotekaListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.credit_card,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Članarine",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.credit_card,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Članarine",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ClanarineListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ClanarineListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.attach_money_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Uplate",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.attach_money_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Uplate",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const UplateListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const UplateListScreen()));
-                              },
-                            ),
                             ListTile(
                               leading: const Icon(
                                 Icons.person_2_outlined,
@@ -218,120 +238,135 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                         const CitaociListScreen()));
                               },
                             ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.loyalty_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Pozajmice",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.loyalty_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Pozajmice",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PozajmiceListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PozajmiceListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.lock_clock_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Rezervacije",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.lock_clock_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Rezervacije",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RezervacijeListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RezervacijeListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.apartment,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Biblioteke",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Administrator"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.apartment,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Biblioteke",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const BibliotekeListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BibliotekeListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.person_outline_rounded,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Korisnici",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Administrator"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.person_outline_rounded,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Korisnici",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const KorisniciListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const KorisniciListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.notifications_active_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Obavijesti",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!.any((x) =>
+                                x.uloga?.naziv == "Bibliotekar" ||
+                                x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.notifications_active_outlined,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Obavijesti",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ObavijestiListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ObavijestiListScreen()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.work,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                "Uposleni",
-                                style: TextStyle(
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.work,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                title: const Text(
+                                  "Uposleni",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const BibliotekaUposleniListScreen()));
+                                },
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BibliotekaUposleniListScreen()));
-                              },
-                            ),
                             ListTile(
                               leading: const Icon(
                                 Icons.person_4,
@@ -351,6 +386,31 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                         KorisnikProfileScreen()));
                               },
                             ),
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.house,
+                                  color: Colors.white,
+                                ),
+                                title: const Text(
+                                  "Moja biblioteka",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () async {
+                                  var biblioteka =
+                                      await getById(AuthProvider.bibliotekaId!);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          BibliotekaDetailsScreen(
+                                            biblioteka: biblioteka,
+                                          )));
+                                },
+                              ),
                           ],
                         ),
                       ),
@@ -364,5 +424,11 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
         ],
       ),
     );
+  }
+
+  Future<Biblioteka> getById(int id) async {
+    var provider = new BibliotekeProvider();
+    var biblioteka = provider.getById(id);
+    return biblioteka;
   }
 }

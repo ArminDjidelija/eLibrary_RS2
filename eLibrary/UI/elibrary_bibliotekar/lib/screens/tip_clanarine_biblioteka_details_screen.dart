@@ -8,6 +8,7 @@ import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider
 import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
 class TipClanarineBibliotekaDetailsScreen extends StatefulWidget {
@@ -91,10 +92,9 @@ class _TipClanarineBibliotekaDetailsScreenState
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Naziv"),
                   name: 'naziv',
-                  // validator: FormBuilderValidators.compose([
-                  //   FormBuilderValidators.required(),
-                  //   FormBuilderValidators.email(),
-                  // ]),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -103,6 +103,9 @@ class _TipClanarineBibliotekaDetailsScreenState
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Trajanje"),
                   name: 'trajanje',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -111,21 +114,28 @@ class _TipClanarineBibliotekaDetailsScreenState
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Iznos"),
                   name: 'iznos',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                  ]),
                 )),
                 SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderDropdown(
-                  name: "valutaId",
-                  decoration: InputDecoration(labelText: "Valuta"),
-                  items: valutaResult?.resultList
-                          .map((e) => DropdownMenuItem(
-                              value: e.valutaId.toString(),
-                              child: Text(e.naziv ?? "")))
-                          .toList() ??
-                      [],
-                )),
+                  child: FormBuilderDropdown(
+                    name: "valutaId",
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    decoration: InputDecoration(labelText: "Valuta"),
+                    items: valutaResult?.resultList
+                            .map((e) => DropdownMenuItem(
+                                value: e.valutaId.toString(),
+                                child: Text(e.naziv ?? "")))
+                            .toList() ??
+                        [],
+                  ),
+                ),
               ],
             ),
           ],
@@ -142,18 +152,21 @@ class _TipClanarineBibliotekaDetailsScreenState
         children: [
           ElevatedButton(
               onPressed: () {
-                _formKey.currentState?.saveAndValidate();
+                var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
-                if (widget.tipClanarineBiblioteka == null) {
-                  tipClanarineBibliotekaProvider.insert(request);
-                } else {
-                  if (widget.tipClanarineBiblioteka != null) {
-                    request['bibliotekaId'] =
-                        widget.tipClanarineBiblioteka!.bibliotekaId;
+                if (formCheck == true) {
+                  if (widget.tipClanarineBiblioteka == null) {
+                    tipClanarineBibliotekaProvider.insert(request);
+                  } else {
+                    if (widget.tipClanarineBiblioteka != null) {
+                      request['bibliotekaId'] =
+                          widget.tipClanarineBiblioteka!.bibliotekaId;
+                    }
+                    tipClanarineBibliotekaProvider.update(
+                        widget
+                            .tipClanarineBiblioteka!.tipClanarineBibliotekaId!,
+                        request);
                   }
-                  tipClanarineBibliotekaProvider.update(
-                      widget.tipClanarineBiblioteka!.tipClanarineBibliotekaId!,
-                      request);
                 }
                 // print(knjigaSlanje);
               },

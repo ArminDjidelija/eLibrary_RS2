@@ -161,6 +161,11 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Kraj clanarine"),
                   )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Aktivna"),
+                  )),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -220,7 +225,6 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
                 DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
                     .parseStrict(item!.pocetak!.toString()))),
           )),
-
           DataCell(
             Container(
               alignment: Alignment.centerLeft,
@@ -231,7 +235,9 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
               ),
             ),
           ),
-          // DataCell(Text(item!.prezime.toString())),
+          DataCell(DateTime.parse(item.kraj!).isAfter(DateTime.now())
+              ? Text("Da")
+              : Text("Ne")),
           // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);
   }
@@ -262,10 +268,12 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
         filter: filter,
         page: page,
         pageSize: pageSize,
-        includeTables: "Citalac,Uplate,TipClanarineBiblioteka");
+        includeTables: "Citalac,Uplate,TipClanarineBiblioteka",
+        orderBy: "ClanarinaId",
+        sortDirection: "Descending");
     if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
+      data = result.resultList;
+      count = result.count;
       print(data);
     }
     return RemoteDataSourceDetails(count, data!);

@@ -16,7 +16,7 @@ namespace eLibrary.Model.SearchObjects
 
         public int? BrojStranicaLTE { get; set; }
 
-        public string? Isbn { get; set; }
+        public string? IsbnGTE { get; set; }
 
         public int? UvezId { get; set; }
 

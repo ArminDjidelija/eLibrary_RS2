@@ -2,9 +2,13 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/kanton.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/models/tip_uplate.dart';
+import 'package:elibrary_bibliotekar/models/valuta.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
+import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
+import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -23,8 +27,10 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
   Map<String, dynamic> _initialValue = {};
   late PenaliProvider penaliProvider;
   late KantonProvider kantonProvider;
+  late ValutaProvider valutaProvider;
 
   SearchResult<Kanton>? kantoniResult;
+  SearchResult<Valuta>? valutaResult;
 
   bool isLoading = true;
   bool isEditing = false;
@@ -37,6 +43,7 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
   void initState() {
     penaliProvider = context.read<PenaliProvider>();
     kantonProvider = context.read<KantonProvider>();
+    valutaProvider = context.read<ValutaProvider>();
     // TODO: implement initState
     super.initState();
 
@@ -45,8 +52,10 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
 
   Future initForm() async {
     kantoniResult = await kantonProvider.get();
+    valutaResult = await valutaProvider.get();
 
     print("retreived kantoni: ${kantoniResult?.resultList.length}");
+    setState(() {});
   }
 
   @override
@@ -98,7 +107,20 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
                   width: 10,
                 ),
                 Container(
-                  child: Text("Valuta KM"),
+                  width: 200,
+                  child: FormBuilderDropdown(
+                    name: "valutaId",
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
+                    decoration: InputDecoration(labelText: "Valuta"),
+                    items: valutaResult?.resultList
+                            .map((e) => DropdownMenuItem(
+                                value: e.valutaId.toString(),
+                                child: Text(e.naziv ?? "")))
+                            .toList() ??
+                        [],
+                  ),
                 )
               ],
             )

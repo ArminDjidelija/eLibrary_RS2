@@ -3,10 +3,12 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
+import 'package:elibrary_bibliotekar/models/tip_uplate.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -26,7 +28,9 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
   late TipClanarineBibliotekaProvider tipClanarineBibliotekaProvider;
   late CitaociProvider citaociProvider;
   late ClanarineProvider clanarineProvider;
+  late TipUplateProvider tipUplateProvider;
   List<TipClanarineBiblioteka> tipoviClanarina = [];
+  List<TipUplate> tipoviUplata = [];
 
   Citalac? pocetniCitalac;
   int? citalacId;
@@ -47,6 +51,7 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
         context.read<TipClanarineBibliotekaProvider>();
     citaociProvider = context.read<CitaociProvider>();
     clanarineProvider = context.read<ClanarineProvider>();
+    tipUplateProvider = context.read<TipUplateProvider>();
 
     initForm();
   }
@@ -55,6 +60,9 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
     var tipoviClanarinaResult = await tipClanarineBibliotekaProvider.get(
         retrieveAll: true, filter: {'bibliotekaId': AuthProvider.bibliotekaId});
     tipoviClanarina = tipoviClanarinaResult.resultList;
+
+    var tipUplateResult = await tipUplateProvider.get(retrieveAll: true);
+    tipoviUplata = tipUplateResult.resultList;
     setState(() {
       isLoading = false;
     });
@@ -81,11 +89,12 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
               children: [
                 Expanded(
                     child: FormBuilderDropdown(
-                  name: "tipClanarineId",
+                  onChanged: (value) => {},
+                  name: "tipClanarineBibliotekaId",
                   decoration: InputDecoration(labelText: "Tip clanarine"),
                   items: tipoviClanarina
                           .map((e) => DropdownMenuItem(
-                              value: e.naziv.toString(),
+                              value: e.tipClanarineBibliotekaId.toString(),
                               child: Text(e.naziv ?? "")))
                           .toList() ??
                       [],
@@ -97,21 +106,19 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Trajanje"),
-                  name: 'trajanje',
+                    child: FormBuilderDropdown(
+                  name: "tipUplateId",
+                  decoration: InputDecoration(labelText: "Tip uplate"),
+                  items: tipoviUplata
+                          .map((e) => DropdownMenuItem(
+                              value: e.tipUplateId.toString(),
+                              child: Text(e.naziv ?? "")))
+                          .toList() ??
+                      [],
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                 )),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Iznos"),
-                  name: 'iznos',
-                )),
-                SizedBox(
-                  width: 10,
-                ),
               ],
             ),
             Row(
@@ -165,6 +172,7 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formCheck == true) {
+                  request['citalacId'] = citalacId;
                   request['bibliotekaId'] = AuthProvider.bibliotekaId;
                   await clanarineProvider.insert(request);
                 }

@@ -28,7 +28,7 @@ namespace eLibrary.Services.Recommender
 
         public async Task<List<Model.KnjigeDTOs.Knjige>> GetRecommendedBooks(int citalacId)
         {
-            var userLikedBooks = await context.CitalacKnjigaLogs.Where(x => x.CitalacId == citalacId).Select(x => x.KnjigaId).ToListAsync();
+            var userLikedBooks = await context.CitalacKnjigaLogs.Where(x => x.CitalacId == citalacId).Select(x => x.KnjigaId).Distinct().ToListAsync();
             var allBooks = await context
                 .Knjiges
                 .Include(x => x.KnjigaAutoris)

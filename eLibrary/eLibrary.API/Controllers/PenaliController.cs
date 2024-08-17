@@ -20,5 +20,11 @@ namespace eLibrary.API.Controllers
         {
             return await (_service as IPenaliService).GetBibliotekaByPenalAsync(penalId, cancellationToken);
         }
+
+        [HttpPost("plati")]
+        public async Task<Model.PenaliDTOs.Penali> Plati(int penalId, int tipUplateId, CancellationToken cancellationToken = default)
+        {
+            return await (_service as IPenaliService).Plati(penalId, tipUplateId, cancellationToken);
+        }
     }
 }

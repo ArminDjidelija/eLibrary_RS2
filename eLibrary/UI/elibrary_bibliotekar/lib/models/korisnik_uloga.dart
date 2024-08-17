@@ -1,4 +1,5 @@
 import 'package:elibrary_bibliotekar/models/biblioteka.dart';
+import 'package:elibrary_bibliotekar/models/uloga.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'korisnik_uloga.g.dart';
 
@@ -7,7 +8,7 @@ class KorisnikUloga {
   int? korisnikUlogaId;
   int? ulogaId;
   int? korisnikId;
-
+  Uloga? uloga;
   KorisnikUloga();
 
   factory KorisnikUloga.fromJson(Map<String, dynamic> json) =>

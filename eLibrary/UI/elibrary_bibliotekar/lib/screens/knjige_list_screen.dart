@@ -66,6 +66,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
 
   TextEditingController _naslovEditingController = TextEditingController();
   TextEditingController _autorEditingController = TextEditingController();
+  TextEditingController _isbnEditingController = TextEditingController();
 
   Widget _buildSearch() {
     return Padding(
@@ -78,7 +79,8 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
             decoration: const InputDecoration(labelText: "Naziv"),
             onChanged: (value) async {
               // page = 1;
-              _source.filterServerSide(value, _autorEditingController.text);
+              _source.filterServerSide(value, _autorEditingController.text,
+                  _isbnEditingController.text);
               // await updateFilter(value, _autorEditingController.text);
             },
           )),
@@ -92,7 +94,22 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
             onChanged: (value) async {
               // page = 1;
               // await updateFilter(_naslovEditingController.text, value);
-              _source.filterServerSide(_naslovEditingController.text, value);
+              _source.filterServerSide(_naslovEditingController.text, value,
+                  _isbnEditingController.text);
+            },
+          )),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+              child: TextField(
+            controller: _isbnEditingController,
+            decoration: const InputDecoration(labelText: "ISBN"),
+            onChanged: (value) async {
+              // page = 1;
+              // await updateFilter(_naslovEditingController.text, value);
+              _source.filterServerSide(_naslovEditingController.text,
+                  _autorEditingController.text, value);
             },
           )),
           ElevatedButton(
@@ -104,7 +121,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
                 // updateFilter(_naslovEditingController.text,
                 //     _autorEditingController.text);
                 _source.filterServerSide(_naslovEditingController.text,
-                    _autorEditingController.text);
+                    _autorEditingController.text, _isbnEditingController.text);
                 setState(() {});
               },
               child: const Text("Pretraga")),
@@ -229,6 +246,7 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
   int pageSize = 10;
   String autor = "";
   String naslov = "";
+  String isbn = "";
   dynamic filter;
   BuildContext context;
   KnjigaDataSource({required this.provider, required this.context});
@@ -278,9 +296,10 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
         ]);
   }
 
-  void filterServerSide(naslovv, autorr) {
+  void filterServerSide(naslovv, autorr, isbnn) {
     naslov = naslovv;
     autor = autorr;
+    isbn = isbnn;
     setNextView();
   }
 
@@ -298,10 +317,7 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {
-      'naslovGTE': naslov,
-      'autor': autor,
-    };
+    filter = {'naslovGTE': naslov, 'autor': autor, 'isbnGTE': isbn};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(

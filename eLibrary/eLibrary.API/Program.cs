@@ -47,6 +47,7 @@ builder.Services.AddTransient<IObavijestiService, ObavijestiService>();
 builder.Services.AddTransient<IRezervacijeService, RezervacijeService>();
 builder.Services.AddTransient<IBibliotekaCitaociZabraneService, BibliotekaCitaociZabraneService>();
 builder.Services.AddTransient<IProduzenjePozajmicaService, ProduzenjePozajmicaService>();
+builder.Services.AddTransient<ICitalacKnjigaLogService, CitalacKnjigaLogService>();
 
 builder.Services.AddTransient<IAutoriValidator, AutoriValidator>();
 builder.Services.AddTransient<IUlogeValidator, UlogeValidator>();

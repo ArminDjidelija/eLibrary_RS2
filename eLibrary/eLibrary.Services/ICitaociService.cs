@@ -13,5 +13,6 @@ namespace eLibrary.Services
     {
         Model.CitaociDTOs.Citaoci Login(string username, string password);
         Task<List<Model.KnjigeDTOs.Knjige>> Recommend(int id);
+        Task<Model.CitaociDTOs.Citaoci> GetInfo(CancellationToken cancellationToken = default);
     }
 }

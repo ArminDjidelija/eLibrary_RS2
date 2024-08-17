@@ -8,6 +8,7 @@ import 'package:elibrary_mobile/providers/autori_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/ciljne_grupe_provider.dart';
+import 'package:elibrary_mobile/providers/citalac_knjiga_log_provider.dart';
 import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/clanarine_provider.dart';
 import 'package:elibrary_mobile/providers/izdavac_provider.dart';
@@ -30,6 +31,7 @@ import 'package:elibrary_mobile/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_mobile/providers/vrste_sadrzaja_provider.dart';
 import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -38,6 +40,7 @@ void main() {
     FlutterError.onError = (FlutterErrorDetails errorDetails) {
       print("ON error error: ${errorDetails.exception.toString()}");
     };
+    await dotenv.load(fileName: ".env");
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => KnjigaProvider()),
       ChangeNotifierProvider(create: (_) => BibliotekaKnjigaProvider()),
@@ -65,6 +68,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => BibliotekaProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikSacuvanaKnjigaProvider()),
       ChangeNotifierProvider(create: (_) => ObavijestiProvider()),
+      ChangeNotifierProvider(create: (_) => CitalacKnjigaLogProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framerwork");
@@ -149,7 +153,6 @@ class LoginPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () async {
-                        KnjigaProvider provider = new KnjigaProvider();
                         print(
                             "Credentials: ${_usernameController.text} : ${_passwordController.text}");
                         AuthProvider.username = _usernameController.text;
@@ -158,6 +161,12 @@ class LoginPage extends StatelessWidget {
 
                         try {
                           //var data = await provider.get();
+                          CitaociProvider cp = new CitaociProvider();
+                          var citalac = await cp.login(
+                              AuthProvider.username!, AuthProvider.password!);
+                          AuthProvider.citalacId = citalac.citalacId;
+                          AuthProvider.ime = citalac.ime;
+                          AuthProvider.prezime = citalac.prezime;
                           print("Authenticated!");
 
                           Navigator.of(context).push(MaterialPageRoute(

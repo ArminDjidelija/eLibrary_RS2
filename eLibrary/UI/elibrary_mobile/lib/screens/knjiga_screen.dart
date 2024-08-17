@@ -11,7 +11,9 @@ import 'package:elibrary_mobile/models/knjiga_ciljna_grupa.dart';
 import 'package:elibrary_mobile/models/knjiga_vrsta_sadrzaja.dart';
 import 'package:elibrary_mobile/models/pozajmica.dart';
 import 'package:elibrary_mobile/models/search_result.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_knjiga_provider.dart';
+import 'package:elibrary_mobile/providers/citalac_knjiga_log_provider.dart';
 import 'package:elibrary_mobile/providers/jezici_provider.dart';
 import 'package:elibrary_mobile/providers/kanton_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
@@ -47,6 +49,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   late KantonProvider kantonProvider;
   late KorisnikSacuvanaKnjigaProvider korisnikSacuvanaKnjigaProvider;
   late TabController _tabController;
+  late CitalacKnjigaLogProvider citalacKnjigaLogProvider;
 
   SearchResult<Knjiga>? knjigeResult;
   SearchResult<Pozajmica>? pozajmiceResult;
@@ -75,6 +78,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     korisnikSacuvanaKnjigaProvider =
         context.read<KorisnikSacuvanaKnjigaProvider>();
     kantonProvider = context.read<KantonProvider>();
+    citalacKnjigaLogProvider = context.read<CitalacKnjigaLogProvider>();
 
     _tabController = TabController(length: 2, vsync: this);
     _initForm();
@@ -122,6 +126,13 @@ class _KnjigaScreenState extends State<KnjigaScreen>
 
     knjigaList = knjigeResult!.resultList;
     pozajmicaList = pozajmiceResult!.resultList;
+
+    try {
+      await citalacKnjigaLogProvider.insert({
+        'citalacId': AuthProvider.citalacId,
+        'knjigaId': widget.knjiga.knjigaId
+      });
+    } on Exception catch (e) {}
 
     setState(() {});
   }

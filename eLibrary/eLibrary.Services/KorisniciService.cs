@@ -138,13 +138,13 @@ namespace eLibrary.Services
 
         public override async Task<Model.KorisniciDTOs.Korisnici> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            await rabbitMqService.SendAnEmail(new EmailDTO
-            {
-                EmailTo = "didelija.armin@gmail.com",
-                Message = DateTime.Now.ToString(),
-                ReceiverName = "Armin",
-                Subject = "Naslov"
-            });
+            //await rabbitMqService.SendAnEmail(new EmailDTO
+            //{
+            //    EmailTo = "didelija.armin@gmail.com",
+            //    Message = DateTime.Now.ToString(),
+            //    ReceiverName = "Armin",
+            //    Subject = "Naslov"
+            //});
 
             return await base.GetByIdAsync(id, cancellationToken);
         }
@@ -175,6 +175,17 @@ namespace eLibrary.Services
                 mapped.BibliotekaId = biblioteka.BibliotekaId;
 
             return mapped;
+        }
+
+        public async Task<Model.KorisniciDTOs.Korisnici> GetInfo(CancellationToken cancellationToken = default)
+        {
+            var currentUserId = await currentUserService.GetUserIdAsync();
+            if (currentUserId == null)
+                throw new UserException("Greška sa korisnkom!");
+            
+            var user = await Context.Korisnicis.FirstOrDefaultAsync(x=>x.KorisnikId==currentUserId);
+
+            return Mapper.Map<Model.KorisniciDTOs.Korisnici>(user);
         }
     }
 }

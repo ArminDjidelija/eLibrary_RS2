@@ -2,21 +2,18 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_mobile/models/biblioteka.dart';
 import 'package:elibrary_mobile/models/clanarina.dart';
 import 'package:elibrary_mobile/models/knjiga.dart';
-import 'package:elibrary_mobile/models/pozajmica.dart';
-import 'package:elibrary_mobile/models/rezervacija.dart';
-import 'package:elibrary_mobile/models/search_result.dart';
 import 'package:elibrary_mobile/models/tip_clanarine_biblioteka.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/clanarine_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
-import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
-import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_mobile/providers/uplate_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
-import 'package:elibrary_mobile/screens/tip_clanarine_biblioteka_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 
 class ClanarineCitalacScreen extends StatefulWidget {
   const ClanarineCitalacScreen({super.key});
@@ -30,7 +27,8 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
   late BibliotekaProvider bibliotekaProvider;
   late ClanarineProvider clanarineProvider;
   late TipClanarineBibliotekaProvider tipClanarineBibliotekaProvider;
-
+  late UplataProvider uplataProvider;
+  TipClanarineBiblioteka? odabranaClanarina;
   List<Clanarina> clanarine = [];
   List<Biblioteka> biblioteke = [];
   List<TipClanarineBiblioteka> tipClanarineBiblioteke = [];
@@ -57,6 +55,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     knjigaProvider = context.read<KnjigaProvider>();
     bibliotekaProvider = context.read<BibliotekaProvider>();
     clanarineProvider = context.read<ClanarineProvider>();
+    uplataProvider = context.read<UplataProvider>();
     tipClanarineBibliotekaProvider =
         context.read<TipClanarineBibliotekaProvider>();
 
@@ -76,6 +75,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     });
 
     var clanarineResult = await clanarineProvider.get(
+        filter: {'citalacId': AuthProvider.citalacId},
         page: page,
         pageSize: 10,
         orderBy: 'Pocetak',
@@ -108,6 +108,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
       page += 1;
 
       var clanarineResult = await clanarineProvider.get(
+          filter: {'citalacId': AuthProvider.citalacId},
           page: page,
           pageSize: 10,
           orderBy: 'Pocetak',
@@ -211,7 +212,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.blue)),
-                      onPressed: () => {},
+                      onPressed: () async => {await makePayment()},
                       child: Text(
                         "Nastavi na plaćanje",
                         style: TextStyle(color: Colors.white),
@@ -238,6 +239,73 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
         ],
       ),
     );
+  }
+
+  Future makePayment() async {
+    var secret = dotenv.env['_paypalSecret'];
+    var public = dotenv.env['_paypalPublic'];
+    var total = odabranaClanarina!.iznos!.toString();
+    var naziv = odabranaClanarina!.naziv;
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: ((context) => PaypalCheckoutView(
+              sandboxMode: true,
+              clientId: public,
+              secretKey: secret,
+              transactions: [
+                {
+                  "amount": {
+                    "total": total,
+                    "currency": "USD",
+                    "details": {
+                      "subtotal": total,
+                      "shipping": '0',
+                      "shipping_discount": 0
+                    }
+                  },
+                  "description": "Clanarina ce se dodati.",
+                  // "payment_options": {
+                  //   "allowed_payment_method":
+                  //       "INSTANT_FUNDING_SOURCE"
+                  // },
+                  "item_list": {
+                    "items": [
+                      {
+                        "name": naziv,
+                        "quantity": 1,
+                        "price": total,
+                        "currency": "USD"
+                      }
+                    ],
+
+                    // Optional
+                    //   "shipping_address": {
+                    //     "recipient_name": "Tharwat samy",
+                    //     "line1": "tharwat",
+                    //     "line2": "",
+                    //     "city": "tharwat",
+                    //     "country_code": "EG",
+                    //     "postal_code": "25025",
+                    //     "phone": "+00000000",
+                    //     "state": "ALex"
+                    //  },
+                  }
+                }
+              ],
+              note: "Kontaktirajte nas za bilo kakve poteskoce",
+              onSuccess: (Map params) async {
+                print("onSuccess: $params");
+                Navigator.pop(context);
+              },
+              onError: (error) {
+                print("onSuccess: $error");
+                ("onError: $error");
+                Navigator.pop(context);
+              },
+              onCancel: () {
+                print('cancelled:');
+                Navigator.pop(context);
+              },
+            ))));
   }
 
   Widget _buildPrijasnjeClanarine() {
@@ -370,7 +438,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
               dropdownDecoratorProps: const DropDownDecoratorProps(
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Odaberi člnarinu",
-                  hintText: "Unesite naziv biblioteke",
+                  hintText: "Unesite naziv clanarine",
                 ),
               ),
               asyncItems: (String filter) async {
@@ -380,6 +448,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
               onChanged: (TipClanarineBiblioteka? c) {
                 tipClanarineId = c!.tipClanarineBibliotekaId!;
                 odabraniTipClanarine = c;
+                odabranaClanarina = c;
                 setState(() {});
               },
               itemAsString: (TipClanarineBiblioteka u) =>
@@ -392,5 +461,35 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
             ),
           )
         : Container();
+  }
+
+  Future<void> saveData() async {
+    // try {
+    //   Map<String, dynamic> transaction = {
+    //     'brojTransakcije': paymentIntent!['id'],
+    //     'ukupniIznos': _kosaricaProvider.total,
+    //     'autodioId': 3,
+    //     'kolicina': 1,
+    //     'korisnikId': userId
+    //   };
+
+    //   await _narudzbaProvider.dodajNarudzbu(transaction);
+    //   setState(() {
+    //     isLoading = false;
+    //     _kosaricaProvider.kosarica.items = [];
+    //     _kosaricaProvider.total = 0;
+    //   });
+    //   MyDialogs.showSuccess(context, 'Uspješna transakcija.', () {
+    //     Navigator.of(context).pop();
+    //     setState(() {
+    //       isLoading = true;
+    //     });
+    //     _kosaricaProvider.kosarica.items.isNotEmpty
+    //         ? _buildProductCardList()
+    //         : _buildNoDataField();
+    //   });
+    // } catch (e) {
+    //   MyDialogs.showError(context, e.toString());
+    // }
   }
 }

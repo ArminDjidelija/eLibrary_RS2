@@ -31,6 +31,12 @@ namespace eLibrary.Services
                     .Include(x=>x.Citalac)
                     .Where(x => (x.Citalac.Ime + " " + x.Citalac.Prezime).ToLower().StartsWith(search.ImePrezimeGTE.ToLower()));
             }
+            if (!string.IsNullOrEmpty(search?.EmailGTE))
+            {
+                query = query
+                    .Include(x => x.Citalac)
+                    .Where(x => x.Citalac.Email.ToLower().StartsWith(search.EmailGTE.ToLower()));
+            }
             if (search?.BibliotekaId != null)
             {
                 query=query.Where(x=>x.BibliotekaId==search.BibliotekaId);
@@ -49,11 +55,10 @@ namespace eLibrary.Services
 
         public override async Task BeforeInsertAsync(ClanarineInsertRequest request, Clanarine entity, CancellationToken cancellationToken = default)
         {
-            var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync(cancellationToken);
-            entity.BibliotekaId=bibliotekaId;
+            entity.BibliotekaId = request.BibliotekaId;
 
             var tipClanarine = await Context.TipClanarineBibliotekes.FindAsync(request.TipClanarineBibliotekaId);
-            if(tipClanarine== null)
+            if(tipClanarine == null)
             {
                 throw new UserException("Pogrešan tip članarine");
             }
@@ -85,10 +90,27 @@ namespace eLibrary.Services
 
             await Context.SaveChangesAsync();
 
+            var prethodnaClanarina = await Context
+                .Clanarines
+                .Where(x=> x.CitalacId == request.CitalacId && x.BibliotekaId == request.BibliotekaId)
+                .OrderBy(x=> x.Kraj)
+                .FirstOrDefaultAsync();
+
             entity.UplateId=uplata.UplataId;
-            entity.Pocetak = DateTime.Now;
-            entity.Kraj = DateTime.Now.AddDays(tipClanarine.Trajanje);
             entity.Iznos = tipClanarine.Iznos;
+
+            if(prethodnaClanarina != null && prethodnaClanarina.Kraj > DateTime.Now)
+            {
+                //Ukoliko postoji clanarina koja zavrsava u buducnosti, nova clanarina se nastavlja na nju.
+                entity.Pocetak = prethodnaClanarina.Kraj;
+                entity.Kraj = entity.Pocetak.AddDays(tipClanarine.Trajanje);
+            }
+            else
+            {
+                //najstarija clanarina je zavrsila vec
+                entity.Pocetak = DateTime.Now;
+                entity.Kraj = DateTime.Now.AddDays(tipClanarine.Trajanje);
+            }
 
         }
     }

@@ -21,6 +21,7 @@ import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
@@ -67,6 +68,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ObavijestiProvider()),
       ChangeNotifierProvider(create: (_) => BibliotekaUposleniProvider()),
       ChangeNotifierProvider(create: (_) => UlogeProvider()),
+      ChangeNotifierProvider(create: (_) => TipUplateProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error : $error");
@@ -162,7 +164,11 @@ class LoginPage extends StatelessWidget {
                           print("Authenticated!");
                           if (user.bibliotekaId != null) {
                             AuthProvider.bibliotekaId = user.bibliotekaId;
-                            AuthProvider.korisnikId = user.korisnikId;
+                          }
+                          AuthProvider.korisnikId = user.korisnikId;
+
+                          if (user.korisniciUloges != null) {
+                            AuthProvider.korisnikUloge = user.korisniciUloges;
                           }
 
                           Navigator.of(context).push(MaterialPageRoute(

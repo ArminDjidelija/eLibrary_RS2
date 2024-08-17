@@ -3,6 +3,7 @@ import 'package:elibrary_mobile/models/knjiga.dart';
 import 'package:elibrary_mobile/models/pozajmica.dart';
 import 'package:elibrary_mobile/models/rezervacija.dart';
 import 'package:elibrary_mobile/models/search_result.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
@@ -55,7 +56,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
     _initForm();
   }
 
-  void _firstLoad() async {
+  Future _firstLoad() async {
     setState(() {
       isFirstLoadRunning = true;
       prijasnjePozajmice = [];
@@ -69,7 +70,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
         pageSize: 10,
         orderBy: 'StvarniDatumVracanja',
         sortDirection: 'descending',
-        filter: {'vraceno': true},
+        filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId},
         includeTables: 'BibliotekaKnjiga');
 
     if (prijasnjePozajmiceResult != null) {
@@ -104,7 +105,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
           pageSize: 10,
           orderBy: 'StvarniDatumVracanja',
           sortDirection: 'descending',
-          filter: {'vraceno': true},
+          filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId},
           includeTables: 'BibliotekaKnjiga');
 
       if (prijasnjePozajmiceResult!.resultList.isNotEmpty) {
@@ -130,14 +131,14 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Future _getTrenutnePozajmice() async {
     trenutnePozajmice = await pozajmiceProvider.get(
-        filter: {'vraceno': false},
+        filter: {'vraceno': false, 'citalacId': AuthProvider.citalacId},
         retrieveAll: true,
         includeTables: 'BibliotekaKnjiga');
   }
 
   Future _getPrijasnjePozajmice() async {
     prijasnjePozajmiceResult = await pozajmiceProvider.get(
-        filter: {'vraceno': true},
+        filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId},
         retrieveAll: true,
         includeTables: 'BibliotekaKnjiga');
   }

@@ -22,16 +22,19 @@ namespace eLibrary.Services
         private readonly ILogger<CitaociService> _logger;
         private readonly IPasswordService _passwordService;
         private readonly IRecommendService recommendService;
+        private readonly ICurrentUserServiceAsync currentUserService;
 
         public CitaociService(ELibraryContext context,
             IMapper mapper,
             ILogger<CitaociService> logger,
             IPasswordService passwordService,
-            IRecommendService recommendService) : base(context, mapper)
+            IRecommendService recommendService,
+            ICurrentUserServiceAsync currentUserService) : base(context, mapper)
         {
             this._logger = logger;
             this._passwordService = passwordService;
             this.recommendService = recommendService;
+            this.currentUserService = currentUserService;
         }
         public override IQueryable<Citaoci> AddFilter(CitaociSearchObject search, IQueryable<Citaoci> query)
         {
@@ -84,6 +87,10 @@ namespace eLibrary.Services
             if (request.Lozinka != request.LozinkaPotvrda)
                 throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
 
+            var existing = await Context.Citaocis.FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
+            if (existing != null)
+                throw new UserException("Čitalac sa ovim korisničkim imenom već postoji");
+
             entity.LozinkaSalt = _passwordService.GenerateSalt();
             entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
@@ -101,6 +108,18 @@ namespace eLibrary.Services
                 }
             }
         }
+
+        public async Task<Model.CitaociDTOs.Citaoci> GetInfo(CancellationToken cancellationToken = default)
+        {
+            var citalacId = await currentUserService.GetCitaocIdAsync(cancellationToken);
+            if(citalacId == null)
+            {
+                throw new UserException("Greška sa čitaocem");
+            }
+            var citalac = await Context.Citaocis.FirstOrDefaultAsync(x=>x.CitalacId == citalacId);
+            return Mapper.Map<Model.CitaociDTOs.Citaoci>(citalac);
+        }
+
         public Model.CitaociDTOs.Citaoci Login(string username, string password)
         {
             var entity = Context

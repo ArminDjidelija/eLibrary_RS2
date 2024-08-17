@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
-    public class PenaliService : BaseCRUDServiceAsync<Model.PenaliDTOs.Penali, PenaliSearchObject, Database.Penali, PenaliInsertRequest, PenaliUpdateRequest>,IPenaliService
+    public class PenaliService : BaseCRUDServiceAsync<Model.PenaliDTOs.Penali, PenaliSearchObject, Database.Penali, PenaliInsertRequest, PenaliUpdateRequest>, IPenaliService
     {
         public PenaliService(ELibraryContext context, IMapper mapper) : base(context, mapper)
         {
@@ -65,6 +65,38 @@ namespace eLibrary.Services
             var biblioteka = penal.Pozajmica.BibliotekaKnjiga.Biblioteka;
 
             return Mapper.Map<Model.BibliotekeDTOs.Biblioteke>(biblioteka);
+        }
+
+        public async Task<Model.PenaliDTOs.Penali> Plati(int penalId, int tipUplateId, CancellationToken cancellationToken = default)
+        {
+            var penal = await Context.Penalis.FindAsync(penalId);
+            if (penal == null)
+                throw new UserException("Penal ne postoji!");
+            var biblioteka = await GetBibliotekaByPenalAsync(penalId, cancellationToken);
+
+            var citalacId = await Context
+                .Penalis
+                .Include(x=> x.Pozajmica)
+                .Where(x=>x.PenalId==penalId)
+                .Select(x=>x.Pozajmica.CitalacId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            var uplata = new Database.Uplate
+            {
+                BibliotekaId = biblioteka.BibliotekaId,
+                TipUplateId = tipUplateId,
+                CitalacId = citalacId,
+                DatumUplate = DateTime.Now,
+                Iznos = penal.Iznos,
+                ValutaId = penal.ValutaId.Value
+            };
+            await Context.Uplates.AddAsync(uplata);
+            await Context.SaveChangesAsync(cancellationToken);
+
+            penal.UplataId = uplata.UplataId;
+            await Context.SaveChangesAsync(cancellationToken);
+
+            return Mapper.Map<Model.PenaliDTOs.Penali>(penal);
         }
     }
 }

@@ -453,10 +453,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                           ),
                         );
                       },
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(
-                            errorText: "Slika je obavezna"),
-                      ]),
+                      // validator: FormBuilderValidators.compose([
+                      //   FormBuilderValidators.required(
+                      //       errorText: "Slika je obavezna"),
+                      // ]),
                     ))
               ],
             )

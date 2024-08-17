@@ -29,5 +29,11 @@ namespace eLibrary.API.Controllers
         {
             return (_service as ICitaociService).Recommend(citalacId);
         }
+
+        [HttpGet("info")]
+        public Task<Model.CitaociDTOs.Citaoci> GetInfo(CancellationToken cancellationToken = default)
+        {
+            return (_service as ICitaociService).GetInfo(cancellationToken);
+        }
     }
 }

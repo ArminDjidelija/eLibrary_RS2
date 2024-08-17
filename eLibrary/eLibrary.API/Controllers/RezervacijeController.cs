@@ -17,27 +17,27 @@ namespace eLibrary.API.Controllers
         }
 
         [HttpPut("{id}/odobri")]
-        public Task<Model.RezervacijeDTOs.Rezervacije> Odobri(int id, CancellationToken cancellationToken=default)
+        public async Task<Model.RezervacijeDTOs.Rezervacije> Odobri(int id, CancellationToken cancellationToken=default)
         {
-            return (_service as IRezervacijeService).OdobriAsync(id, cancellationToken);
+            return await (_service as IRezervacijeService).OdobriAsync(id, cancellationToken);
         }
 
         [HttpPut("{id}/ponisti")]
-        public Task<Model.RezervacijeDTOs.Rezervacije> Ponisti(int id, CancellationToken cancellationToken = default)
+        public async Task<Model.RezervacijeDTOs.Rezervacije> Ponisti(int id, CancellationToken cancellationToken = default)
         {
-            return (_service as IRezervacijeService).PonistiAsync(id, cancellationToken);
+            return await (_service as IRezervacijeService).PonistiAsync(id, cancellationToken);
         }
 
         [HttpPut("{id}/obnovi")]
-        public Task<Model.RezervacijeDTOs.Rezervacije> Obnovi(int id, CancellationToken cancellationToken = default)
+        public async Task<Model.RezervacijeDTOs.Rezervacije> Obnovi(int id, CancellationToken cancellationToken = default)
         {
-            return (_service as IRezervacijeService).ObnoviAsync(id, cancellationToken);
+            return await (_service as IRezervacijeService).ObnoviAsync(id, cancellationToken);
         }
 
         [HttpPut("{id}/zavrsi")]
-        public Task<Model.RezervacijeDTOs.Rezervacije> Zavrsi(int id, CancellationToken cancellationToken = default)
+        public async Task<Model.RezervacijeDTOs.Rezervacije> Zavrsi(int id, CancellationToken cancellationToken = default)
         {
-            return (_service as IRezervacijeService).ZavrsiAsync(id, cancellationToken);
+            return await (_service as IRezervacijeService).ZavrsiAsync(id, cancellationToken);
         }
 
         [HttpGet("{id}/allowedActions")]
