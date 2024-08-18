@@ -8,6 +8,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -100,6 +101,42 @@ namespace eLibrary.Services
                     .CountAsync(cancellationToken);
                 item.TrenutnoDostupno = item.DostupnoPozajmica-ukupnoPozajmljeno;
             }
+        }
+
+        public async Task<List<Model.BibliotekaKnjigeDTOs.PozajmicaInfo>> GenerateReportData(int bibliotekaKnjigaId, CancellationToken cancellationToken = default)
+        {
+            var result = new List<Model.BibliotekaKnjigeDTOs.PozajmicaInfo>();
+
+            DateTime danasnjiDatum = DateTime.Now;
+            DateTime pocetniDatum = danasnjiDatum.AddMonths(-11).AddDays(1 - danasnjiDatum.Day);
+
+            var pozajmicePosljednjih12Mjeseci = await Context
+                .Pozajmices
+                .Where(x => x.BibliotekaKnjigaId == bibliotekaKnjigaId && x.DatumPreuzimanja >= pocetniDatum)
+                .GroupBy(p => new { p.DatumPreuzimanja.Year, p.DatumPreuzimanja.Month })
+                .Select(g => new
+                {
+                    Mjesec = new DateTime(g.Key.Year, g.Key.Month, 1),
+                    BrojPozajmica = g.Count()
+                })
+                .ToListAsync(cancellationToken);
+
+            for(int i = 0; i < 12; i++)
+            {
+                var trenutniMjesec = pocetniDatum.AddMonths(i);
+                var pozajmiceZaMjesec = pozajmicePosljednjih12Mjeseci
+                    .FirstOrDefault(p => p.Mjesec.Year == trenutniMjesec.Year && p.Mjesec.Month == trenutniMjesec.Month);
+
+                result.Add(new Model.BibliotekaKnjigeDTOs.PozajmicaInfo
+                {
+                    Rb = i +1,
+                    MjesecString = trenutniMjesec.ToString("MMM", new CultureInfo("bs-Latn-BA")),
+                    BrojPozajmica = pozajmiceZaMjesec?.BrojPozajmica ?? 0,
+                    MjesecInt = trenutniMjesec.Month,
+                });
+            }
+
+            return result;
         }
     }
 }

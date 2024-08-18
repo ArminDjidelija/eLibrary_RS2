@@ -771,7 +771,7 @@ namespace eLibrary.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProduženjePozajmica",
+                name: "ProduzenjePozajmica",
                 columns: table => new
                 {
                     ProduzenjePozajmiceId = table.Column<int>(type: "int", nullable: false)
@@ -956,7 +956,7 @@ namespace eLibrary.Services.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProduženjePozajmica_PozajmicaId",
-                table: "ProduženjePozajmica",
+                table: "ProduzenjePozajmica",   
                 column: "PozajmicaId");
 
             migrationBuilder.CreateIndex(
@@ -1039,7 +1039,7 @@ namespace eLibrary.Services.Migrations
                 name: "Penali");
 
             migrationBuilder.DropTable(
-                name: "ProduženjePozajmica");
+                name: "ProduzenjePozajmica");
 
             migrationBuilder.DropTable(
                 name: "Rezervacije");

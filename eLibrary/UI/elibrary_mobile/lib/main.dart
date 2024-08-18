@@ -22,6 +22,7 @@ import 'package:elibrary_mobile/providers/korisnik_sacuvana_knjiga_provider.dart
 import 'package:elibrary_mobile/providers/obavijesti_provider.dart';
 import 'package:elibrary_mobile/providers/penali_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
+import 'package:elibrary_mobile/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/uplate_provider.dart';
@@ -69,6 +70,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => KorisnikSacuvanaKnjigaProvider()),
       ChangeNotifierProvider(create: (_) => ObavijestiProvider()),
       ChangeNotifierProvider(create: (_) => CitalacKnjigaLogProvider()),
+      ChangeNotifierProvider(create: (_) => ProduzenjePozajmiceProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framerwork");
@@ -167,6 +169,9 @@ class LoginPage extends StatelessWidget {
                           AuthProvider.citalacId = citalac.citalacId;
                           AuthProvider.ime = citalac.ime;
                           AuthProvider.prezime = citalac.prezime;
+                          AuthProvider.kantonId = citalac.kantonId;
+                          AuthProvider.institucija = citalac.institucija;
+                          AuthProvider.telefon = citalac.telefon;
                           print("Authenticated!");
 
                           Navigator.of(context).push(MaterialPageRoute(

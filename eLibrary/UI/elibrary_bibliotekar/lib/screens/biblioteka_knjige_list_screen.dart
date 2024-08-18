@@ -216,7 +216,11 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
               height: 75,
               child: imageFromString(item.knjiga!.slika!),
             )
-          : const Text("")),
+          : Image.asset(
+              "assets/images/fit.png",
+              height: 75,
+              width: 75,
+            )),
       DataCell(ElevatedButton(
           child: Text(
             "Detalji",

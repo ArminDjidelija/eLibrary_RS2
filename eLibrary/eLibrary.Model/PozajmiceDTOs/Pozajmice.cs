@@ -32,6 +32,6 @@ namespace eLibrary.Model.PozajmiceDTOs
 
         public virtual ICollection<Penali> Penalis { get; set; } = new List<Penali>();
 
-        public virtual ICollection<ProduzenjePozajmica> ProduženjePozajmicas { get; set; } = new List<ProduzenjePozajmica>();
+        public virtual ICollection<ProduzenjePozajmica> ProduzenjePozajmicas { get; set; } = new List<ProduzenjePozajmica>();
     }
 }

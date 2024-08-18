@@ -1,8 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_mobile/models/ciljna_grupa.dart';
 import 'package:elibrary_mobile/models/kanton.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
+import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/kanton_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
@@ -17,22 +20,35 @@ class CitalacProfilScreen extends StatefulWidget {
 class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
+  late CitaociProvider citaociProvider;
   late KantonProvider kantonProvider;
   // List<Kanton> kantoni = [];
-  List<int> kantoni = [];
+  List<Kanton> kantoni = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    citaociProvider = context.read<CitaociProvider>();
     kantonProvider = context.read<KantonProvider>();
-
+    _initialValue = {
+      'ime': AuthProvider.ime,
+      'prezime': AuthProvider.prezime,
+    };
     _initForm();
-    _initialValue = {'ime': "Armin", 'prezime': "Didelija"};
   }
 
   Future _initForm() async {
-    setState(() {});
+    var citalac = await citaociProvider.getById(AuthProvider.citalacId!);
+    var kantoniResult = await kantonProvider.get(retrieveAll: true);
+
+    setState(() {
+      kantoni = kantoniResult.resultList;
+      _initialValue['kantonId'] = citalac.kantonId;
+      _initialValue['telefon'] = citalac.telefon;
+      _initialValue['institucija'] = citalac.institucija;
+    });
+    _formKey.currentState?.reset();
   }
 
   Future<List<Kanton>> getKantone(String naziv) async {
@@ -80,9 +96,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            child: _buildProfileHeader(),
-          ),
+          Column(children: [_buildProfileHeader(), _saveRow()]),
         ],
       ),
     );
@@ -158,39 +172,24 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
             ),
             Row(
               children: [
-                Expanded(
-                    child: DropdownSearch<Kanton>.multiSelection(
-                  popupProps: const PopupPropsMultiSelection.menu(
-                      isFilterOnline: true,
-                      showSearchBox: true,
-                      searchDelay: Duration(milliseconds: 5)),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
-                          labelText: "Odaberi kanton",
-                          hintText: "Unesite naziv kantona")),
-                  asyncItems: (String filter) async {
-                    var kantoni = await getKantone(filter);
-                    return kantoni;
-                  },
-                  onChanged: (List<Kanton> c) {
-                    if (c != null || c.isNotEmpty) {
-                      kantoni = c.map((a) => a.kantonId!).toList();
-                    }
-                    c.forEach((element) {
-                      print(element.kantonId);
-                    });
-                  },
-                  compareFn: (item1, item2) => item1.kantonId == item2.kantonId,
-                  itemAsString: (Kanton u) => "${u.naziv}",
-                  validator: (List<Kanton>? c) {
-                    if (c == null || c.isEmpty) {
-                      return 'Obavezno polje';
-                    }
-                  },
-                  onSaved: (newValue) => {
-                    if (newValue != null) {print(newValue.length)}
-                  },
-                )),
+                if (kantoni.isNotEmpty)
+                  Expanded(
+                      child: FormBuilderDropdown(
+                    // initialValue:
+                    //     kantoni.isEmpty ? null : AuthProvider.kantonId,
+                    name: "kantonId",
+                    decoration: InputDecoration(labelText: "Kanton"),
+                    items: kantoni
+                            .map((e) => DropdownMenuItem(
+                                value: e.kantonId.toString(),
+                                child: Text(e.naziv ?? "")))
+                            .toList() ??
+                        [],
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
+                    ]),
+                  )),
                 SizedBox(
                   width: 10,
                 ),
@@ -198,6 +197,26 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _saveRow() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                _formKey.currentState?.saveAndValidate();
+                var request = Map.from(_formKey.currentState!.value);
+                citaociProvider.update(AuthProvider.citalacId!, request);
+
+                // print(knjigaSlanje);
+              },
+              child: Text("Sacuvaj"))
+        ],
       ),
     );
   }

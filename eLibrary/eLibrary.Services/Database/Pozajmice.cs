@@ -27,7 +27,7 @@ public partial class Pozajmice : ISoftDeletable
 
     public virtual ICollection<Penali> Penalis { get; set; } = new List<Penali>();
 
-    public virtual ICollection<ProduženjePozajmica> ProduženjePozajmicas { get; set; } = new List<ProduženjePozajmica>();
+    public virtual ICollection<ProduzenjePozajmica> ProduzenjePozajmicas { get; set; } = new List<ProduzenjePozajmica>();
     public bool IsDeleted { get; set; } = false;
     public DateTime? VrijemeBrisanja { get; set; }
 }

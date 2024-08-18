@@ -58,7 +58,7 @@ public partial class ELibraryContext : DbContext
 
     public virtual DbSet<Pozajmice> Pozajmices { get; set; }
 
-    public virtual DbSet<ProduženjePozajmica> ProduženjePozajmicas { get; set; }
+    public virtual DbSet<ProduzenjePozajmica> ProduzenjePozajmicas { get; set; }
 
     public virtual DbSet<Rezervacije> Rezervacijes { get; set; }
 
@@ -476,16 +476,16 @@ public partial class ELibraryContext : DbContext
                 .HasConstraintName("FKPozajmice865313");
         });
 
-        modelBuilder.Entity<ProduženjePozajmica>(entity =>
+        modelBuilder.Entity<ProduzenjePozajmica>(entity =>
         {
             entity.HasKey(e => e.ProduzenjePozajmiceId).HasName("PK__Produžen__9B28C15E79BEC522");
 
-            entity.ToTable("ProduženjePozajmica");
+            entity.ToTable("ProduzenjePozajmica");
 
             entity.Property(e => e.DatumZahtjeva).HasColumnType("datetime");
             entity.Property(e => e.NoviRok).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Pozajmica).WithMany(p => p.ProduženjePozajmicas)
+            entity.HasOne(d => d.Pozajmica).WithMany(p => p.ProduzenjePozajmicas)
                 .HasForeignKey(d => d.PozajmicaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduženje639386");

@@ -7,10 +7,12 @@ import 'package:elibrary_bibliotekar/models/uplata.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
+import 'package:elibrary_bibliotekar/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -262,40 +264,116 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 item.stvarniDatumVracanja == null
-                    ? ElevatedButton(
-                        style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll<Color>(Colors.blue)),
-                        onPressed: () {
-                          // Prva akcija dugmeta
-                          print(
-                              'First button pressed for item: ${item.trajanje}');
-                          QuickAlert.show(
-                              context: context,
-                              width: 450,
-                              type: QuickAlertType.confirm,
-                              title: "Jeste li sigurni?",
-                              text:
-                                  "Da li želite potvrditi da je pozajmica uspješno vraćena?",
-                              confirmBtnText: "Da",
-                              cancelBtnText: "Ne",
-                              onConfirmBtnTap: () async {
-                                print("Potvrdeno: ${item.pozajmicaId}");
-                                //TODO dodaj na api da je potvrdena,
-                                await provider
-                                    .potvrdiPozajmicu(item.pozajmicaId!);
-                                filterServerSide("", vraceno);
-                                Navigator.pop(context);
+                    ? Row(
+                        children: [
+                          ElevatedButton(
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll<Color>(
+                                        Colors.blue)),
+                            onPressed: () {
+                              // Prva akcija dugmeta
+                              print(
+                                  'First button pressed for item: ${item.trajanje}');
+                              QuickAlert.show(
+                                  context: context,
+                                  width: 450,
+                                  type: QuickAlertType.confirm,
+                                  title: "Jeste li sigurni?",
+                                  text:
+                                      "Da li želite potvrditi da je pozajmica uspješno vraćena?",
+                                  confirmBtnText: "Da",
+                                  cancelBtnText: "Ne",
+                                  onConfirmBtnTap: () async {
+                                    print("Potvrdeno: ${item.pozajmicaId}");
+                                    //TODO dodaj na api da je potvrdena,
+                                    await provider
+                                        .potvrdiPozajmicu(item.pozajmicaId!);
+                                    filterServerSide("", vraceno);
+                                    Navigator.pop(context);
+                                  },
+                                  onCancelBtnTap: () {
+                                    print("Cancel: ${item.pozajmicaId}");
+                                    Navigator.pop(context);
+                                  });
+                            },
+                            child: Text(
+                              'Potvrdi vraćanje',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          if (item.produzenjePozajmicas != null &&
+                              item.produzenjePozajmicas!
+                                  .any((element) => element.odobreno == null))
+                            ElevatedButton(
+                              style: const ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Colors.blue)),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Odobrite produženje"),
+                                      content: Text(
+                                          "Zahtjev za produženjem pozajmice za ${item.produzenjePozajmicas!.firstWhere((element) => element.odobreno == null).produzenje} dana."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Zatvara dijalog
+                                          },
+                                          child: Text("Odustani"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            var provider =
+                                                new ProduzenjePozajmiceProvider();
+                                            await provider.update(
+                                                item.produzenjePozajmicas!
+                                                    .firstWhere((element) =>
+                                                        element.odobreno ==
+                                                        null)
+                                                    .produzenjePozajmiceId!,
+                                                {'odobreno': false});
+                                            // Logika za poništavanje
+                                            Navigator.of(context)
+                                                .pop(); // Zatvara dijalog
+                                            filterServerSide("", false);
+                                          },
+                                          child: Text("Poništi"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            var provider =
+                                                new ProduzenjePozajmiceProvider();
+                                            await provider.update(
+                                                item.produzenjePozajmicas!
+                                                    .firstWhere((element) =>
+                                                        element.odobreno ==
+                                                        null)
+                                                    .produzenjePozajmiceId!,
+                                                {'odobreno': true});
+                                            // Logika za poništavanje
+                                            Navigator.of(context)
+                                                .pop(); // Zatvara dijalog
+                                            filterServerSide("", false);
+                                          },
+                                          child: Text("Odobri"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
-                              onCancelBtnTap: () {
-                                print("Cancel: ${item.pozajmicaId}");
-                                Navigator.pop(context);
-                              });
-                        },
-                        child: Text(
-                          'Potvrdi vraćanje',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                              child: Text(
+                                'Produženje',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                        ],
                       )
                     : ElevatedButton(
                         style: const ButtonStyle(
@@ -373,7 +451,7 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
     var result = await provider?.get(
         page: page,
         pageSize: pageSize,
-        includeTables: "Citalac,BibliotekaKnjiga.Knjiga",
+        includeTables: "Citalac,BibliotekaKnjiga.Knjiga,ProduzenjePozajmicas",
         orderBy: "DatumPreuzimanja",
         sortDirection: "descending",
         filter: filter);

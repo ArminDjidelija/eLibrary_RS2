@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eLibrary.Services.Database;
 
-public partial class ProduženjePozajmica : ISoftDeletable
+public partial class ProduzenjePozajmica : ISoftDeletable
 {
     public int ProduzenjePozajmiceId { get; set; }
 

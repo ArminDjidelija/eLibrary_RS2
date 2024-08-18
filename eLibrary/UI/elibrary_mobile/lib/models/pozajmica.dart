@@ -1,5 +1,6 @@
 import 'package:elibrary_mobile/models/biblioteka_knjiga.dart';
 import 'package:elibrary_mobile/models/citalac.dart';
+import 'package:elibrary_mobile/models/produzenje_pozajmice.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'pozajmica.g.dart';
 
@@ -14,6 +15,7 @@ class Pozajmica {
   int? trajanje;
   bool? moguceProduziti;
   Citalac? citalac;
+  List<ProduzenjePozajmice>? produzenjePozajmicas;
   BibliotekaKnjiga? bibliotekaKnjiga;
   Pozajmica();
   factory Pozajmica.fromJson(Map<String, dynamic> json) =>

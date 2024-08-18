@@ -19,10 +19,12 @@ import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
+import 'package:elibrary_bibliotekar/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/rezervacije_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
+import 'package:elibrary_bibliotekar/providers/upiti_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
@@ -69,6 +71,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => BibliotekaUposleniProvider()),
       ChangeNotifierProvider(create: (_) => UlogeProvider()),
       ChangeNotifierProvider(create: (_) => TipUplateProvider()),
+      ChangeNotifierProvider(create: (_) => ProduzenjePozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => UpitiProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error : $error");

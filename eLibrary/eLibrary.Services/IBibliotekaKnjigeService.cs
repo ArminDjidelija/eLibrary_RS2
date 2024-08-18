@@ -11,5 +11,6 @@ namespace eLibrary.Services
 {
     public interface IBibliotekaKnjigeService:ICRUDServiceAsync<Model.BibliotekaKnjigeDTOs.BibliotekaKnjige, BibliotekaKnjigeSearchObject, BibliotekaKnjigeInsertRequest, BibliotekaKnjigeUpdateRequest>
     {
+        Task<List<Model.BibliotekaKnjigeDTOs.PozajmicaInfo>> GenerateReportData(int bibliotekaKnjigaId, CancellationToken cancellationToken = default);
     }
 }

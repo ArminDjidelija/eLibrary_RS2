@@ -5,6 +5,7 @@ import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
+import 'package:elibrary_bibliotekar/screens/citalac_detalji_screen.dart';
 import 'package:elibrary_bibliotekar/screens/novi_citalac_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -156,15 +157,15 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
     final item = data?[index];
 
     return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => KnjigaDetailsScreen(
-        //                     knjiga: item,
-        //                   ))),
-        //         }
-        //     },
+        onSelectChanged: (selected) => {
+              if (selected == true)
+                {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CitalacDetaljiScreen(
+                            citalac: item,
+                          ))),
+                }
+            },
         cells: [
           DataCell(Text(item!.ime.toString())),
           DataCell(Text(item!.prezime.toString())),

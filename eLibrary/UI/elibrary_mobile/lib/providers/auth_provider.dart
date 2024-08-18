@@ -4,4 +4,7 @@ class AuthProvider {
   static int? citalacId;
   static String? ime;
   static String? prezime;
+  static int? kantonId;
+  static String? telefon;
+  static String? institucija;
 }

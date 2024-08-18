@@ -1,8 +1,7 @@
-import 'package:advanced_datatable/datatable.dart';
+import 'dart:convert';
+
 import 'package:autoscale_tabbarview/autoscale_tabbarview.dart';
-import 'package:elibrary_mobile/layouts/base_mobile_screen.dart';
 import 'package:elibrary_mobile/models/biblioteka_knjiga.dart';
-import 'package:elibrary_mobile/models/ciljna_grupa.dart';
 import 'package:elibrary_mobile/models/jezik.dart';
 import 'package:elibrary_mobile/models/kanton.dart';
 import 'package:elibrary_mobile/models/knjiga.dart';
@@ -22,6 +21,7 @@ import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_mobile/providers/korisnik_sacuvana_knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
+import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +50,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   late KorisnikSacuvanaKnjigaProvider korisnikSacuvanaKnjigaProvider;
   late TabController _tabController;
   late CitalacKnjigaLogProvider citalacKnjigaLogProvider;
+  late RezervacijeProvider rezervacijeProvider;
 
   SearchResult<Knjiga>? knjigeResult;
   SearchResult<Pozajmica>? pozajmiceResult;
@@ -79,6 +80,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
         context.read<KorisnikSacuvanaKnjigaProvider>();
     kantonProvider = context.read<KantonProvider>();
     citalacKnjigaLogProvider = context.read<CitalacKnjigaLogProvider>();
+    rezervacijeProvider = context.read<RezervacijeProvider>();
 
     _tabController = TabController(length: 2, vsync: this);
     _initForm();
@@ -341,11 +343,11 @@ class _KnjigaScreenState extends State<KnjigaScreen>
         padding: EdgeInsets.all(8.0),
         children: bibliotekaKnjigaResult!.resultList
             .map((e) => _buildBibliotekaCard(
-                  title: e.biblioteka!.naziv!,
-                  city: e.biblioteka!.kantonId!,
-                  address: e.biblioteka!.adresa,
-                  availability: e.trenutnoDostupno,
-                ))
+                title: e.biblioteka!.naziv!,
+                city: e.biblioteka!.kantonId!,
+                address: e.biblioteka!.adresa,
+                availability: e.trenutnoDostupno,
+                id: e.bibliotekaKnjigaId!))
             .toList(),
       );
     } else {
@@ -363,6 +365,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     required int city,
     required String? address,
     required int? availability,
+    required int id,
   }) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -401,7 +404,9 @@ class _KnjigaScreenState extends State<KnjigaScreen>
               children: [
                 availability != null && availability > 0
                     ? ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _rezervisiKnjigu(id!);
+                        },
                         style: ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.blue),
@@ -623,16 +628,35 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     );
   }
 
+  Future _rezervisiKnjigu(int id) async {
+    try {
+      rezervacijeProvider.insert(
+          {'citalacId': AuthProvider.citalacId, 'bibliotekaKnjigaId': id});
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Uspješno kreirana rezervacija");
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, text: e.toString());
+    }
+  }
+
   Widget _emptyDetalji() {
     return Center(child: Text('Nema dostupnih biblioteka'));
   }
 
   Future _addSacuvanaKnjiga(int knjigaId) async {
-    await korisnikSacuvanaKnjigaProvider
-        .insert({'citalacId': 1, 'knjigaId': knjigaId});
-    QuickAlert.show(
-        context: context,
-        type: QuickAlertType.success,
-        text: "Uspješno dodata knjiga");
+    try {
+      await korisnikSacuvanaKnjigaProvider
+          .insert({'citalacId': 1, 'knjigaId': knjigaId});
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Uspješno dodata knjiga");
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, text: e.toString());
+    }
   }
 }

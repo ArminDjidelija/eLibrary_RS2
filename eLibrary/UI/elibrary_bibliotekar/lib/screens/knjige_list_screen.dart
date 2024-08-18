@@ -6,6 +6,7 @@ import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
@@ -46,6 +47,7 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     super.initState();
     provider = context.read<KnjigaProvider>();
     _source = KnjigaDataSource(provider: provider, context: context);
+
     // updateFilter("", "");
     // initForm();
   }
@@ -189,7 +191,11 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
                   DataColumn(label: Text("Broj izdanja")),
                   DataColumn(label: Text("Broj stranica")),
                   DataColumn(label: Text("Slika")),
-                  DataColumn(label: Text("Akcija")),
+                  if (AuthProvider.korisnikUloge!
+                      .where(
+                          (element) => element.uloga!.naziv == "Administrator")
+                      .isEmpty)
+                    DataColumn(label: Text("Akcija")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -258,42 +264,77 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     }
 
     final item = data?[index];
-
-    return DataRow(
-        onSelectChanged: (selected) => {
-              if (selected == true)
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => KnjigaDetailsScreen(
-                            knjiga: item,
-                          ))),
-                }
-            },
-        cells: [
-          DataCell(Text(item!.naslov.toString())),
-          DataCell(Text(item!.isbn.toString())),
-          DataCell(Text(item!.godinaIzdanja.toString())),
-          DataCell(Text(item!.brojIzdanja.toString())),
-          DataCell(Text(item!.brojStranica.toString())),
-          DataCell(item!.slika != null
-              ? Container(
-                  width: 75,
-                  height: 75,
-                  child: imageFromString(item.slika!),
-                )
-              : const Text("")),
-          DataCell(
-            ElevatedButton(
-                onPressed: () async {
-                  //
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => NovaBibliotekaKnjigaScreen(
-                            knjiga: item,
-                          )));
-                },
-                child: const Text("Dodaj u biblioteku")),
-          )
-        ]);
+    if (AuthProvider.korisnikUloge!
+        .any((element) => element.uloga!.naziv == "Administrator")) {
+      return DataRow(
+          onSelectChanged: (selected) => {
+                if (selected == true)
+                  {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => KnjigaDetailsScreen(
+                              knjiga: item,
+                            ))),
+                  }
+              },
+          cells: [
+            DataCell(Text(item!.naslov.toString())),
+            DataCell(Text(item!.isbn.toString())),
+            DataCell(Text(item!.godinaIzdanja.toString())),
+            DataCell(Text(item!.brojIzdanja.toString())),
+            DataCell(Text(item!.brojStranica.toString())),
+            DataCell(item!.slika != null
+                ? Container(
+                    width: 75,
+                    height: 75,
+                    child: imageFromString(item.slika!),
+                  )
+                : Image.asset(
+                    "assets/images/empty.png",
+                    height: 75,
+                    width: 75,
+                  )),
+            if (AuthProvider.korisnikUloge!
+                .where((element) => element.uloga!.naziv == "Administrator")
+                .isEmpty)
+              DataCell(
+                ElevatedButton(
+                    onPressed: () async {
+                      //
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NovaBibliotekaKnjigaScreen(
+                                knjiga: item,
+                              )));
+                    },
+                    child: const Text("Dodaj u biblioteku")),
+              )
+          ]);
+    } else {
+      return DataRow(cells: [
+        DataCell(Text(item!.naslov.toString())),
+        DataCell(Text(item!.isbn.toString())),
+        DataCell(Text(item!.godinaIzdanja.toString())),
+        DataCell(Text(item!.brojIzdanja.toString())),
+        DataCell(Text(item!.brojStranica.toString())),
+        DataCell(item!.slika != null
+            ? Container(
+                width: 75,
+                height: 75,
+                child: imageFromString(item.slika!),
+              )
+            : const Text("")),
+        DataCell(
+          ElevatedButton(
+              onPressed: () async {
+                //
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NovaBibliotekaKnjigaScreen(
+                          knjiga: item,
+                        )));
+              },
+              child: const Text("Dodaj u biblioteku")),
+        )
+      ]);
+    }
   }
 
   void filterServerSide(naslovv, autorr, isbnn) {

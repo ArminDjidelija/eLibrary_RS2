@@ -7,11 +7,13 @@ import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
+import 'package:elibrary_mobile/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PozajmiceCitalacScreen extends StatefulWidget {
   const PozajmiceCitalacScreen({super.key});
@@ -25,6 +27,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
   late RezervacijeProvider rezervacijeProvider;
   late KnjigaProvider knjigaProvider;
   late BibliotekaProvider bibliotekaProvider;
+  late ProduzenjePozajmiceProvider produzenjePozajmiceProvider;
 
   SearchResult<Pozajmica>? trenutnePozajmice;
   SearchResult<Pozajmica>? prijasnjePozajmiceResult;
@@ -49,6 +52,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
     rezervacijeProvider = context.read<RezervacijeProvider>();
     knjigaProvider = context.read<KnjigaProvider>();
     bibliotekaProvider = context.read<BibliotekaProvider>();
+    produzenjePozajmiceProvider = context.read<ProduzenjePozajmiceProvider>();
 
     _firstLoad();
     scrollController = ScrollController()..addListener(_loadMore);
@@ -133,7 +137,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
     trenutnePozajmice = await pozajmiceProvider.get(
         filter: {'vraceno': false, 'citalacId': AuthProvider.citalacId},
         retrieveAll: true,
-        includeTables: 'BibliotekaKnjiga');
+        includeTables: 'BibliotekaKnjiga,ProduzenjePozajmicas');
   }
 
   Future _getPrijasnjePozajmice() async {
@@ -145,7 +149,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Future _getTrenutneRezervacije() async {
     trenutneRezervacije = await rezervacijeProvider.get(
-        filter: {'ponistena': false},
+        filter: {'ponistena': false, 'citalacId': AuthProvider.citalacId},
         retrieveAll: true,
         includeTables: 'BibliotekaKnjiga');
   }
@@ -379,10 +383,85 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                 'Vratiti do',
                 formatDateTimeToLocal(
                     pozajmica.preporuceniDatumVracanja.toString())),
+            if (pozajmica.produzenjePozajmicas!
+                    .where((element) => element.odobreno == null)
+                    .isEmpty ||
+                pozajmica.produzenjePozajmicas!.isEmpty)
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  child: Text(
+                    "Produzi",
+                    textAlign: TextAlign.end,
+                  ),
+                  onPressed: () => {_showExtendLoanDialog(context, pozajmica)},
+                ),
+              )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _showExtendLoanDialog(
+      BuildContext context, Pozajmica pozajmica) async {
+    final TextEditingController _daysController = TextEditingController();
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible:
+          false, // The dialog will not dismiss when tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Produži pozajmicu'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text('Unesite broj dana za produženje pozajmice:'),
+                TextField(
+                  controller: _daysController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Broj dana',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Odustani'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Closes the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Potvrdi'),
+              onPressed: () {
+                int? brojDana = int.tryParse(_daysController.text);
+                if (brojDana != null && brojDana > 0) {
+                  produziPozajmicu(
+                      brojDana,
+                      pozajmica
+                          .pozajmicaId!); // Call the method with the input number of days
+                } else {
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Molimo unesite validan broj dana')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future produziPozajmicu(int brojDana, int id) async {
+    await produzenjePozajmiceProvider
+        .insert({'produzenje': brojDana, 'pozajmicaId': id});
   }
 
   Widget _buildTrenutnaRezervacijaCard({required Rezervacija rezervacija}) {
@@ -452,11 +531,36 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             // SizedBox(height: 8.0),
             _buildInfoRow('Datum kreiranja',
                 formatDateTimeToLocal(rezervacija.datumKreiranja.toString())),
-            rezervacija.odobreno == null
-                ? _buildInfoRow('Odobrena?', "Ne još")
-                : rezervacija.odobreno == true
-                    ? _buildInfoRow('Odobrena?', "Da")
-                    : _buildInfoRow('Odobrena?', "Ne")
+            rezervacija.state == "Odobrena"
+                ? _buildInfoRow('Odobrena?', "Da")
+                : rezervacija.state == "Ponistena"
+                    ? _buildInfoRow('Poništena?', "Da")
+                    : _buildInfoRow('Odobrena?', "Ne još"),
+            if (rezervacija.state == "Kreirana" ||
+                rezervacija.state == "Obnovljena")
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  child: Text(
+                    "Poništi",
+                    textAlign: TextAlign.end,
+                  ),
+                  onPressed: () => {
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.confirm,
+                        title: "Jeste li sigurni?",
+                        text: "Želite li poništiti rezervaciju?",
+                        confirmBtnText: "Da",
+                        cancelBtnText: "Ne",
+                        onConfirmBtnTap: () => {
+                              ponistiRezervaciju(rezervacija.rezervacijaId!),
+                              Navigator.pop(context)
+                            },
+                        onCancelBtnTap: () => {Navigator.pop(context)})
+                  },
+                ),
+              )
             // _buildInfoRow(
             //     'Vratiti do',
             //     formatDateTimeToLocal(
@@ -465,6 +569,22 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
         ),
       ),
     );
+  }
+
+  Future ponistiRezervaciju(int id) async {
+    try {
+      await rezervacijeProvider.ponisti(id);
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Uspješno poništena rezervacija");
+      await _getTrenutneRezervacije();
+
+      setState(() {});
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, text: e.toString());
+    }
   }
 
   Widget _buildPrijasnjaPozajmicaCard({required Pozajmica pozajmica}) {

@@ -32,6 +32,8 @@ namespace eLibrary.Services.Recommender
             var allBooks = await context
                 .Knjiges
                 .Include(x => x.KnjigaAutoris)
+                .Include(x => x.Izdavac)
+                .Include(x => x.Uvez)
                 .Include(x => x.KnjigaCiljneGrupes)
                 .Include(x => x.KnjigaVrsteSadrzajas)
                 .Include(x => x.Jezik).ToListAsync();

@@ -847,7 +847,7 @@ namespace eLibrary.Services.Migrations
                     b.ToTable("Pozajmice", (string)null);
                 });
 
-            modelBuilder.Entity("eLibrary.Services.Database.ProduženjePozajmica", b =>
+            modelBuilder.Entity("eLibrary.Services.Database.ProduzenjePozajmica", b =>
                 {
                     b.Property<int>("ProduzenjePozajmiceId")
                         .ValueGeneratedOnAdd()
@@ -881,7 +881,7 @@ namespace eLibrary.Services.Migrations
 
                     b.HasIndex("PozajmicaId");
 
-                    b.ToTable("ProduženjePozajmica", (string)null);
+                    b.ToTable("ProduzenjePozajmica", (string)null);
                 });
 
             modelBuilder.Entity("eLibrary.Services.Database.Rezervacije", b =>
@@ -1504,10 +1504,10 @@ namespace eLibrary.Services.Migrations
                     b.Navigation("Citalac");
                 });
 
-            modelBuilder.Entity("eLibrary.Services.Database.ProduženjePozajmica", b =>
+            modelBuilder.Entity("eLibrary.Services.Database.ProduzenjePozajmica", b =>
                 {
                     b.HasOne("eLibrary.Services.Database.Pozajmice", "Pozajmica")
-                        .WithMany("ProduženjePozajmicas")
+                        .WithMany("ProduzenjePozajmicas")
                         .HasForeignKey("PozajmicaId")
                         .IsRequired()
                         .HasConstraintName("FKProduženje639386");
@@ -1693,7 +1693,7 @@ namespace eLibrary.Services.Migrations
                 {
                     b.Navigation("Penalis");
 
-                    b.Navigation("ProduženjePozajmicas");
+                    b.Navigation("ProduzenjePozajmicas");
                 });
 
             modelBuilder.Entity("eLibrary.Services.Database.TipClanarineBiblioteke", b =>

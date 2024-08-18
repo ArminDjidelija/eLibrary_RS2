@@ -14,5 +14,11 @@ namespace eLibrary.API.Controllers
         public BibliotekaKnjigeController(IBibliotekaKnjigeService service) : base(service)
         {
         }
+
+        [HttpGet("{id}/report")]
+        public Task<List<Model.BibliotekaKnjigeDTOs.PozajmicaInfo>> Report(int id, CancellationToken cancellationToken = default)
+        {
+            return (_service as IBibliotekaKnjigeService).GenerateReportData(id, cancellationToken);
+        }
     }
 }

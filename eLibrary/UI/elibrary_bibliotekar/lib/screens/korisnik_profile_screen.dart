@@ -124,7 +124,7 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka"),
+                  decoration: InputDecoration(labelText: "Nova lozinka"),
                   name: 'lozinka',
                   validator: FormBuilderValidators.compose([
                     // FormBuilderValidators.required(),

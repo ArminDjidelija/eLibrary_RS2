@@ -17,6 +17,7 @@ import 'package:elibrary_bibliotekar/screens/obavijesti_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmice_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/rezervacije_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
+import 'package:elibrary_bibliotekar/screens/upiti_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/uplate_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -409,6 +410,26 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                           BibliotekaDetailsScreen(
                                             biblioteka: biblioteka,
                                           )));
+                                },
+                              ),
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Administrator"))
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.question_answer,
+                                  color: Colors.white,
+                                ),
+                                title: const Text(
+                                  "Upiti",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => UpitiListScreen()));
                                 },
                               ),
                           ],

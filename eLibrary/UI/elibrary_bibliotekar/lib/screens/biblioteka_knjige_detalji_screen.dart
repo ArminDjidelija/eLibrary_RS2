@@ -1,4 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:elibrary_bibliotekar/models/pozajmica_info.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
@@ -31,6 +39,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class BibliotekaKnjigaDetailsScreen extends StatefulWidget {
   BibliotekaKnjiga? bibliotekaKnjiga;
@@ -59,6 +69,7 @@ class _BibliotekaKnjigaDetailsScreenState
   SearchResult<KnjigaCiljnaGrupa>? knjigaCiljneGrupeResult;
   SearchResult<Knjiga>? knjigaResult;
   List<BibliotekaKnjiga> data = [];
+  List<PozajmicaInfo> pozajmicaInfo = [];
   late Knjiga? knjiga;
   // late Jezi? knjiga;
   // late Knjiga? knjiga;
@@ -68,6 +79,8 @@ class _BibliotekaKnjigaDetailsScreenState
   int pageSize = 10;
   int count = 10;
   bool _isLoading = false;
+
+  final GlobalKey chartKey = GlobalKey();
 
   @override
   // TODO: implement context
@@ -438,6 +451,21 @@ class _BibliotekaKnjigaDetailsScreenState
                       children: [
                         ElevatedButton(
                           onPressed: () {
+                            prikaziGraf();
+                          },
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll<Color>(Colors.blue)),
+                          child: const Text(
+                            "Izveštaj",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     BibliotekaKnjigaEditScreen(
@@ -482,6 +510,204 @@ class _BibliotekaKnjigaDetailsScreenState
     );
   }
 
+  Future generateInvoice() async {
+    try {
+      // await showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("Prikaz grafikona"),
+      //       content: Container(
+      //           width: 600, // Širina grafikona unutar dijaloga
+      //           height: 300, // Visina grafikona unutar dijaloga
+      //           child: buildChart()),
+      //       actions: [
+      //         TextButton(
+      //           child: Text("Zatvori"),
+      //           onPressed: () {
+      //             Navigator.of(context).pop(); // Zatvori dialog
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+
+      Uint8List chartImage = await _captureChart();
+      var pdf = pw.Document();
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (context) => pw.Column(
+            children: [
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    "Godisnji izvjestaj",
+                  ),
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.end,
+                    children: [
+                      pw.Text(
+                        "eLibrary",
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              pw.Divider(thickness: 0.5),
+              pw.Container(
+                height: 400, // Visina za sliku grafikona
+                width: double.infinity,
+                decoration: pw.BoxDecoration(
+                  color: PdfColors.white,
+                ),
+                child: pw.Image(pw.MemoryImage(chartImage)),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final dir = await getApplicationDocumentsDirectory();
+      final vrijeme = DateTime.now();
+      String path =
+          '${dir.path}/Izvjestaj-${widget.bibliotekaKnjiga!.knjiga!.naslov}.pdf';
+      File file = File(path);
+      file.writeAsBytes(await pdf.save());
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  Future prikaziGraf() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Prikaz grafikona"),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+                width: 600, // Širina grafikona unutar dijaloga
+                height: 350, // Visina grafikona unutar dijaloga
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: buildChart(),
+                )),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Zatvori"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Zatvori dialog
+              },
+            ),
+            TextButton(
+              child: Text("Generiši izvjestaj"),
+              onPressed: () async {
+                generateInvoice();
+                Navigator.of(context).pop(); // Zatvori dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Uint8List> _captureChart() async {
+    try {
+      RenderRepaintBoundary boundary =
+          chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData!.buffer.asUint8List();
+    } catch (e) {
+      throw Exception("Error capturing chart: $e");
+    }
+  }
+
+  Widget buildChart() {
+    return RepaintBoundary(
+      key: chartKey,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: LineChart(
+          LineChartData(
+            titlesData: FlTitlesData(
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40, // Rezervisanje prostora za brojeve
+                  getTitlesWidget: (value, meta) {
+                    // Mapiranje int vrednosti u nazive meseca
+                    final months =
+                        pozajmicaInfo.map((e) => e.mjesecString).toList();
+
+                    Map<int, String> monthLabels = {
+                      for (var item in pozajmicaInfo)
+                        item.rb!: item.mjesecString!
+                    };
+                    String label =
+                        monthLabels[value.toInt()] ?? value.toInt().toString();
+
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        label,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40, // Rezervisanje više prostora za y osu
+                  getTitlesWidget: (value, meta) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        value
+                            .toInt()
+                            .toString(), // Prikaz int vrednosti na y-osi
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              topTitles: AxisTitles(
+                sideTitles:
+                    SideTitles(showTitles: false), // Sakrij na gornjoj osi
+              ),
+              rightTitles: AxisTitles(
+                sideTitles:
+                    SideTitles(showTitles: false), // Sakrij na desnoj osi
+              ),
+            ),
+            borderData: FlBorderData(show: true),
+            gridData: FlGridData(show: true),
+            lineBarsData: [
+              LineChartBarData(
+                spots: pozajmicaInfo
+                    .map((e) =>
+                        FlSpot(e.rb!.toDouble(), e.brojPozajmica!.toDouble()))
+                    .toList(),
+                isCurved: false,
+                barWidth: 4,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future initForm() async {
     int? knjigaId = widget.bibliotekaKnjiga?.knjigaId;
 
@@ -505,6 +731,11 @@ class _BibliotekaKnjigaDetailsScreenState
           filter: {'knjigaId': knjigaId},
           retrieveAll: true,
           includeTables: 'Uvez,Jezik,Izdavac');
+
+      var pozajmicaInfoResult = await provider
+          .getReportData(widget.bibliotekaKnjiga!.bibliotekaKnjigaId!);
+
+      pozajmicaInfo = pozajmicaInfoResult;
 
       if (knjigaResult?.count == 1 && knjigaResult?.resultList != null) {
         knjiga = knjigaResult!.resultList[0];

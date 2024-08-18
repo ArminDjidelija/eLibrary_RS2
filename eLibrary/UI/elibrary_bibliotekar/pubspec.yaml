@@ -45,6 +45,9 @@ dependencies:
   quickalert: ^1.1.0
   form_builder_validators: ^9.1.0
   dropdown_search: ^5.0.6
+  pdf: ^3.11.1
+  fl_chart: ^0.68.0
+  path_provider: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,6 +75,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/images/
+      # - assets/OpenSans-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

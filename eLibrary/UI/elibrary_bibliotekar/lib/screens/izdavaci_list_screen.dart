@@ -5,11 +5,13 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/izdavac_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../models/autor.dart';
@@ -51,16 +53,34 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
     // updateFilter("");
   }
 
+  //   @override
+  // Widget build(BuildContext context) {
+  //   return BibliotekarMasterScreen(
+  //     "Detalji knjige",
+  //     SingleChildScrollView(
+  //       child: Column(
+  //         children: [
+  //           _buildKnjigaDetalji(),
+  //           _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Izdavači",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
+        Align(
+          alignment: Alignment.topLeft,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildSearch(),
+                _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              ],
+            ),
           ),
         ));
   }
@@ -127,12 +147,18 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
   }
 
   Widget _buildPaginatedTable() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: SizedBox(
-              width: double.infinity,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Align(
+        alignment: Alignment.topLeft, // Postavljanje na početak ekrana
+        child: Container(
+          // Postavite maksimalnu širinu po potrebi
+          width: 200, // Širina koja odgovara maksimalnoj širini sadržaja
+          child: SingleChildScrollView(
+            scrollDirection:
+                Axis.horizontal, // Omogućavanje horizontalnog pomeranja
+            child: SizedBox(
+              width: 200, // Širina treba da bude ista kao u Container
               child: AdvancedPaginatedDataTable(
                 columns: [
                   DataColumn(
@@ -140,17 +166,21 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Naziv"),
                   )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Akcija"),
-                  )),
+                  if (AuthProvider.korisnikUloge!.any(
+                      (element) => element.uloga!.naziv == "Administrator"))
+                    DataColumn(
+                        label: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Akcija"),
+                    )),
                 ],
                 source: _source,
                 addEmptyRows: false,
-              )),
+              ),
+            ),
+          ),
         ),
-      ), // Spacer(),
+      ),
     );
   }
 }
@@ -174,26 +204,36 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
 
     final item = data?[index];
 
-    return DataRow(cells: [
-      DataCell(Container(
-        alignment: Alignment.centerLeft,
-        child: Text(item!.naziv.toString()),
-      )),
-      DataCell(ElevatedButton(
-          child: Text(
-            "Detalji",
-            style: TextStyle(color: Colors.white),
-          ),
-          style: ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-          ),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => IzdavacDetailsScreen(
-                      izdavac: item,
-                    )));
-          }))
-    ]);
+    if (AuthProvider.korisnikUloge!
+        .any((element) => element.uloga!.naziv == "Administrator")) {
+      return DataRow(cells: [
+        DataCell(Container(
+          alignment: Alignment.centerLeft,
+          child: Text(item!.naziv.toString()),
+        )),
+        DataCell(ElevatedButton(
+            child: Text(
+              "Detalji",
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => IzdavacDetailsScreen(
+                        izdavac: item,
+                      )));
+            }))
+      ]);
+    } else {
+      return DataRow(cells: [
+        DataCell(Container(
+          alignment: Alignment.centerLeft,
+          child: Text(item!.naziv.toString()),
+        )),
+      ]);
+    }
   }
 
   void filterServerSide(naziv) {

@@ -4,6 +4,7 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -151,11 +152,13 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text("Godina rodjenja"),
                   )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Akcija"),
-                  )),
+                  if (AuthProvider.korisnikUloge!.any(
+                      (element) => element.uloga!.naziv == "Administrator"))
+                    DataColumn(
+                        label: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Akcija"),
+                    )),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -184,6 +187,49 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
     }
 
     final item = data?[index];
+    if (AuthProvider.korisnikUloge!
+        .any((element) => element.uloga!.naziv == "Administrator")) {
+      return DataRow(
+          // onSelectChanged: (selected) => {
+          //       if (selected == true)
+          //         {
+          //           Navigator.of(context).push(MaterialPageRoute(
+          //               builder: (context) => AutorDetailsScreen(
+          //                     autor: item,
+          //                   ))),
+          //         }
+          //     },
+          cells: [
+            DataCell(Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.ime.toString()),
+            )),
+            DataCell(Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.prezime.toString()),
+            )),
+            DataCell(Container(
+              alignment: Alignment.centerLeft,
+              child: Text(item!.godinaRodjenja.toString()),
+            )),
+            DataCell(ElevatedButton(
+                child: Text(
+                  "Detalji",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AutorDetailsScreen(
+                            autor: item,
+                          )));
+                }))
+            // DataCell(Text(item!.prezime.toString())),
+            // DataCell(Text(item!.godinaRodjenja.toString())),
+          ]);
+    } else {}
 
     return DataRow(
         // onSelectChanged: (selected) => {
@@ -208,20 +254,6 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
             alignment: Alignment.centerLeft,
             child: Text(item!.godinaRodjenja.toString()),
           )),
-          DataCell(ElevatedButton(
-              child: Text(
-                "Detalji",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen(
-                          autor: item,
-                        )));
-              }))
           // DataCell(Text(item!.prezime.toString())),
           // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);

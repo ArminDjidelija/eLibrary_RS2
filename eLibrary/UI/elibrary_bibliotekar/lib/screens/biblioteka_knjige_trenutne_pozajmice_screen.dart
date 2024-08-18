@@ -449,6 +449,24 @@ class _BibliotekaKnjigaDetailsScreenState
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => NovaPozajmicaScreen(
+                                      bibliotekaKnjiga: widget.bibliotekaKnjiga,
+                                    )));
+                          },
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll<Color>(Colors.blue)),
+                          child: const Text(
+                            "Izveštaj",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     BibliotekaKnjigaEditScreen(
                                       bibliotekaKnjiga: widget.bibliotekaKnjiga,

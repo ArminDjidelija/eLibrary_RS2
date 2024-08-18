@@ -7,11 +7,13 @@ import 'package:elibrary_mobile/models/knjiga.dart';
 import 'package:elibrary_mobile/models/knjiga_autor.dart';
 import 'package:elibrary_mobile/models/pozajmica.dart';
 import 'package:elibrary_mobile/models/search_result.dart';
+import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/screens/knjiga_screen.dart';
 import 'package:elibrary_mobile/screens/napredna_pretraga_knjige_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +35,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
   late KnjigaProvider knjigaProvider;
   late PozajmiceProvider pozajmicaProvider;
   late KnjigaAutoriProvider knjigaAutoriProvider;
+  late CitaociProvider citaociProvider;
 
   SearchResult<Knjiga>? knjigeResult;
   SearchResult<Pozajmica>? pozajmiceResult;
@@ -47,19 +50,24 @@ class _HomepageScreenState extends State<HomepageScreen> {
     knjigaProvider = context.read<KnjigaProvider>();
     pozajmicaProvider = context.read<PozajmiceProvider>();
     knjigaAutoriProvider = context.read<KnjigaAutoriProvider>();
+    citaociProvider = context.read<CitaociProvider>();
 
     _initForm();
   }
 
   Future _initForm() async {
-    knjigeResult = await knjigaProvider.get(
-        page: 1, pageSize: 10, includeTables: 'Izdavac,Jezik,Uvez');
+    var knjige = await citaociProvider.getRecommended();
+    // knjigeResult = await knjigaProvider.get(
+    //     page: 1, pageSize: 10, includeTables: 'Izdavac,Jezik,Uvez');
     pozajmiceResult = await pozajmicaProvider.get(
         retrieveAll: true,
         includeTables: "BibliotekaKnjiga",
-        filter: {'vraceno': true});
+        orderBy: 'PreporuceniDatumVracanja',
+        sortDirection: 'Ascending',
+        filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId});
 
-    knjigaList = knjigeResult!.resultList;
+    // knjigaList = knjigeResult!.resultList;
+    knjigaList = knjige;
     pozajmicaList = pozajmiceResult!.resultList;
 
     setState(() {});
@@ -314,7 +322,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
                             ),
                           ),
                           Spacer(),
-                          Expanded(
+                          Flexible(
                             child: Container(
                               alignment: Alignment.centerRight,
                               child: Column(
@@ -334,14 +342,18 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                                 'Error: ${snapshot.error}'));
                                       } else if (!snapshot.hasData) {
                                         return Center(
-                                            child: Text('Nema podataka'));
+                                            child: Text(
+                                          'Nema podataka',
+                                          textAlign: TextAlign.right,
+                                        ));
                                       } else {
                                         final daysLeft = snapshot.data!;
                                         if (daysLeft > 0) {
-                                          return Text('Još $daysLeft dana');
+                                          return Text('Još $daysLeft dana',
+                                              textAlign: TextAlign.right);
                                         } else {
-                                          return Text(
-                                              'Molim Vas da vratite knjigu!');
+                                          return Text('Vratite knjigu!',
+                                              textAlign: TextAlign.right);
                                         }
                                       }
                                     },
