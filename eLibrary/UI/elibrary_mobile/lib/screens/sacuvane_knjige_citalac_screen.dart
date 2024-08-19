@@ -225,6 +225,9 @@ class _SacuvaneKnjigeCitalacScreenState
                       "Ukloni",
                       style: TextStyle(color: Colors.white),
                     )),
+                SizedBox(
+                  width: 8,
+                ),
                 ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
@@ -252,6 +255,9 @@ class _SacuvaneKnjigeCitalacScreenState
     QuickAlert.show(
       context: context,
       type: QuickAlertType.confirm,
+      title: "Jeste li sigurni?",
+      confirmBtnText: "Da",
+      cancelBtnText: "Ne",
       onConfirmBtnTap: () async => {
         await korisnikSacuvanaKnjigaProvider.delete(korisnikSacuvanaKnjigaId!),
         setState(() {

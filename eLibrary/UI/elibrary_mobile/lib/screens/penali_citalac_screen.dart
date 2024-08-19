@@ -1,9 +1,14 @@
 import 'package:elibrary_mobile/models/biblioteka.dart';
 import 'package:elibrary_mobile/models/penal.dart';
+import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/penali_provider.dart';
+import 'package:elibrary_mobile/providers/tip_uplate_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PenaliCitalacScreen extends StatefulWidget {
   const PenaliCitalacScreen({super.key});
@@ -14,8 +19,10 @@ class PenaliCitalacScreen extends StatefulWidget {
 
 class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
   late PenaliProvider penaliProvider;
+  late TipUplateProvider tipUplateProvider;
   List<Penal> trenutniPenali = [];
   List<Penal> prijasnjiPenali = [];
+  int? tipPlacanjaId;
 
   int page = 1;
 
@@ -33,6 +40,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
     super.initState();
 
     penaliProvider = context.read<PenaliProvider>();
+    tipUplateProvider = context.read<TipUplateProvider>();
 
     _firstLoad();
     scrollController = ScrollController()..addListener(_loadMore);
@@ -54,8 +62,8 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
         pageSize: 10,
         orderBy: 'PenalId',
         sortDirection: 'descending',
-        filter: {'placeno': true},
-        includeTables: 'Uplata');
+        filter: {'placeno': true, 'citalacId': AuthProvider.citalacId},
+        includeTables: 'Uplata,Valuta');
 
     prijasnjiPenali = prijasnjiPenaliResult.resultList;
     total = prijasnjiPenaliResult.count;
@@ -87,8 +95,8 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
           pageSize: 10,
           orderBy: 'PenalId',
           sortDirection: 'descending',
-          filter: {'placeno': true},
-          includeTables: 'Uplata');
+          filter: {'placeno': true, 'citalacId': AuthProvider.citalacId},
+          includeTables: 'Uplata,Valuta');
 
       if (prijasnjiPenaliResult!.resultList.isNotEmpty) {
         prijasnjiPenali.addAll(prijasnjiPenaliResult!.resultList);
@@ -107,9 +115,15 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
   Future _initForm() async {
     var penaliResult = await penaliProvider.get(
         retrieveAll: true,
-        includeTables: 'Pozajmica',
-        filter: {'placeno': false});
+        includeTables: 'Pozajmica,Valuta',
+        filter: {'placeno': false, 'citalacId': AuthProvider.citalacId});
     trenutniPenali = penaliResult.resultList;
+    var tipoviUplatum =
+        await tipUplateProvider.get(filter: {'naziv': 'online'});
+    if (tipoviUplatum.resultList.isNotEmpty) {
+      tipPlacanjaId = tipoviUplatum.resultList.first.tipUplateId;
+      print(tipPlacanjaId);
+    }
     setState(() {});
   }
 
@@ -231,14 +245,24 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
               ),
             ),
             _buildInfoRow('Razlog', penal.opis.toString()),
-            _buildInfoRow('Iznos', penal.iznos.toString()),
+            _buildInfoRow(
+                'Iznos', "${penal.iznos} ${penal.valuta!.skracenica}"),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor:
                         MaterialStatePropertyAll<Color>(Colors.blue)),
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    await makePayment(penal);
+                  } on Exception catch (e) {
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        title: e.toString());
+                  }
+                },
                 child: Text(
                   "Plati",
                   style: TextStyle(color: Colors.white),
@@ -278,6 +302,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 8),
             physics:
                 NeverScrollableScrollPhysics(), // Disable ListView scrolling
             shrinkWrap: true, // Ensure ListView occupies only necessary space
@@ -369,7 +394,8 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
             // ),
             // SizedBox(height: 8.0),
             _buildInfoRow('Opis', penal.opis!),
-            _buildInfoRow('Iznos', penal.iznos.toString()),
+            _buildInfoRow(
+                'Iznos', "${penal.iznos} ${penal.valuta!.skracenica}"),
           ],
         ),
       ),
@@ -385,5 +411,84 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
     var novaBiblioteka = Biblioteka();
     novaBiblioteka.naziv = "Nema biblioteke";
     return novaBiblioteka;
+  }
+
+  Future makePayment(Penal penal) async {
+    var secret = dotenv.env['_paypalSecret'];
+    var public = dotenv.env['_paypalPublic'];
+    // var total = odabranaClanarina!.iznos!.toString();
+    // var naziv = odabranaClanarina!.naziv;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: ((context) => PaypalCheckoutView(
+              sandboxMode: true,
+              clientId: public,
+              secretKey: secret,
+              transactions: [
+                {
+                  "amount": {
+                    "total": penal.iznos,
+                    "currency": "USD",
+                    "details": {
+                      "subtotal": penal.iznos,
+                      "shipping": '0',
+                      "shipping_discount": 0
+                    }
+                  },
+                  "description": "Platiti ce se penal.",
+                  // "payment_options": {
+                  //   "allowed_payment_method":
+                  //       "INSTANT_FUNDING_SOURCE"
+                  // },
+                  "item_list": {
+                    "items": [
+                      {
+                        "name": "Penal",
+                        "quantity": 1,
+                        "price": penal.iznos,
+                        "currency": "USD"
+                      }
+                    ],
+
+                    // Optional
+                    //   "shipping_address": {
+                    //     "recipient_name": "Tharwat samy",
+                    //     "line1": "tharwat",
+                    //     "line2": "",
+                    //     "city": "tharwat",
+                    //     "country_code": "EG",
+                    //     "postal_code": "25025",
+                    //     "phone": "+00000000",
+                    //     "state": "ALex"
+                    //  },
+                  }
+                }
+              ],
+              note: "Kontaktirajte nas za bilo kakve poteskoce",
+              onSuccess: (Map params) async {
+                print("onSuccess: $params");
+                try {
+                  await penaliProvider.Plati(penal.penalId!,
+                      tipPlacanjaId == null ? 1 : tipPlacanjaId!);
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Uspješno kreirana članarina");
+                  _firstLoad();
+                } on Exception catch (e) {}
+                Navigator.pop(context);
+              },
+              onError: (error) {
+                print("onSuccess: $error");
+                ("onError: $error");
+                Navigator.pop(context);
+              },
+              onCancel: () {
+                print('cancelled:');
+                Navigator.pop(context);
+              },
+            )),
+      ),
+    );
   }
 }

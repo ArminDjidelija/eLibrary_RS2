@@ -64,7 +64,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   List<Knjiga> knjigaList = [];
   List<Pozajmica> pozajmicaList = [];
   Jezik? jezik;
-
+  int? korisnikSacuvanaKnjigaId;
   @override
   void initState() {
     super.initState();
@@ -128,7 +128,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
 
     knjigaList = knjigeResult!.resultList;
     pozajmicaList = pozajmiceResult!.resultList;
-
+    await _getSacuvanaKnjiga();
     try {
       await citalacKnjigaLogProvider.insert({
         'citalacId': AuthProvider.citalacId,
@@ -139,6 +139,20 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     setState(() {});
   }
 
+  Future _getSacuvanaKnjiga() async {
+    var sacuvanaKnjigaResult = await korisnikSacuvanaKnjigaProvider.get(
+        filter: {
+          'citalacId': AuthProvider.citalacId,
+          'knjigaId': widget.knjiga.knjigaId
+        });
+    if (sacuvanaKnjigaResult.resultList.isNotEmpty) {
+      setState(() {
+        korisnikSacuvanaKnjigaId =
+            sacuvanaKnjigaResult.resultList.first.korisnikSacuvanaKnjigaId;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,10 +160,16 @@ class _KnjigaScreenState extends State<KnjigaScreen>
         title: Container(
           alignment: Alignment.bottomRight,
           child: InkWell(
-            onTap: () {
-              _addSacuvanaKnjiga(widget.knjiga.knjigaId!);
+            onTap: () async {
+              if (korisnikSacuvanaKnjigaId == null) {
+                await _addSacuvanaKnjiga(widget.knjiga.knjigaId!);
+              } else {
+                await _removeSacuvanaKnjiga(korisnikSacuvanaKnjigaId!);
+              }
             },
-            child: Icon(Icons.bookmark_outline),
+            child: Icon(korisnikSacuvanaKnjigaId == null
+                ? Icons.bookmark_outline
+                : Icons.bookmark),
           ),
         ),
       ),
@@ -646,6 +666,18 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     return Center(child: Text('Nema dostupnih biblioteka'));
   }
 
+  Future _removeSacuvanaKnjiga(int id) async {
+    try {
+      await korisnikSacuvanaKnjigaProvider.delete(id);
+      setState(() {
+        korisnikSacuvanaKnjigaId = null;
+      });
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, title: "Greška");
+    }
+  }
+
   Future _addSacuvanaKnjiga(int knjigaId) async {
     try {
       await korisnikSacuvanaKnjigaProvider
@@ -654,6 +686,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
           context: context,
           type: QuickAlertType.success,
           text: "Uspješno dodata knjiga");
+      await _getSacuvanaKnjiga();
     } on Exception catch (e) {
       QuickAlert.show(
           context: context, type: QuickAlertType.error, text: e.toString());

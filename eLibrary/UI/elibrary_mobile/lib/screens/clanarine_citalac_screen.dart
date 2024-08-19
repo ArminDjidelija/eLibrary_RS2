@@ -8,12 +8,14 @@ import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/clanarine_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_mobile/providers/tip_uplate_provider.dart';
 import 'package:elibrary_mobile/providers/uplate_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+import 'package:quickalert/quickalert.dart';
 
 class ClanarineCitalacScreen extends StatefulWidget {
   const ClanarineCitalacScreen({super.key});
@@ -26,13 +28,14 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
   late KnjigaProvider knjigaProvider;
   late BibliotekaProvider bibliotekaProvider;
   late ClanarineProvider clanarineProvider;
+  late TipUplateProvider tipUplateProvider;
   late TipClanarineBibliotekaProvider tipClanarineBibliotekaProvider;
   late UplataProvider uplataProvider;
   TipClanarineBiblioteka? odabranaClanarina;
   List<Clanarina> clanarine = [];
   List<Biblioteka> biblioteke = [];
   List<TipClanarineBiblioteka> tipClanarineBiblioteke = [];
-
+  int? tipPlacanjaId;
   int page = 1;
 
   final int limit = 20;
@@ -56,6 +59,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     bibliotekaProvider = context.read<BibliotekaProvider>();
     clanarineProvider = context.read<ClanarineProvider>();
     uplataProvider = context.read<UplataProvider>();
+    tipUplateProvider = context.read<TipUplateProvider>();
     tipClanarineBibliotekaProvider =
         context.read<TipClanarineBibliotekaProvider>();
 
@@ -131,6 +135,12 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
 
   Future _initForm() async {
     // setState(() {});
+    var tipoviUplatum =
+        await tipUplateProvider.get(filter: {'naziv': 'online'});
+    if (tipoviUplatum.resultList.isNotEmpty) {
+      tipPlacanjaId = tipoviUplatum.resultList.first.tipUplateId;
+      print(tipPlacanjaId);
+    }
   }
 
   Future<List<Biblioteka>> getBiblioteke(String? naziv) async {
@@ -246,7 +256,8 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     var public = dotenv.env['_paypalPublic'];
     var total = odabranaClanarina!.iznos!.toString();
     var naziv = odabranaClanarina!.naziv;
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: ((context) => PaypalCheckoutView(
               sandboxMode: true,
               clientId: public,
@@ -294,6 +305,19 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
               note: "Kontaktirajte nas za bilo kakve poteskoce",
               onSuccess: (Map params) async {
                 print("onSuccess: $params");
+                try {
+                  await clanarineProvider.insert({
+                    'bibliotekaId': odabranaBiblioteka!.bibliotekaId,
+                    'citalacId': AuthProvider.citalacId,
+                    'tipUplateId': tipPlacanjaId,
+                    'tipClanarineBibliotekaId': tipClanarineId
+                  });
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Uspješno kreirana članarina");
+                  _firstLoad();
+                } on Exception catch (e) {}
                 Navigator.pop(context);
               },
               onError: (error) {
@@ -305,7 +329,9 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                 print('cancelled:');
                 Navigator.pop(context);
               },
-            ))));
+            )),
+      ),
+    );
   }
 
   Widget _buildPrijasnjeClanarine() {

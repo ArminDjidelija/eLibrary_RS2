@@ -26,4 +26,13 @@ class PenaliProvider extends BaseProvider<Penal> {
 
     return Biblioteka.fromJson(data);
   }
+
+  Future Plati(int penalId, int tipUplateId) async {
+    var url =
+        "${BaseProvider.baseUrl}Penali/plati?penalId=${penalId}&tipUplateId=${tipUplateId}";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.post(uri, headers: headers);
+  }
 }

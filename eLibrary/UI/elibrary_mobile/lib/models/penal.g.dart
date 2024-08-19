@@ -12,6 +12,10 @@ Penal _$PenalFromJson(Map<String, dynamic> json) => Penal()
   ..opis = json['opis'] as String?
   ..iznos = (json['iznos'] as num?)?.toInt()
   ..uplataId = (json['uplataId'] as num?)?.toInt()
+  ..valutaId = (json['valutaId'] as num?)?.toInt()
+  ..valuta = json['valuta'] == null
+      ? null
+      : Valuta.fromJson(json['valuta'] as Map<String, dynamic>)
   ..pozajmica = json['pozajmica'] == null
       ? null
       : Pozajmica.fromJson(json['pozajmica'] as Map<String, dynamic>)
@@ -25,6 +29,8 @@ Map<String, dynamic> _$PenalToJson(Penal instance) => <String, dynamic>{
       'opis': instance.opis,
       'iznos': instance.iznos,
       'uplataId': instance.uplataId,
+      'valutaId': instance.valutaId,
+      'valuta': instance.valuta,
       'pozajmica': instance.pozajmica,
       'uplata': instance.uplata,
     };

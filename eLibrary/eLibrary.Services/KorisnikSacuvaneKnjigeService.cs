@@ -1,4 +1,5 @@
-﻿using eLibrary.Model.Requests;
+﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
@@ -29,6 +30,17 @@ namespace eLibrary.Services
                 query=query.Where(x=>x.KnjigaId.Equals(search.KnjigaId));
             }
             return query;
+        }
+
+        public override async Task BeforeInsertAsync(KorisnikSacuvanaKnjigaInsertRequest request, KorisnikSacuvanaKnjiga entity, CancellationToken cancellationToken = default)
+        {
+            var bk = await Context
+                .KorisnikSacuvanaKnjigas
+                .FirstOrDefaultAsync(x=> x.CitalacId == entity.CitalacId && x.KnjigaId == entity.KnjigaId);
+            if(bk != null)
+            {
+                throw new UserException("Već imate ovu knjigu!");
+            }
         }
     }
 }

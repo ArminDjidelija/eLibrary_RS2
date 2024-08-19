@@ -25,6 +25,7 @@ import 'package:elibrary_mobile/providers/pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart';
+import 'package:elibrary_mobile/providers/tip_uplate_provider.dart';
 import 'package:elibrary_mobile/providers/uplate_provider.dart';
 import 'package:elibrary_mobile/providers/uvez_provider.dart';
 import 'package:elibrary_mobile/providers/valute_provider.dart';
@@ -71,6 +72,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ObavijestiProvider()),
       ChangeNotifierProvider(create: (_) => CitalacKnjigaLogProvider()),
       ChangeNotifierProvider(create: (_) => ProduzenjePozajmiceProvider()),
+      ChangeNotifierProvider(create: (_) => TipUplateProvider()),
     ], child: const MyApp()));
   }, (error, stack) {
     print("Error from OUT_SUDE Framerwork");

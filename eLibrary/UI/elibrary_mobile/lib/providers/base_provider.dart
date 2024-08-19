@@ -130,19 +130,14 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
-  Future<T> delete(int id) async {
+  Future delete(int id) async {
     var url = "$baseUrl$_endpoint/$id";
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
     var response = await http.delete(uri, headers: headers);
 
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-      // QuickAlert.show(
-      //     context: context, type: QuickAlertType.success, title: "Uspješno");
-      return fromJson(data);
-    } else {
+    if (!isValidResponse(response)) {
       throw new Exception("Unknown error");
     }
   }

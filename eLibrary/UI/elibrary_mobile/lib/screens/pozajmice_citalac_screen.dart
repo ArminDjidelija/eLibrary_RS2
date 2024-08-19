@@ -144,6 +144,8 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
     prijasnjePozajmiceResult = await pozajmiceProvider.get(
         filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId},
         retrieveAll: true,
+        orderBy: 'StvarniDatumVracanja',
+        sortDirection: 'Descending',
         includeTables: 'BibliotekaKnjiga');
   }
 
@@ -207,15 +209,29 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             ),
           ),
           _buildTrenutnePozajmice(),
+          SizedBox(
+            height: 20,
+          ),
           Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Colors.black, // Boja bordera
+                  width: 2.0, // Širina bordera
+                ),
+              ),
+            ),
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5),
+            margin: EdgeInsets.only(left: 10, top: 5, right: 10),
             child: Text(
               "Trenutne rezervacije",
               style: TextStyle(fontSize: 24),
             ),
           ),
           _buildTrenutneRezervacije(),
+          SizedBox(
+            height: 20,
+          ),
           Container(
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
@@ -287,7 +303,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             physics:
                 NeverScrollableScrollPhysics(), // Disable ListView scrolling
             shrinkWrap: true, // Ensure ListView occupies only necessary space
-
+            padding: EdgeInsets.symmetric(horizontal: 8),
             itemCount: prijasnjePozajmice.length + 1,
             controller: scrollController,
             itemBuilder: (_, index) {
@@ -437,13 +453,14 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             ),
             TextButton(
               child: const Text('Potvrdi'),
-              onPressed: () {
+              onPressed: () async {
                 int? brojDana = int.tryParse(_daysController.text);
                 if (brojDana != null && brojDana > 0) {
-                  produziPozajmicu(
+                  await produziPozajmicu(
                       brojDana,
                       pozajmica
                           .pozajmicaId!); // Call the method with the input number of days
+                  Navigator.pop(context);
                 } else {
                   Navigator.of(context).pop(); // Close the dialog
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -460,8 +477,17 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
   }
 
   Future produziPozajmicu(int brojDana, int id) async {
-    await produzenjePozajmiceProvider
-        .insert({'produzenje': brojDana, 'pozajmicaId': id});
+    try {
+      await produzenjePozajmiceProvider
+          .insert({'produzenje': brojDana, 'pozajmicaId': id});
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Uspješno kreiran zahtjev");
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, text: e.toString());
+    }
   }
 
   Widget _buildTrenutnaRezervacijaCard({required Rezervacija rezervacija}) {
@@ -655,9 +681,9 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             _buildInfoRow('Preuzeto',
                 formatDateTimeToLocal(pozajmica.datumPreuzimanja.toString())),
             _buildInfoRow(
-                'Vratiti do',
+                'Vraćeno ',
                 formatDateTimeToLocal(
-                    pozajmica.preporuceniDatumVracanja.toString())),
+                    pozajmica.stvarniDatumVracanja.toString())),
           ],
         ),
       ),

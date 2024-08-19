@@ -64,7 +64,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
         includeTables: "BibliotekaKnjiga",
         orderBy: 'PreporuceniDatumVracanja',
         sortDirection: 'Ascending',
-        filter: {'vraceno': true, 'citalacId': AuthProvider.citalacId});
+        filter: {'vraceno': false, 'citalacId': AuthProvider.citalacId});
 
     // knjigaList = knjigeResult!.resultList;
     knjigaList = knjige;
