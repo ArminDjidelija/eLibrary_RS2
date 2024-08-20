@@ -79,7 +79,7 @@ class _BibliotekaKnjigaDetailsScreenState
   int pageSize = 10;
   int count = 10;
   bool _isLoading = false;
-
+  bool prijasnjePozajmice = false;
   final GlobalKey chartKey = GlobalKey();
 
   @override
@@ -131,75 +131,13 @@ class _BibliotekaKnjigaDetailsScreenState
     );
   }
 
-  TextEditingController _naslovEditingController = TextEditingController();
-  TextEditingController _autorEditingController = TextEditingController();
-  TextEditingController _isbnEditingController = TextEditingController();
-
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-              child: TextField(
-            controller: _naslovEditingController,
-            decoration: const InputDecoration(labelText: "Naziv"),
-            onChanged: (value) async {
-              _source.filterServerSide(value, _autorEditingController.text,
-                  _isbnEditingController.text);
-            },
-          )),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-              child: TextField(
-            controller: _autorEditingController,
-            decoration: const InputDecoration(labelText: "Autor"),
-            onChanged: (value) async {
-              _source.filterServerSide(_naslovEditingController.text, value,
-                  _isbnEditingController.text);
-            },
-          )),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-              child: TextField(
-            controller: _isbnEditingController,
-            decoration: const InputDecoration(labelText: "ISBN"),
-            onChanged: (value) async {
-              _source.filterServerSide(_naslovEditingController.text,
-                  _autorEditingController.text, value);
-            },
-          )),
-          ElevatedButton(
-              onPressed: () async {
-                _source.filterServerSide(_naslovEditingController.text,
-                    _autorEditingController.text, _isbnEditingController.text);
-                setState(() {});
-              },
-              child: const Text("Pretraga")),
-          const SizedBox(
-            width: 8,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => KnjigaDetailsScreen()));
-              },
-              child: const Text("Nova knjiga")),
-        ],
-      ),
-    );
-  }
-
   Widget _buildPaginatedTable() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: AdvancedPaginatedDataTable(
-        header: const Text("Trenutne pozajmice"),
+        header: Text(prijasnjePozajmice == false
+            ? "Trenutne pozajmice"
+            : "Historija pozajmica"),
         dataRowHeight: 75,
         columns: const [
           DataColumn(label: Text("Čitalac")),
@@ -499,6 +437,20 @@ class _BibliotekaKnjigaDetailsScreenState
                           ),
                         ),
                       ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Checkbox(
+                            value: prijasnjePozajmice,
+                            onChanged: (value) async {
+                              setState(() {
+                                prijasnjePozajmice = value!;
+                              });
+                              _source.filterServerSide(prijasnjePozajmice);
+                            }),
+                        Text("Prijašnje pozajmice")
+                      ],
                     )
                   ],
                 ),
@@ -768,6 +720,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
   String autor = "";
   String naslov = "";
   String isbn = "";
+  bool vraceno = false;
   dynamic filter;
   BuildContext context;
   PozajmiceDataSource(
@@ -819,7 +772,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                             print("Potvrdeno: ${item.pozajmicaId}");
                             //TODO dodaj na api da je potvrdena,
                             await provider.potvrdiPozajmicu(item.pozajmicaId!);
-                            filterServerSide("", "", "");
+                            filterServerSide(vraceno);
                             Navigator.pop(context);
                           },
                           onCancelBtnTap: () {
@@ -852,7 +805,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                             print("Potvrdeno: ${item.pozajmicaId}");
                             //TODO dodaj na api da je potvrdena,
                             await provider.potvrdiPozajmicu(item.pozajmicaId!);
-                            filterServerSide("", "", "");
+                            filterServerSide(vraceno);
                             Navigator.pop(context);
                           },
                           onCancelBtnTap: () {
@@ -888,10 +841,8 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
     ]);
   }
 
-  void filterServerSide(naslovv, autorr, isbnn) {
-    naslov = naslovv;
-    autor = autorr;
-    isbn = isbnn;
+  void filterServerSide(vracenoo) {
+    vraceno = vracenoo;
     setNextView();
   }
 
@@ -909,7 +860,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'bibliotekaKnjigaId': bibliotekaKnjigaId, 'vraceno': false};
+    filter = {'bibliotekaKnjigaId': bibliotekaKnjigaId, 'vraceno': vraceno};
     print("Metoda u get next row");
     print(filter);
     var result = await provider?.get(

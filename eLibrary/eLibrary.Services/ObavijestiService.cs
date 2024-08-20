@@ -58,8 +58,6 @@ namespace eLibrary.Services
         public override async Task BeforeInsertAsync(ObavijestiInsertRequest request, Obavijesti entity, CancellationToken cancellationToken = default)
         {
             entity.Datum = DateTime.Now;
-            var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync();
-            entity.BibliotekaId = bibliotekaId;
         }
 
         public override async Task BeforeUpdateAsync(ObavijestiUpdateRequest request, Obavijesti entity, CancellationToken cancellationToken = default)

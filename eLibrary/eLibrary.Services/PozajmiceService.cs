@@ -16,23 +16,15 @@ namespace eLibrary.Services
 {
     public class PozajmiceService : BaseCRUDServiceAsync<Model.PozajmiceDTOs.Pozajmice, PozajmiceSearchObject, Database.Pozajmice, PozajmiceInsertRequest, PozajmiceUpdateRequest>, IPozajmiceService
     {
-        private readonly ICurrentUserService currentUserService;
+        private readonly IObavijestiService _obavijestiService;
 
-        public PozajmiceService(ELibraryContext context, IMapper mapper, ICurrentUserService currentUserService) : base(context, mapper)
+        public PozajmiceService(ELibraryContext context, IMapper mapper, IObavijestiService obavijestiService) : base(context, mapper)
         {
-            this.currentUserService = currentUserService;
+            _obavijestiService = obavijestiService;
         }
 
         public override IQueryable<Pozajmice> AddFilter(PozajmiceSearchObject search, IQueryable<Pozajmice> query)
         {
-            //var user = currentUserService.GetUserType();
-            //if (user == "Bibliotekar" || user == "Menadzer")
-            //{
-            //    var bibliotekaId = currentUserService.GetBibliotekaIdFromUser();
-            //    query = query
-            //        .Include(x=>x.BibliotekaKnjiga)
-            //        .Where(x => x.BibliotekaKnjiga.BibliotekaId == bibliotekaId);
-            //}
 
             if(search?.BibliotekaId != null)
             {
@@ -98,6 +90,27 @@ namespace eLibrary.Services
             pozajmica.StvarniDatumVracanja=DateTime.Now;
             await Context.SaveChangesAsync(cancellationToken);
             return Mapper.Map<Model.PozajmiceDTOs.Pozajmice>(pozajmica);
+        }
+
+        public async Task ObavijestiORoku(int pozajmicaId, CancellationToken cancellationToken = default)
+        {
+            var naslov = "Obavijest o roku";
+            var pozajmica = await Context.Pozajmices.Include(x=>x.BibliotekaKnjiga.Knjiga).Include(x=>x.BibliotekaKnjiga.Biblioteka).FirstOrDefaultAsync(x=> x.PozajmicaId ==  pozajmicaId);
+            if (pozajmica == null)
+                throw new UserException("Pogrešna pozajmica!");
+            var tekst = $"Poštovani,\n" +
+                $"Vaša pozajmica knjige {pozajmica.BibliotekaKnjiga.Knjiga.Naslov} u biblioteci {pozajmica.BibliotekaKnjiga.Biblioteka.Naziv} ističe " +
+                $"{pozajmica.PreporuceniDatumVracanja.ToString("dd.MM.yyyy HH:mm")}." +
+                $"\nSrdačan pozdrav";
+
+            var obavijest = new ObavijestiInsertRequest
+            {
+                BibliotekaId = pozajmica.BibliotekaKnjiga.BibliotekaId,
+                CitalacId = pozajmica.CitalacId,
+                Naslov = naslov,
+                Tekst = tekst
+            };
+            await _obavijestiService.InsertAsync(obavijest);
         }
     }
 }

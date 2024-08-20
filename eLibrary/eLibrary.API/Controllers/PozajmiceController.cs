@@ -20,5 +20,12 @@ namespace eLibrary.API.Controllers
         {
             return await (_service as IPozajmiceService).PotvrdiVracanje(id, cancellationToken);
         }
+
+        [HttpPost("{id}/obavijesti")]
+        public async Task Obavijesti(int id, CancellationToken cancellationToken = default)
+        {
+            await (_service as IPozajmiceService).ObavijestiORoku(id, cancellationToken);
+        }
+
     }
 }

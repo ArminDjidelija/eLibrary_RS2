@@ -150,15 +150,13 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Align(
-        alignment: Alignment.topLeft, // Postavljanje na početak ekrana
+        alignment: Alignment.topLeft,
         child: Container(
-          // Postavite maksimalnu širinu po potrebi
-          width: 200, // Širina koja odgovara maksimalnoj širini sadržaja
+          width: 600,
           child: SingleChildScrollView(
-            scrollDirection:
-                Axis.horizontal, // Omogućavanje horizontalnog pomeranja
+            scrollDirection: Axis.horizontal,
             child: SizedBox(
-              width: 200, // Širina treba da bude ista kao u Container
+              width: 600,
               child: AdvancedPaginatedDataTable(
                 columns: [
                   DataColumn(

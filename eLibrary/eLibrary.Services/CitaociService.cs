@@ -8,12 +8,6 @@ using eLibrary.Services.Recommender;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.ML;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eLibrary.Services
 {
@@ -100,11 +94,23 @@ namespace eLibrary.Services
 
         public override async Task BeforeUpdateAsync(CitaociUpdateRequest request, Citaoci entity, CancellationToken cancellationToken = default)
         {
-            if (request.Lozinka != null && request.LozinkaPotvrda != null)
+            if(request.Lozinka != null)
             {
-                if (request.Lozinka == request.LozinkaPotvrda)
+                var passwordCheck = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka) == entity.LozinkaHash;
+                if (passwordCheck == false)
                 {
-                    entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+                    throw new UserException("Pogrešna stara lozinka");
+                }
+                if (request.NovaLozinka != null && request.LozinkaPotvrda != null)
+                {
+                    if (request.NovaLozinka == request.LozinkaPotvrda)
+                    {
+                        entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+                    }
+                    else
+                    {
+                        throw new UserException("Nova lozinka se ne poklapa sa potvrdom!");
+                    }
                 }
             }
         }

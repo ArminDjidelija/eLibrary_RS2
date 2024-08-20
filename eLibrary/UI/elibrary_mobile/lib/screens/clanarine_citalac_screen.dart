@@ -187,7 +187,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Text(
-              "Pozajmice",
+              "Članarine",
               style: TextStyle(
                   fontSize: 24,
                   color: Colors.white,

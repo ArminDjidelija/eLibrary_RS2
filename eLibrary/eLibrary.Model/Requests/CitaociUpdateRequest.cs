@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eLibrary.Model.Requests
+﻿namespace eLibrary.Model.Requests
 {
     public class CitaociUpdateRequest
     {
@@ -13,6 +9,8 @@ namespace eLibrary.Model.Requests
         public string Telefon { get; set; }
 
         public string? Lozinka { get; set; }
+
+        public string? NovaLozinka { get; set; }
 
         public string? LozinkaPotvrda { get; set; }
 

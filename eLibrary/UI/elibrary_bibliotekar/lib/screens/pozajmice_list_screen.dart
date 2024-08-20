@@ -13,6 +13,7 @@ import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -373,6 +374,32 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          ElevatedButton(
+                              style: const ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Colors.blue)),
+                              onPressed: () async {
+                                try {
+                                  await provider.obavijesti(item.pozajmicaId!);
+                                  QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.success,
+                                      title: "Uspješno poslana obavijest");
+                                } on Exception catch (e) {
+                                  QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.error,
+                                      title: e.toString());
+                                }
+                              },
+                              child: const Text(
+                                "Obavijest",
+                                style: TextStyle(color: Colors.white),
+                              ))
                         ],
                       )
                     : ElevatedButton(

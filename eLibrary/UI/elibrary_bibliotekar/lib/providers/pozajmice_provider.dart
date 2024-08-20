@@ -18,4 +18,12 @@ class PozajmiceProvider extends BaseProvider<Pozajmica> {
 
     var response = await http.post(uri, headers: headers);
   }
+
+  Future obavijesti(int id) async {
+    var url = "${BaseProvider.baseUrl}Pozajmice/${id}/obavijesti";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.post(uri, headers: headers);
+  }
 }
