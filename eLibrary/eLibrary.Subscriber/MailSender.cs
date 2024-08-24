@@ -1,6 +1,5 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
-using eLibrary.Model.Messages;
 
 namespace eLibrary.Subscriber
 {
@@ -39,7 +38,7 @@ namespace eLibrary.Subscriber
 
             try
             {
-                Console.WriteLine($"Sent email from {fromAddress} to {mailObj.EmailTo}, via port: {port}, at {DateTime.Now}");
+                Console.WriteLine($"Sending email from {fromAddress} to {mailObj.EmailTo}, via port: {port}, at {DateTime.Now}");
                 using (var smtp = new SmtpClient())
                 {
                     await smtp.ConnectAsync(host, port, enableSSL);
@@ -48,9 +47,12 @@ namespace eLibrary.Subscriber
                     await smtp.SendAsync(email);
                     await smtp.DisconnectAsync(true);
                 }
+                Console.WriteLine("Uspjesno poslata poruka");
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Greska SA SLANJEM PORUKA!");
+
                 Console.WriteLine($"Error {ex.Message}");
                 return;
             }

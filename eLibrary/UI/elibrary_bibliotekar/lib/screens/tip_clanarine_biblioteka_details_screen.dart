@@ -1,15 +1,15 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/valuta.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class TipClanarineBibliotekaDetailsScreen extends StatefulWidget {
   TipClanarineBiblioteka? tipClanarineBiblioteka;
@@ -41,7 +41,6 @@ class _TipClanarineBibliotekaDetailsScreenState
         context.read<TipClanarineBibliotekaProvider>();
     valutaProvider = context.read<ValutaProvider>();
 
-    // TODO: implement initState
     super.initState();
     _initialValue = {
       'tipClanarineBibliotekaId':
@@ -90,44 +89,45 @@ class _TipClanarineBibliotekaDetailsScreenState
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naziv"),
+                  decoration: const InputDecoration(labelText: "Naziv"),
                   name: 'naziv',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Trajanje"),
+                  decoration: const InputDecoration(labelText: "Trajanje"),
                   name: 'trajanje',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Iznos"),
+                  decoration: const InputDecoration(labelText: "Iznos"),
                   name: 'iznos',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                   child: FormBuilderDropdown(
                     name: "valutaId",
                     validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
                     ]),
-                    decoration: InputDecoration(labelText: "Valuta"),
+                    decoration: const InputDecoration(labelText: "Valuta"),
                     items: valutaResult?.resultList
                             .map((e) => DropdownMenuItem(
                                 value: e.valutaId.toString(),
@@ -151,26 +151,51 @@ class _TipClanarineBibliotekaDetailsScreenState
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formCheck == true) {
                   if (widget.tipClanarineBiblioteka == null) {
-                    tipClanarineBibliotekaProvider.insert(request);
+                    try {
+                      await tipClanarineBibliotekaProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.success,
+                          text: "Tip clanarine je uspješno dodat");
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.error,
+                          text: "Greška prilikom dodavanja");
+                    }
                   } else {
                     if (widget.tipClanarineBiblioteka != null) {
                       request['bibliotekaId'] =
                           widget.tipClanarineBiblioteka!.bibliotekaId;
                     }
-                    tipClanarineBibliotekaProvider.update(
-                        widget
-                            .tipClanarineBiblioteka!.tipClanarineBibliotekaId!,
-                        request);
+                    try {
+                      await tipClanarineBibliotekaProvider.update(
+                          widget.tipClanarineBiblioteka!
+                              .tipClanarineBibliotekaId!,
+                          request);
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.success,
+                          text: "Tip clanarine je uspješno uređen");
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.error,
+                          text: "Greška prilikom uredivanja");
+                    }
                   }
                 }
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

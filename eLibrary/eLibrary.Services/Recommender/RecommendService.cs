@@ -85,6 +85,8 @@ namespace eLibrary.Services.Recommender
                 normA += vectorA[i] * vectorA[i];
                 normB += vectorB[i] * vectorB[i];
             }
+            if (normA == 0 || normB == 0)
+                return 0;
             return dotProduct / (MathF.Sqrt(normA) * MathF.Sqrt(normB));
         }
 
@@ -93,7 +95,10 @@ namespace eLibrary.Services.Recommender
             var likedBookVectors = userLikedBooks.KnjigeIds
                 .Select(id => CreateFeatureVector(allBooks.First(b => b.KnjigaId == id)))
                 .ToList();
-
+            if(likedBookVectors.Count == 0)
+            {
+                return allBooks.Take(10).ToList();            
+            }
             var recommendedBooks = new List<Tuple<Database.Knjige, float>>();
 
             foreach (var book in allBooks)

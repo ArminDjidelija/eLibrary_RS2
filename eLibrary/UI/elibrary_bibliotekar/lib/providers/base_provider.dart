@@ -153,7 +153,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else if (response.statusCode == 401) {
       throw new Exception("Unauthorized");
     } else {
-      print(response.body);
+      //print(response.body);
       throw new Exception("Something bad happened please try again");
     }
   }
@@ -162,7 +162,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     String username = AuthProvider.username ?? "";
     String password = AuthProvider.password ?? "";
 
-    print("passed creds: $username, $password");
+    //print("passed creds: $username, $password");
 
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";

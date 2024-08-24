@@ -3,7 +3,6 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/korisnik.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
-import 'package:elibrary_bibliotekar/screens/novi_citalac_screen.dart';
 import 'package:elibrary_bibliotekar/screens/novi_korisnik_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,6 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -34,15 +32,14 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
     provider = context.read<KorisnikProvider>();
     _source = KorisnikDataSource(provider: provider, context: context);
   }
 
-  TextEditingController _imePrezimeEditingController = TextEditingController();
-  TextEditingController _emailEditingController = TextEditingController();
+  final TextEditingController _imePrezimeEditingController =
+      TextEditingController();
+  final TextEditingController _emailEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +49,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           child: Column(
             children: [
               _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
             ],
           ),
         ));
@@ -79,8 +76,6 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
             controller: _emailEditingController,
             decoration: const InputDecoration(labelText: "Email"),
             onChanged: (value) async {
-              // page = 1;
-              // await updateFilter(_naslovEditingController.text, value);
               _source.filterServerSide(
                   _imePrezimeEditingController.text, value);
             },
@@ -122,7 +117,6 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   DataColumn(label: Text("Email")),
                   DataColumn(label: Text("Broj telefona")),
                   DataColumn(label: Text("Akcija")),
-                  // DataColumn(label: Text("Slika")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -166,12 +160,8 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
               type: QuickAlertType.confirm,
               text: "Da li ste sigurni da želite izbrisati ovog korisnika?",
               headerBackgroundColor: Colors.red,
-              onConfirmBtnTap: () async => {
-                    await provider.delete(item.korisnikId!),
-                    Navigator.pop(context),
-                    print("confirm"),
-                    filterServerSide("", "")
-                  },
+              onConfirmBtnTap: () async =>
+                  {await delete(item.korisnikId!), filterServerSide("", "")},
               onCancelBtnTap: () async => {Navigator.pop(context)});
         },
         style: const ButtonStyle(
@@ -182,6 +172,23 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
         ),
       ))
     ]);
+  }
+
+  Future delete(int id) async {
+    try {
+      await provider.delete(id);
+      Navigator.pop(context);
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Korisnik izbrisan");
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
+    }
   }
 
   void filterServerSide(imePrezimeGTE, mail) {
@@ -207,15 +214,18 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
       'imePrezimeGTE': imePrezime,
       'email': email,
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result =
-        await provider.get(filter: filter, page: page, pageSize: pageSize);
-    print(result);
-    if (result != null) {
+
+    try {
+      var result =
+          await provider.get(filter: filter, page: page, pageSize: pageSize);
       data = result.resultList;
       count = result.count;
-      // print(data);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

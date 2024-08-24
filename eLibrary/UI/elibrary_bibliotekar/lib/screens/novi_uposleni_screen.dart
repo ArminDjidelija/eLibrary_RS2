@@ -1,7 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/uloga.dart';
-import 'package:elibrary_bibliotekar/models/vrsta_sadrzaja.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_uposleni_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
@@ -38,7 +37,6 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
     bibliotekaUposleniProvider = context.read<BibliotekaUposleniProvider>();
     korisnikProvider = context.read<KorisnikProvider>();
     ulogeProvider = context.read<UlogeProvider>();
-    // TODO: implement initState
     super.initState();
   }
 
@@ -63,46 +61,46 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Ime"),
+                  decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Prezime"),
+                  decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Email"),
+                  decoration: const InputDecoration(labelText: "Email"),
                   name: 'email',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.email(),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(5),
                   ]),
                 )),
@@ -112,38 +110,40 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Korisnicko ime"),
+                  decoration:
+                      const InputDecoration(labelText: "Korisnicko ime"),
                   name: 'korisnickoIme',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka"),
+                  decoration: const InputDecoration(labelText: "Lozinka"),
                   name: 'lozinka',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka potvrda"),
+                  decoration:
+                      const InputDecoration(labelText: "Lozinka potvrda"),
                   name: 'lozinkaPotvrda',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -154,8 +154,6 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                     width: 300,
                     child: DropdownSearch<Uloga>.multiSelection(
                       popupProps: const PopupPropsMultiSelection.menu(
-                          // isFilterOnline: true,
-                          // showSearchBox: true,
                           searchDelay: Duration(milliseconds: 5)),
                       dropdownDecoratorProps: const DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
@@ -224,18 +222,16 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
-                        text: "Uspješno kreiran novi bibliotekar!");
+                        text: "Uspješno kreiran novi uposleni!");
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.error,
                         text: e.toString());
                   }
-                } else {
-                  print("Belaj");
-                }
+                } else {}
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );
@@ -243,9 +239,9 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
 
   Future<List<Uloga>> getUloge() async {
     var result = await ulogeProvider.get(retrieveAll: true);
-    if (result == null) {
-      return [];
-    }
+    // if (result == null) {
+    //   return [];
+    // }
     var lista = result.resultList;
     lista.removeWhere(
         (element) => element.naziv!.toLowerCase().contains("administrator"));

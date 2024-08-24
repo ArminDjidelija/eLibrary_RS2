@@ -16,10 +16,21 @@ Image imageFromString(String input) {
 }
 
 String formatDateTimeToLocal(String date) {
-  return DateFormat("dd.MM.yyyy. HH:mm")
-      .format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(date.toString()))
-      .toString();
+  try {
+    return DateFormat("dd.MM.yyyy. HH:mm")
+        .format(
+            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(date.toString()))
+        .toString();
+  } on Exception catch (e) {
+    try {
+      return DateFormat("dd.MM.yyyy. HH:mm")
+          .format(
+              DateFormat("yyyy-MM-ddTHH:mm:ss").parseStrict(date.toString()))
+          .toString();
+    } on Exception catch (e) {
+      return date;
+    }
+  }
 }
 
 String formatDateToLocal(String date) {

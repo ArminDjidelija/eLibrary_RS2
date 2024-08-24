@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:elibrary_bibliotekar/models/pozajmica_info.dart';
+import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
+import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +13,6 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
-import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/knjiga_autor.dart';
 import 'package:elibrary_bibliotekar/models/knjiga_ciljna_grupa.dart';
@@ -30,8 +30,6 @@ import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_knjiga_edit_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:elibrary_bibliotekar/screens/nova_pozajmica_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -71,9 +69,7 @@ class _BibliotekaKnjigaDetailsScreenState
   List<BibliotekaKnjiga> data = [];
   List<PozajmicaInfo> pozajmicaInfo = [];
   late Knjiga? knjiga;
-  // late Jezi? knjiga;
-  // late Knjiga? knjiga;
-  // late Knjiga? knjiga;
+
   late PozajmiceDataSource _source;
   int page = 1;
   int pageSize = 10;
@@ -83,7 +79,6 @@ class _BibliotekaKnjigaDetailsScreenState
   final GlobalKey chartKey = GlobalKey();
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -94,7 +89,6 @@ class _BibliotekaKnjigaDetailsScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<BibliotekaKnjigaProvider>();
@@ -106,6 +100,7 @@ class _BibliotekaKnjigaDetailsScreenState
     izdavacProvider = context.read<IzdavacProvider>();
     knjigaProvider = context.read<KnjigaProvider>();
     uvezProvider = context.read<UvezProvider>();
+    knjiga = widget.bibliotekaKnjiga?.knjiga;
 
     // knjiga = widget.bibliotekaKnjiga?.knjiga;
     _source = PozajmiceDataSource(
@@ -120,12 +115,15 @@ class _BibliotekaKnjigaDetailsScreenState
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
       "Detalji knjige",
-      SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildKnjigaDetalji(),
-            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
-          ],
+      Align(
+        alignment: Alignment.topLeft,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildKnjigaDetalji(),
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+            ],
+          ),
         ),
       ),
     );
@@ -168,15 +166,16 @@ class _BibliotekaKnjigaDetailsScreenState
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: knjiga?.slika != null
-                        ? Container(
-                            width: 350,
-                            height: 440,
-                            child: imageFromString(knjiga!.slika!),
-                          )
-                        : Text("Nema slike!"),
-                  )
+                      padding: const EdgeInsets.all(5.0),
+                      child: knjiga?.slika != null
+                          ? SizedBox(
+                              width: 350,
+                              height: 440,
+                              child: knjiga?.slika != null
+                                  ? imageFromString(knjiga!.slika!)
+                                  : Image.asset("assets/images/empty.png"),
+                            )
+                          : Container()),
                 ],
               ),
             ),
@@ -199,16 +198,7 @@ class _BibliotekaKnjigaDetailsScreenState
                       defaultVerticalAlignment:
                           TableCellVerticalAlignment.middle,
                       children: [
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Naslov"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(knjiga!.naslov.toString()),
-                          )
-                        ]),
+                        _buildTabelRow("Naslov", knjiga?.naslov.toString()),
                         TableRow(children: [
                           const Padding(
                             padding: EdgeInsets.all(5),
@@ -254,131 +244,34 @@ class _BibliotekaKnjigaDetailsScreenState
                                       .join(', ')),
                                 )
                         ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("ISBN"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(knjiga!.isbn.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Godina izdanja"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(knjiga!.godinaIzdanja.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Broj izdanja"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(knjiga!.brojIzdanja.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Broj stranica"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(knjiga!.brojStranica.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Jezik"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: knjiga?.jezik == null
-                                ? const Text("")
-                                : Text(knjiga!.jezik!.naziv.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Uvez"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: knjiga?.uvez == null
-                                ? const Text("")
-                                : Text(knjiga!.uvez!.naziv.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Izdavac"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: knjiga?.izdavac == null
-                                ? const Text("")
-                                : Text(knjiga!.izdavac!.naziv.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Lokacija"),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: widget.bibliotekaKnjiga!.lokacija ==
-                                          null ||
-                                      widget.bibliotekaKnjiga!.lokacija == ""
-                                  ? Text("Nije unesena lokacija u biblioteci")
-                                  : Text(widget.bibliotekaKnjiga!.lokacija
-                                      .toString()))
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Broj kopija"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                                widget.bibliotekaKnjiga!.brojKopija.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Maksimalno pozajmica"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget
-                                .bibliotekaKnjiga!.dostupnoPozajmica
+                        _buildTabelRow("ISBN", knjiga?.isbn),
+                        _buildTabelRow(
+                            "Godina izdanja", knjiga?.godinaIzdanja.toString()),
+                        _buildTabelRow(
+                            "Broj izdanja", knjiga?.brojIzdanja.toString()),
+                        _buildTabelRow(
+                            "Broj stranica", knjiga?.brojStranica.toString()),
+                        _buildTabelRow(
+                            "Jezik", knjiga?.jezik?.naziv.toString()),
+                        _buildTabelRow("Uvez", knjiga?.uvez?.naziv.toString()),
+                        _buildTabelRow(
+                            "Izdavac", knjiga?.izdavac?.naziv.toString()),
+                        _buildTabelRow(
+                            "Lokacija",
+                            widget.bibliotekaKnjiga?.lokacija == null ||
+                                    widget.bibliotekaKnjiga!.lokacija == ""
+                                ? "Nije unesena lokacija"
+                                : widget.bibliotekaKnjiga!.lokacija.toString()),
+                        _buildTabelRow("Broj kopija",
+                            widget.bibliotekaKnjiga!.brojKopija.toString()),
+                        _buildTabelRow(
+                            "Maksimalno pozajmica",
+                            widget.bibliotekaKnjiga!.dostupnoPozajmica
                                 .toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Maksimalno čitaonica"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget
-                                .bibliotekaKnjiga!.dostupnoCitaonica
+                        _buildTabelRow(
+                            "Maksimalno čitaonica",
+                            widget.bibliotekaKnjiga!.dostupnoCitaonica
                                 .toString()),
-                          )
-                        ]),
                       ],
                     ),
                     const SizedBox(
@@ -395,7 +288,7 @@ class _BibliotekaKnjigaDetailsScreenState
                               backgroundColor:
                                   MaterialStatePropertyAll<Color>(Colors.blue)),
                           child: const Text(
-                            "Izveštaj",
+                            "Izvještaj",
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ),
@@ -449,7 +342,7 @@ class _BibliotekaKnjigaDetailsScreenState
                               });
                               _source.filterServerSide(prijasnjePozajmice);
                             }),
-                        Text("Prijašnje pozajmice")
+                        const Text("Prijašnje pozajmice")
                       ],
                     )
                   ],
@@ -462,29 +355,21 @@ class _BibliotekaKnjigaDetailsScreenState
     );
   }
 
+  TableRow _buildTabelRow(String? label, String? text) {
+    return TableRow(children: [
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(label ?? ""),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(text ?? ""),
+      )
+    ]);
+  }
+
   Future generateInvoice() async {
     try {
-      // await showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: Text("Prikaz grafikona"),
-      //       content: Container(
-      //           width: 600, // Širina grafikona unutar dijaloga
-      //           height: 300, // Visina grafikona unutar dijaloga
-      //           child: buildChart()),
-      //       actions: [
-      //         TextButton(
-      //           child: Text("Zatvori"),
-      //           onPressed: () {
-      //             Navigator.of(context).pop(); // Zatvori dialog
-      //           },
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-
       Uint8List chartImage = await _captureChart();
       var pdf = pw.Document();
       pdf.addPage(
@@ -510,9 +395,9 @@ class _BibliotekaKnjigaDetailsScreenState
               ),
               pw.Divider(thickness: 0.5),
               pw.Container(
-                height: 400, // Visina za sliku grafikona
+                height: 400,
                 width: double.infinity,
-                decoration: pw.BoxDecoration(
+                decoration: const pw.BoxDecoration(
                   color: PdfColors.white,
                 ),
                 child: pw.Image(pw.MemoryImage(chartImage)),
@@ -538,7 +423,7 @@ class _BibliotekaKnjigaDetailsScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Prikaz grafikona"),
+          title: const Text("Prikaz grafikona"),
           content: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -551,13 +436,13 @@ class _BibliotekaKnjigaDetailsScreenState
           ),
           actions: [
             TextButton(
-              child: Text("Zatvori"),
+              child: const Text("Zatvori"),
               onPressed: () {
                 Navigator.of(context).pop(); // Zatvori dialog
               },
             ),
             TextButton(
-              child: Text("Generiši izvjestaj"),
+              child: const Text("Generiši izvjestaj"),
               onPressed: () async {
                 generateInvoice();
                 Navigator.of(context).pop(); // Zatvori dialog
@@ -593,9 +478,8 @@ class _BibliotekaKnjigaDetailsScreenState
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 40, // Rezervisanje prostora za brojeve
+                  reservedSize: 40,
                   getTitlesWidget: (value, meta) {
-                    // Mapiranje int vrednosti u nazive meseca
                     final months =
                         pozajmicaInfo.map((e) => e.mjesecString).toList();
 
@@ -619,31 +503,27 @@ class _BibliotekaKnjigaDetailsScreenState
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 40, // Rezervisanje više prostora za y osu
+                  reservedSize: 40,
                   getTitlesWidget: (value, meta) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
-                        value
-                            .toInt()
-                            .toString(), // Prikaz int vrednosti na y-osi
+                        value.toInt().toString(),
                         style: const TextStyle(fontSize: 12),
                       ),
                     );
                   },
                 ),
               ),
-              topTitles: AxisTitles(
-                sideTitles:
-                    SideTitles(showTitles: false), // Sakrij na gornjoj osi
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
               ),
-              rightTitles: AxisTitles(
-                sideTitles:
-                    SideTitles(showTitles: false), // Sakrij na desnoj osi
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
               ),
             ),
             borderData: FlBorderData(show: true),
-            gridData: FlGridData(show: true),
+            gridData: const FlGridData(show: true),
             lineBarsData: [
               LineChartBarData(
                 spots: pozajmicaInfo
@@ -703,7 +583,7 @@ class _BibliotekaKnjigaDetailsScreenState
 
   Widget _buildApp() {
     return Container(
-      child: Column(
+      child: const Column(
         children: [],
       ),
     );
@@ -739,14 +619,13 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
     return DataRow(cells: [
       DataCell(Text(
           "${item!.citalac!.ime.toString()} ${item!.citalac!.prezime.toString()}")),
-      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-              .parseStrict(item!.datumPreuzimanja!.toString())))),
-      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-              .parseStrict(item!.preporuceniDatumVracanja!.toString())))),
+      DataCell(Text(formatDateTimeToLocal(item!.datumPreuzimanja!.toString()))),
+      DataCell(Text(
+          formatDateTimeToLocal(item!.preporuceniDatumVracanja!.toString()))),
       DataCell(Text(item!.trajanje.toString())),
-      DataCell(item.stvarniDatumVracanja == null ? Text("Ne") : Text("Da")),
+      DataCell(item.stvarniDatumVracanja == null
+          ? const Text("Ne")
+          : const Text("Da")),
       DataCell(
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -757,8 +636,6 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                         backgroundColor:
                             MaterialStatePropertyAll<Color>(Colors.blue)),
                     onPressed: () {
-                      // Prva akcija dugmeta
-                      print('First button pressed for item: ${item.trajanje}');
                       QuickAlert.show(
                           context: context,
                           width: 450,
@@ -770,8 +647,10 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                           cancelBtnText: "Ne",
                           onConfirmBtnTap: () async {
                             print("Potvrdeno: ${item.pozajmicaId}");
-                            //TODO dodaj na api da je potvrdena,
-                            await provider.potvrdiPozajmicu(item.pozajmicaId!);
+                            try {
+                              await provider
+                                  .potvrdiPozajmicu(item.pozajmicaId!);
+                            } on Exception catch (e) {}
                             filterServerSide(vraceno);
                             Navigator.pop(context);
                           },
@@ -780,7 +659,7 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                             Navigator.pop(context);
                           });
                     },
-                    child: Text(
+                    child: const Text(
                       'Potvrdi vraćanje',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -790,51 +669,40 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                         backgroundColor:
                             MaterialStatePropertyAll<Color>(Colors.blue)),
                     onPressed: () {
-                      // Prva akcija dugmeta
-                      print('First button pressed for item: ${item.trajanje}');
-                      QuickAlert.show(
-                          context: context,
-                          width: 450,
-                          type: QuickAlertType.confirm,
-                          title: "Jeste li sigurni?",
-                          text:
-                              "Da li želite potvrditi da je pozajmica uspješno vraćena?",
-                          confirmBtnText: "Da",
-                          cancelBtnText: "Ne",
-                          onConfirmBtnTap: () async {
-                            print("Potvrdeno: ${item.pozajmicaId}");
-                            //TODO dodaj na api da je potvrdena,
-                            await provider.potvrdiPozajmicu(item.pozajmicaId!);
-                            filterServerSide(vraceno);
-                            Navigator.pop(context);
-                          },
-                          onCancelBtnTap: () {
-                            print("Cancel: ${item.pozajmicaId}");
-                            Navigator.pop(context);
-                          });
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PozajmicaDetailsScreen(
+                            pozajmica: item,
+                          ),
+                        ),
+                      );
                     },
-                    child: Text(
+                    child: const Text(
                       'Detalji',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-            SizedBox(width: 8), // Razmak između dugmadi
+            const SizedBox(width: 8),
             item.stvarniDatumVracanja != null
                 ? ElevatedButton(
                     style: const ButtonStyle(
                         backgroundColor:
                             MaterialStatePropertyAll<Color>(Colors.red)),
                     onPressed: () {
-                      // Druga akcija dugmeta
-                      print(
-                          'Second button pressed for item: ${item.datumPreuzimanja}');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => NoviPenalScreen(
+                            pozajmica: item,
+                          ),
+                        ),
+                      );
                     },
-                    child: Text(
+                    child: const Text(
                       'Dodaj penale',
                       style: TextStyle(color: Colors.white),
                     ),
                   )
-                : Text(""),
+                : const Text(""),
           ],
         ),
       )
@@ -858,22 +726,21 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
   @override
   Future<RemoteDataSourceDetails<Pozajmica>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {'bibliotekaKnjigaId': bibliotekaKnjigaId, 'vraceno': vraceno};
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "BibliotekaKnjiga,Citalac",
-        orderBy: "DatumPreuzimanja",
-        sortDirection: "descending");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "BibliotekaKnjiga,Citalac",
+          orderBy: "DatumPreuzimanja",
+          sortDirection: "descending");
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      print(e);
     }
     return RemoteDataSourceDetails(count, data!);
   }

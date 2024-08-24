@@ -9,6 +9,8 @@ import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../models/autor.dart';
 
@@ -46,7 +48,6 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
 
     provider = context.read<AutoriProvider>();
     _source = AutorDataSource(provider: provider, context: context);
-    //updateFilter("");
   }
 
   @override
@@ -63,29 +64,6 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
         ));
   }
 
-  Future<void> updateFilter(String imePrezime) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {
-      'imePrezimeGTE': imePrezime,
-      'page': page,
-      'pageSize': pageSize
-    };
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(filter: filter);
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-        // print(data);
-      }
-      _isLoading = false;
-    });
-  }
-
   TextEditingController _imePrezimeEditingController = TextEditingController();
   Widget _buildSearch() {
     return Padding(
@@ -97,9 +75,7 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
             controller: _imePrezimeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -107,8 +83,6 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
                 _source.filterServerSide(_imePrezimeEditingController.text);
                 setState(() {});
               },
@@ -281,14 +255,20 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
     filter = {
       'imePrezimeGTE': imePrezimeGTE,
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+    try {
+      var result =
+          await provider?.get(filter: filter, page: page, pageSize: pageSize);
+      if (result != null) {
+        data = result!.resultList;
+        count = result!.count;
+        // print(data);
+      }
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

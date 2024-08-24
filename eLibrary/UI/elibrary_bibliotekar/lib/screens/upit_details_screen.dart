@@ -1,13 +1,12 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/upit.dart';
-import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:elibrary_bibliotekar/providers/upiti_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class UpitDetailsScreen extends StatefulWidget {
   Upit? upit;
@@ -32,7 +31,6 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
   @override
   void initState() {
     upitiProvider = context.read<UpitiProvider>();
-    // TODO: implement initState
     super.initState();
     _initialValue = {
       'upitId': widget.upit?.upitId.toString(),
@@ -45,7 +43,6 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
     } else {
       isEditing = false;
     }
-    //initForm();
   }
 
   @override
@@ -69,11 +66,11 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naslov"),
+                  decoration: const InputDecoration(labelText: "Naslov"),
                   enabled: false,
                   name: 'naslov',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -82,11 +79,11 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Upit"),
+                  decoration: const InputDecoration(labelText: "Upit"),
                   enabled: false,
                   name: 'upit',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -95,10 +92,12 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Odgovor"),
+                  decoration: const InputDecoration(labelText: "Odgovor"),
+                  minLines: 1,
+                  maxLines: null,
                   name: 'odgovor',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -116,15 +115,27 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formValidate = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formValidate == true) {
-                  upitiProvider.update(
-                      widget.upit!.upitId!, {'odgovor': request['odgovor']});
+                  try {
+                    await upitiProvider.update(
+                        widget.upit!.upitId!, {'odgovor': request['odgovor']});
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Uspješno sačuvano!",
+                        width: 400);
+                  } on Exception catch (e) {
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        text: e.toString());
+                  }
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

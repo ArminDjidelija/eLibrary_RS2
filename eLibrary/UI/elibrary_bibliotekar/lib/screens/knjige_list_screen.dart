@@ -13,6 +13,7 @@ import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/nova_biblioteka_knjiga.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KnjigeListScreen extends StatefulWidget {
   const KnjigeListScreen({super.key});
@@ -155,7 +156,15 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
     };
     print("Metoda u updatefilter");
     print(filter);
-    result = await provider.get(filter: filter);
+    try {
+      result = await provider.get(filter: filter);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
+    }
     setState(() {
       if (result != null) {
         data = result!.resultList;
@@ -235,8 +244,17 @@ class _KnjigeListScreenState extends State<KnjigeListScreen> {
   }
 
   Future<List<Knjiga>> _getKnjige() async {
-    var lista = await provider.get();
-    return lista.resultList;
+    try {
+      var lista = await provider.get();
+      return lista.resultList;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
+      return [];
+    }
   }
 
   Future initForm() async {
@@ -264,77 +282,89 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     }
 
     final item = data?[index];
-    if (AuthProvider.korisnikUloge!
-        .any((element) => element.uloga!.naziv == "Administrator")) {
-      return DataRow(
-          onSelectChanged: (selected) => {
-                if (selected == true)
-                  {
+    // if (AuthProvider.korisnikUloge!
+    //     .any((element) => element.uloga!.naziv == "Administrator")) {
+    //   return DataRow(
+    //       onSelectChanged: (selected) => {
+    //             if (selected == true)
+    //               {
+    //                 Navigator.of(context).push(MaterialPageRoute(
+    //                     builder: (context) => KnjigaDetailsScreen(
+    //                           knjiga: item,
+    //                         ))),
+    //               }
+    //           },
+    //       cells: [
+    //         DataCell(Text(item!.naslov.toString())),
+    //         DataCell(Text(item!.isbn.toString())),
+    //         DataCell(Text(item!.godinaIzdanja.toString())),
+    //         DataCell(Text(item!.brojIzdanja.toString())),
+    //         DataCell(Text(item!.brojStranica.toString())),
+    //         DataCell(item!.slika != null
+    //             ? Container(
+    //                 width: 75,
+    //                 height: 75,
+    //                 child: imageFromString(item.slika!),
+    //               )
+    //             : Image.asset(
+    //                 "assets/images/empty.png",
+    //                 height: 75,
+    //                 width: 75,
+    //               )),
+    //         if (AuthProvider.korisnikUloge!
+    //             .where((element) => element.uloga!.naziv == "Administrator")
+    //             .isEmpty)
+    //           DataCell(
+    //             ElevatedButton(
+    //                 onPressed: () async {
+    //                   //
+    //                   Navigator.of(context).push(MaterialPageRoute(
+    //                       builder: (context) => NovaBibliotekaKnjigaScreen(
+    //                             knjiga: item,
+    //                           )));
+    //                 },
+    //                 child: const Text("Dodaj u biblioteku")),
+    //           )
+    //       ]);
+    // } else {
+    return DataRow(
+        onSelectChanged: (selected) => {
+              if (selected == true)
+                {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => KnjigaDetailsScreen(
+                            knjiga: item,
+                          ))),
+                }
+            },
+        cells: [
+          DataCell(Text(item!.naslov.toString())),
+          DataCell(Text(item!.isbn.toString())),
+          DataCell(Text(item!.godinaIzdanja.toString())),
+          DataCell(Text(item!.brojIzdanja.toString())),
+          DataCell(Text(item!.brojStranica.toString())),
+          DataCell(item!.slika != null
+              ? Container(
+                  width: 75,
+                  height: 75,
+                  child: imageFromString(item.slika!),
+                )
+              : const Text("")),
+          if (AuthProvider.korisnikUloge!
+              .where((element) => element.uloga!.naziv == "Administrator")
+              .isEmpty)
+            DataCell(
+              ElevatedButton(
+                  onPressed: () async {
+                    //
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => KnjigaDetailsScreen(
+                        builder: (context) => NovaBibliotekaKnjigaScreen(
                               knjiga: item,
-                            ))),
-                  }
-              },
-          cells: [
-            DataCell(Text(item!.naslov.toString())),
-            DataCell(Text(item!.isbn.toString())),
-            DataCell(Text(item!.godinaIzdanja.toString())),
-            DataCell(Text(item!.brojIzdanja.toString())),
-            DataCell(Text(item!.brojStranica.toString())),
-            DataCell(item!.slika != null
-                ? Container(
-                    width: 75,
-                    height: 75,
-                    child: imageFromString(item.slika!),
-                  )
-                : Image.asset(
-                    "assets/images/empty.png",
-                    height: 75,
-                    width: 75,
-                  )),
-            if (AuthProvider.korisnikUloge!
-                .where((element) => element.uloga!.naziv == "Administrator")
-                .isEmpty)
-              DataCell(
-                ElevatedButton(
-                    onPressed: () async {
-                      //
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NovaBibliotekaKnjigaScreen(
-                                knjiga: item,
-                              )));
-                    },
-                    child: const Text("Dodaj u biblioteku")),
-              )
-          ]);
-    } else {
-      return DataRow(cells: [
-        DataCell(Text(item!.naslov.toString())),
-        DataCell(Text(item!.isbn.toString())),
-        DataCell(Text(item!.godinaIzdanja.toString())),
-        DataCell(Text(item!.brojIzdanja.toString())),
-        DataCell(Text(item!.brojStranica.toString())),
-        DataCell(item!.slika != null
-            ? Container(
-                width: 75,
-                height: 75,
-                child: imageFromString(item.slika!),
-              )
-            : const Text("")),
-        DataCell(
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => NovaBibliotekaKnjigaScreen(
-                          knjiga: item,
-                        )));
-              },
-              child: const Text("Dodaj u biblioteku")),
-        )
-      ]);
-    }
+                            )));
+                  },
+                  child: const Text("Dodaj u biblioteku")),
+            )
+        ]);
   }
 
   void filterServerSide(naslovv, autorr, isbnn) {
@@ -359,17 +389,24 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
     // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {'naslovGTE': naslov, 'autor': autor, 'isbnGTE': isbn};
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Jezik,Izdavac");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider?.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Jezik,Izdavac");
+      if (result != null) {
+        data = result.resultList;
+        count = result.count;
+        // print(data);
+      }
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

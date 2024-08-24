@@ -27,5 +27,11 @@ namespace eLibrary.Model.Requests
         public int? VrsteGradeId { get; set; }
 
         public int JezikId { get; set; }
+
+        public List<int> Autori { get; set; }
+
+        public List<int> CiljneGrupe { get; set; }
+
+        public List<int> VrsteSadrzaja { get; set; }
     }
 }

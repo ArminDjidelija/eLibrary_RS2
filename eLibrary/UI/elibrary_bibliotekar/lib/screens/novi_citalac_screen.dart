@@ -70,7 +70,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
@@ -82,7 +82,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
@@ -94,7 +94,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Email"),
                   name: 'email',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.email(),
                   ]),
                 )),
@@ -106,7 +106,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(5),
                   ]),
                 )),
@@ -119,7 +119,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Korisnicko ime"),
                   name: 'korisnickoIme',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
@@ -131,7 +131,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Lozinka"),
                   name: 'lozinka',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
@@ -143,7 +143,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   decoration: InputDecoration(labelText: "Lozinka potvrda"),
                   name: 'lozinkaPotvrda',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
@@ -173,7 +173,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                           .toList() ??
                       [],
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
               ],
@@ -191,7 +191,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
                   //TODO provjera username  i email da li vec postoji
@@ -200,7 +200,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   var request = Map.from(_formKey.currentState!.value);
 
                   try {
-                    citaociProvider.insert(request);
+                    await citaociProvider.insert(request);
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,

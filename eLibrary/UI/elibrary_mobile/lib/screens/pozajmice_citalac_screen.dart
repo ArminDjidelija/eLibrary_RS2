@@ -11,7 +11,7 @@ import 'package:elibrary_mobile/providers/produzenje_pozajmice_provider.dart';
 import 'package:elibrary_mobile/providers/rezervacije_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -170,8 +170,6 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Widget _buildAppBarHeader() {
     return Container(
-      // color: Colors.blue,
-      // margin: EdgeInsets.only(bottom: 5),
       height: 75,
       decoration: const BoxDecoration(
           color: Colors.blue,
@@ -196,76 +194,259 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
   }
 
   Widget _buildPage() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return CustomScrollView(
+      controller: scrollController, // Attach your scroll controller here
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 5),
+            child: const Text(
               "Trenutne pozajmice",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildTrenutnePozajmice(),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            decoration: BoxDecoration(
+        ),
+        SliverToBoxAdapter(
+          child: _buildTrenutnePozajmice(),
+        ),
+        SliverToBoxAdapter(
+          child: const SizedBox(height: 20),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: Colors.black, // Boja bordera
-                  width: 2.0, // Širina bordera
+                  color: Colors.black,
+                  width: 2.0,
                 ),
               ),
             ),
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5, right: 10),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 5, right: 10),
+            child: const Text(
               "Trenutne rezervacije",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildTrenutneRezervacije(),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
+        ),
+        SliverToBoxAdapter(
+          child: _buildTrenutneRezervacije(),
+        ),
+        SliverToBoxAdapter(
+          child: const SizedBox(height: 20),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: Colors.black, // Boja bordera
-                  width: 2.0, // Širina bordera
+                  color: Colors.black,
+                  width: 2.0,
                 ),
               ),
             ),
-            margin: EdgeInsets.only(left: 10, top: 20, right: 10),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
+            child: const Text(
               "Historija pozajmica",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildPrijasnjePozajmice(),
-        ],
-      ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == prijasnjePozajmice.length) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      hasNextPage
+                          ? 'Učitavanje...'
+                          : total != 0
+                              ? 'Pregledali ste sve pozajmice!'
+                              : 'Nema više pozajmica',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return _buildPrijasnjaPozajmicaCard(
+                    pozajmica: prijasnjePozajmice[index]);
+              }
+            },
+            childCount: prijasnjePozajmice.length + 1,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildPage() {
+  //   return CustomScrollView(
+  //     controller: scrollController, // Attach your scroll controller here
+  //     slivers: [
+  //       SliverToBoxAdapter(
+  //         child: Container(
+  //           alignment: Alignment.centerLeft,
+  //           margin: const EdgeInsets.only(left: 10, top: 5),
+  //           child: const Text(
+  //             "Trenutne pozajmice",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: _buildTrenutnePozajmice(),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: const SizedBox(height: 20),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: Container(
+  //           decoration: const BoxDecoration(
+  //             border: Border(
+  //               top: BorderSide(
+  //                 color: Colors.black,
+  //                 width: 2.0,
+  //               ),
+  //             ),
+  //           ),
+  //           alignment: Alignment.centerLeft,
+  //           margin: const EdgeInsets.only(left: 10, top: 5, right: 10),
+  //           child: const Text(
+  //             "Trenutne rezervacije",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: _buildTrenutneRezervacije(),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: const SizedBox(height: 20),
+  //       ),
+  //       SliverToBoxAdapter(
+  //         child: Container(
+  //           alignment: Alignment.centerLeft,
+  //           decoration: const BoxDecoration(
+  //             border: Border(
+  //               top: BorderSide(
+  //                 color: Colors.black,
+  //                 width: 2.0,
+  //               ),
+  //             ),
+  //           ),
+  //           margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
+  //           child: const Text(
+  //             "Historija pozajmica",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //       ),
+  //       SliverList(
+  //         delegate: SliverChildBuilderDelegate(
+  //           (context, index) {
+  //             if (index == prijasnjePozajmice.length) {
+  //               return Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: Center(
+  //                   child: Text(
+  //                     hasNextPage
+  //                         ? 'Učitavanje...'
+  //                         : total != 0
+  //                             ? 'Pregledali ste sve pozajmice!'
+  //                             : 'Nema više pozajmica',
+  //                     style: const TextStyle(fontSize: 16),
+  //                   ),
+  //                 ),
+  //               );
+  //             } else {
+  //               return _buildPrijasnjaPozajmicaCard(
+  //                   pozajmica: prijasnjePozajmice[index]);
+  //             }
+  //           },
+  //           childCount: prijasnjePozajmice.length + 1,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildPage() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           margin: const EdgeInsets.only(left: 10, top: 5),
+  //           child: const Text(
+  //             "Trenutne pozajmice",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildTrenutnePozajmice(),
+  //         const SizedBox(
+  //           height: 20,
+  //         ),
+  //         Container(
+  //           decoration: const BoxDecoration(
+  //             border: Border(
+  //               top: BorderSide(
+  //                 color: Colors.black,
+  //                 width: 2.0,
+  //               ),
+  //             ),
+  //           ),
+  //           alignment: Alignment.centerLeft,
+  //           margin: const EdgeInsets.only(left: 10, top: 5, right: 10),
+  //           child: const Text(
+  //             "Trenutne rezervacije",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildTrenutneRezervacije(),
+  //         const SizedBox(
+  //           height: 20,
+  //         ),
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           decoration: const BoxDecoration(
+  //             border: Border(
+  //               top: BorderSide(
+  //                 color: Colors.black,
+  //                 width: 2.0,
+  //               ),
+  //             ),
+  //           ),
+  //           margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
+  //           child: const Text(
+  //             "Historija pozajmica",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildPrijasnjePozajmice()
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildTrenutnePozajmice() {
     if (trenutnePozajmice?.resultList != null) {
       return ListView(
-        scrollDirection: Axis.vertical,
+        //scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         children: trenutnePozajmice!.resultList
             .map((e) => _buildTrenutnaPozajmicaCard(pozajmica: e))
             .toList(),
       );
     } else {
-      return Container(
+      return const SizedBox(
         height: 50,
         child: Center(
           child: Text("Nema podataka"),
@@ -279,13 +460,14 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
       return ListView(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         children: trenutneRezervacije!.resultList
             .map((e) => _buildTrenutnaRezervacijaCard(rezervacija: e))
             .toList(),
       );
     } else {
-      return Container(
+      return const SizedBox(
         height: 50,
         child: Center(
           child: Text("Nema podataka"),
@@ -300,10 +482,9 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            physics:
-                NeverScrollableScrollPhysics(), // Disable ListView scrolling
-            shrinkWrap: true, // Ensure ListView occupies only necessary space
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            // physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             itemCount: prijasnjePozajmice.length + 1,
             controller: scrollController,
             itemBuilder: (_, index) {
@@ -331,7 +512,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Widget _buildTrenutnaPozajmicaCard({required Pozajmica pozajmica}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -340,27 +521,27 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             Container(
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<Knjiga>(
                 future: getKnjiga(pozajmica!.bibliotekaKnjiga!.knjigaId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text(
+                    return const Text(
                       'Loading...',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Greška sa učitavanjem',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasData) {
                     return Text(
                       'Knjiga: ${snapshot.data!.naslov}',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     );
                   } else {
-                    return Text(
+                    return const Text(
                       'Nema knjige',
                       style: TextStyle(color: Colors.white),
                     );
@@ -372,27 +553,23 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
               future: getBiblioteka(pozajmica!.bibliotekaKnjiga!.bibliotekaId!),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text(
+                  return const Text(
                     'Loading...',
-                    // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasError) {
-                  return Text(
+                  return const Text(
                     'Greška sa učitavanjem',
-                    // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasData) {
                   return _buildInfoRow(
                       'Ustanova', snapshot.data!.naziv.toString());
                 } else {
-                  return Text(
+                  return const Text(
                     'Nema biblioteke',
-                    // style: TextStyle(color: Colors.white),
                   );
                 }
               },
             ),
-            // SizedBox(height: 8.0),
             _buildInfoRow('Preuzeto',
                 formatDateTimeToLocal(pozajmica.datumPreuzimanja.toString())),
             _buildInfoRow(
@@ -406,7 +583,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
-                  child: Text(
+                  child: const Text(
                     "Produzi",
                     textAlign: TextAlign.end,
                   ),
@@ -425,8 +602,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
     return showDialog<void>(
       context: context,
-      barrierDismissible:
-          false, // The dialog will not dismiss when tapping outside
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Produži pozajmicu'),
@@ -448,21 +624,25 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             TextButton(
               child: const Text('Odustani'),
               onPressed: () {
-                Navigator.of(context).pop(); // Closes the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('Potvrdi'),
-              onPressed: () async {
+              onPressed: () {
                 int? brojDana = int.tryParse(_daysController.text);
                 if (brojDana != null && brojDana > 0) {
-                  await produziPozajmicu(
-                      brojDana,
-                      pozajmica
-                          .pozajmicaId!); // Call the method with the input number of days
-                  Navigator.pop(context);
+                  try {
+                    produziPozajmicu(brojDana, pozajmica.pozajmicaId!);
+                    Navigator.of(context).pop();
+                  } on Exception catch (e) {
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        text: e.toString());
+                  }
                 } else {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                         content: Text('Molimo unesite validan broj dana')),
@@ -484,6 +664,9 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
           context: context,
           type: QuickAlertType.success,
           text: "Uspješno kreiran zahtjev");
+      await _getTrenutnePozajmice();
+
+      setState(() {});
     } on Exception catch (e) {
       QuickAlert.show(
           context: context, type: QuickAlertType.error, text: e.toString());
@@ -492,7 +675,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Widget _buildTrenutnaRezervacijaCard({required Rezervacija rezervacija}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -501,27 +684,27 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             Container(
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<Knjiga>(
                 future: getKnjiga(rezervacija!.bibliotekaKnjiga!.knjigaId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text(
+                    return const Text(
                       'Loading...',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Greška sa učitavanjem',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasData) {
                     return Text(
                       'Knjiga: ${snapshot.data!.naslov}',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     );
                   } else {
-                    return Text(
+                    return const Text(
                       'Nema knjige',
                       style: TextStyle(color: Colors.white),
                     );
@@ -534,12 +717,12 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                   getBiblioteka(rezervacija!.bibliotekaKnjiga!.bibliotekaId!),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text(
+                  return const Text(
                     'Loading...',
                     // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasError) {
-                  return Text(
+                  return const Text(
                     'Greška sa učitavanjem',
                     // style: TextStyle(color: Colors.white),
                   );
@@ -547,7 +730,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                   return _buildInfoRow(
                       'Ustanova', snapshot.data!.naziv.toString());
                 } else {
-                  return Text(
+                  return const Text(
                     'Nema biblioteke',
                     // style: TextStyle(color: Colors.white),
                   );
@@ -567,7 +750,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
-                  child: Text(
+                  child: const Text(
                     "Poništi",
                     textAlign: TextAlign.end,
                   ),
@@ -587,10 +770,6 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                   },
                 ),
               )
-            // _buildInfoRow(
-            //     'Vratiti do',
-            //     formatDateTimeToLocal(
-            //         pozajmica.preporuceniDatumVracanja.toString())),
           ],
         ),
       ),
@@ -615,7 +794,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
 
   Widget _buildPrijasnjaPozajmicaCard({required Pozajmica pozajmica}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -625,27 +804,27 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
               // height: 200,
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<Knjiga>(
                 future: getKnjiga(pozajmica!.bibliotekaKnjiga!.knjigaId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text(
+                    return const Text(
                       'Loading...',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Greška sa učitavanjem',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasData) {
                     return Text(
                       'Knjiga: ${snapshot.data!.naslov}',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     );
                   } else {
-                    return Text(
+                    return const Text(
                       'Nema knjige',
                       style: TextStyle(color: Colors.white),
                     );
@@ -657,12 +836,12 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
               future: getBiblioteka(pozajmica!.bibliotekaKnjiga!.bibliotekaId!),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text(
+                  return const Text(
                     'Loading...',
                     // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasError) {
-                  return Text(
+                  return const Text(
                     'Greška sa učitavanjem',
                     // style: TextStyle(color: Colors.white),
                   );
@@ -670,7 +849,7 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                   return _buildInfoRow(
                       'Ustanova', snapshot.data!.naziv.toString());
                 } else {
-                  return Text(
+                  return const Text(
                     'Nema biblioteke',
                     // style: TextStyle(color: Colors.white),
                   );
@@ -698,12 +877,12 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ),
         ],

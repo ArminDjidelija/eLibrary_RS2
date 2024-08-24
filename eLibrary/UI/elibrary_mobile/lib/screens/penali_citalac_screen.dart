@@ -158,32 +158,90 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
   }
 
   Widget _buildPage() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return CustomScrollView(
+      controller: scrollController, // Attach your scroll controller here
+      slivers: [
+        // Trenutni penali section
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 5),
+            child: const Text(
               "Trenutni penali",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildTrenutniPenali(),
-          Container(
+        ),
+        SliverToBoxAdapter(
+          child: _buildTrenutniPenali(),
+        ),
+
+        // Historija penala section
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 5),
+            child: const Text(
               "Historija penala",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildPrijasnjePenale()
-        ],
-      ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == prijasnjiPenali.length) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      hasNextPage
+                          ? 'Učitavanje...'
+                          : total != 0
+                              ? 'Pregledali ste sve penale!'
+                              : 'Nema više penala',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return _buildPrijasnjiPenalCard(penal: prijasnjiPenali[index]);
+              }
+            },
+            childCount: prijasnjiPenali.length + 1,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildPage() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           margin: EdgeInsets.only(left: 10, top: 5),
+  //           child: Text(
+  //             "Trenutni penali",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildTrenutniPenali(),
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           margin: EdgeInsets.only(left: 10, top: 5),
+  //           child: Text(
+  //             "Historija penala",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildPrijasnjePenale()
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildTrenutniPenali() {
     if (trenutniPenali.isNotEmpty) {
@@ -468,6 +526,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
               onSuccess: (Map params) async {
                 print("onSuccess: $params");
                 try {
+                  Navigator.pop(context);
                   await penaliProvider.Plati(penal.penalId!,
                       tipPlacanjaId == null ? 1 : tipPlacanjaId!);
                   QuickAlert.show(

@@ -5,6 +5,7 @@ using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.RabbitMqService;
 using eLibrary.Services.Validators.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -20,20 +21,22 @@ namespace eLibrary.Services
     {
         private readonly ICurrentUserServiceAsync userService;
         private readonly IAutoriValidator autoriValidator;
+        private readonly IRabbitMqService rabbitMqService;
 
         public AutoriService(ELibraryContext context, IMapper mapper,
             ICurrentUserServiceAsync userService,
-            IAutoriValidator autoriValidator) : base(context, mapper)
+            IAutoriValidator autoriValidator,
+            IRabbitMqService rabbitMqService) : base(context, mapper)
         {
             this.userService = userService;
             this.autoriValidator = autoriValidator;
+            this.rabbitMqService = rabbitMqService;
         }
 
         public override IQueryable<Database.Autori> AddFilter(AutoriSearchObject search, IQueryable<Database.Autori> query)
         {
             //var bus = RabbitHutch.CreateBus("host=localhost");
             //bus.PubSub.Publish(new AutorPretraga { Autor=search});
-            
 
             if (!string.IsNullOrEmpty(search?.ImeGTE))
             {
@@ -63,6 +66,20 @@ namespace eLibrary.Services
         public override async Task BeforeInsertAsync(AutoriUpsertRequest request, Autori entity, CancellationToken cancellationToken = default)
         {
             autoriValidator.ValidateAutorNaziv(request);
+        }
+
+        public override async Task<Model.AutoriDTOs.Autori> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+
+            await rabbitMqService.SendAnEmail(new EmailDTO
+            {
+                EmailTo = "didelija.armin@gmail.com",
+                Message = DateTime.Now.ToString(),
+                ReceiverName = "Armin",
+                Subject = "Naslov"
+            });
+
+            return await base.GetByIdAsync(id, cancellationToken);
         }
 
     }

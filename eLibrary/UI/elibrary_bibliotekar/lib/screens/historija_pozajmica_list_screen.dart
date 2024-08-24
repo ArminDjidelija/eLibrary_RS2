@@ -334,8 +334,7 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
   Future<RemoteDataSourceDetails<Pozajmica>> getNextPage(
       NextPageRequest pageRequest) async {
     // TODO: implement getNextPage
-    page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    print("Metoda u get next row");
+
     filter = {'imePrezimeGTE': imePrezimeGTE};
     var result = await provider?.get(
         page: page,

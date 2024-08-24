@@ -1,13 +1,13 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/obavijest.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class ObavijestDetailsScreen extends StatefulWidget {
   Obavijest? obavijest;
@@ -32,7 +32,6 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
   @override
   void initState() {
     obavijestiProvider = context.read<ObavijestiProvider>();
-    // TODO: implement initState
     super.initState();
     _initialValue = {
       'obavijestId': widget.obavijest?.obavijestId.toString(),
@@ -68,13 +67,13 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naslov"),
+                  decoration: const InputDecoration(labelText: "Naslov"),
                   name: 'naslov',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -83,13 +82,15 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Tekst"),
+                  decoration: const InputDecoration(labelText: "Tekst"),
                   name: 'tekst',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
+                  minLines: 1,
+                  maxLines: null,
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -107,23 +108,47 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 print(formCheck);
                 if (formCheck == true) {
                   if (widget.obavijest == null) {
                     request['bibliotekaId'] = AuthProvider.bibliotekaId;
-                    obavijestiProvider.insert(request);
+                    try {
+                      await obavijestiProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.success,
+                          text: "Obavijest je uspješno dodata");
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.error,
+                          text: "Greška prilikom dodavanja");
+                    }
                   } else {
                     request['bibliotekaId'] = AuthProvider.bibliotekaId;
-                    obavijestiProvider.update(
-                        widget.obavijest!.obavijestId!, request);
+                    try {
+                      await obavijestiProvider.update(
+                          widget.obavijest!.obavijestId!, request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Obavijest je uspješno ažurirana");
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          width: 450,
+                          type: QuickAlertType.error,
+                          text: "Greška prilikom ažuriranja");
+                    }
                   }
                 }
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

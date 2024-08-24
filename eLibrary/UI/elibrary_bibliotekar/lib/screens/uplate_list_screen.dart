@@ -4,10 +4,12 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/uplata.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
+import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class UplateListScreen extends StatefulWidget {
   const UplateListScreen({super.key});
@@ -18,8 +20,7 @@ class UplateListScreen extends StatefulWidget {
 
 class _UplateListScreenState extends State<UplateListScreen> {
   late UplataProvider provider;
-  // SearchResult<Izdavac>? result;
-  // List<Izdavac> data = [];
+
   late UplataDataSource _source;
   int page = 1;
   int pageSize = 10;
@@ -27,18 +28,15 @@ class _UplateListScreenState extends State<UplateListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<UplataProvider>();
@@ -49,13 +47,11 @@ class _UplateListScreenState extends State<UplateListScreen> {
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Uplate",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
@@ -70,9 +66,7 @@ class _UplateListScreenState extends State<UplateListScreen> {
             controller: _imeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -80,8 +74,6 @@ class _UplateListScreenState extends State<UplateListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
                 _source.filterServerSide(_imeEditingController.text);
                 setState(() {});
               },
@@ -89,13 +81,6 @@ class _UplateListScreenState extends State<UplateListScreen> {
           const SizedBox(
             width: 8,
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen()));
-              },
-              child: const Text("Nova uplata")),
         ],
       ),
     );
@@ -113,34 +98,34 @@ class _UplateListScreenState extends State<UplateListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime prezime"),
+                    child: const Text("Ime prezime"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Vrijeme uplate"),
+                    child: const Text("Vrijeme uplate"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Iznos"),
+                    child: const Text("Iznos"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Valuta"),
+                    child: const Text("Valuta"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Tip uplate"),
+                    child: const Text("Tip uplate"),
                   )),
                 ],
                 source: _source,
                 addEmptyRows: false,
               )),
         ),
-      ), // Spacer(),
+      ),
     );
   }
 }
@@ -164,52 +149,38 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
 
     final item = data?[index];
 
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => AutorDetailsScreen(
-        //                     autor : item,
-        //                   ))),
-        //         }
-        //     },
-        cells: [
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
-            ),
-          ),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                      .parseStrict(item!.datumUplate!.toString()))),
-            ),
-          ),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(item!.iznos!.toStringAsFixed(2)),
-            ),
-          ),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(item!.valuta!.naziv.toString()),
-            ),
-          ),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(item!.tipUplate!.naziv.toString()),
-            ),
-          ),
-          // DataCell(Text(item!.prezime.toString())),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
-        ]);
+    return DataRow(cells: [
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
+        ),
+      ),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(formatDateTimeToLocal(item!.datumUplate!.toString())),
+        ),
+      ),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(item!.iznos!.toStringAsFixed(2)),
+        ),
+      ),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(item!.valuta!.naziv.toString()),
+        ),
+      ),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(item!.tipUplate!.naziv.toString()),
+        ),
+      ),
+    ]);
   }
 
   void filterServerSide(ime) {
@@ -229,25 +200,28 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
   @override
   Future<RemoteDataSourceDetails<Uplata>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezimeGTE,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Citalac,Biblioteka,Valuta,TipUplate",
-        orderBy: "DatumUplate",
-        sortDirection: "descending");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Citalac,Biblioteka,Valuta,TipUplate",
+          orderBy: "DatumUplate",
+          sortDirection: "descending");
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          width: 450,
+          type: QuickAlertType.error,
+          text: "Greška prilikom dohvatanja podataka");
     }
     return RemoteDataSourceDetails(count, data!);
   }

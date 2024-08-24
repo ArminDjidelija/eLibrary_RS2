@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
@@ -7,12 +5,9 @@ import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../models/autor.dart';
 
 class TipClanarineBibliotekaListScreen extends StatefulWidget {
   const TipClanarineBibliotekaListScreen({super.key});
@@ -34,24 +29,20 @@ class _TipClanarinaBibliotekaListScreenState
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<TipClanarineBibliotekaProvider>();
     _source =
         TipClanarinaBibliotekaDataSource(provider: provider, context: context);
-    // updateFilter("");
   }
 
   @override
@@ -62,38 +53,16 @@ class _TipClanarinaBibliotekaListScreenState
           child: Column(
             children: [
               _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
             ],
           ),
         ));
   }
 
-  Future<void> updateFilter(String imePrezime) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {
-      'imePrezimeGTE': imePrezime,
-      'page': page,
-      'pageSize': pageSize,
-      'includeTables': 'Biblioteka,Valuta'
-    };
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(filter: filter);
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-        // print(data);
-      }
-      _isLoading = false;
-    });
-  }
-
-  TextEditingController _trajanjeOdEditingController = TextEditingController();
-  TextEditingController _trajanjeDoEditingController = TextEditingController();
+  final TextEditingController _trajanjeOdEditingController =
+      TextEditingController();
+  final TextEditingController _trajanjeDoEditingController =
+      TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -105,10 +74,8 @@ class _TipClanarinaBibliotekaListScreenState
                 controller: _trajanjeOdEditingController,
                 decoration: const InputDecoration(labelText: "Trajanje od"),
                 onChanged: (value) async {
-                  // page = 1;
                   _source.filterServerSide(_trajanjeOdEditingController.text,
                       _trajanjeDoEditingController.text);
-                  // await updateFilter(value, _autorEditingController.text);
                 },
               )),
           const SizedBox(
@@ -120,10 +87,8 @@ class _TipClanarinaBibliotekaListScreenState
                 controller: _trajanjeDoEditingController,
                 decoration: const InputDecoration(labelText: "Trajanje do"),
                 onChanged: (value) async {
-                  // page = 1;
                   _source.filterServerSide(_trajanjeOdEditingController.text,
                       _trajanjeDoEditingController.text);
-                  // await updateFilter(value, _autorEditingController.text);
                 },
               )),
           const SizedBox(
@@ -154,34 +119,29 @@ class _TipClanarinaBibliotekaListScreenState
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Biblioteka"),
+                    child: const Text("Naziv"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Naziv"),
+                    child: const Text("Trajanje (dani)"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Trajanje (dani)"),
+                    child: const Text("Iznos"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Iznos"),
-                  )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Valuta"),
+                    child: const Text("Valuta"),
                   )),
                 ],
                 source: _source,
                 addEmptyRows: false,
               )),
         ),
-      ), // Spacer(),
+      ),
     );
   }
 }
@@ -194,8 +154,8 @@ class TipClanarinaBibliotekaDataSource
   int page = 1;
   int pageSize = 10;
   dynamic filter;
-  dynamic trajanjeGTE = null;
-  dynamic trajanjeLTE = null;
+  dynamic trajanjeGTE;
+  dynamic trajanjeLTE;
   BuildContext context;
   TipClanarinaBibliotekaDataSource(
       {required this.provider, required this.context});
@@ -221,10 +181,6 @@ class TipClanarinaBibliotekaDataSource
         cells: [
           DataCell(Container(
             alignment: Alignment.centerLeft,
-            child: Text(item!.biblioteka!.naziv.toString()),
-          )),
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
             child: Text(item!.naziv.toString()),
           )),
           DataCell(Container(
@@ -235,13 +191,10 @@ class TipClanarinaBibliotekaDataSource
             alignment: Alignment.centerLeft,
             child: Text(item!.iznos.toString()),
           )),
-
           DataCell(Container(
             alignment: Alignment.centerLeft,
             child: Text(item!.valuta!.naziv.toString()),
           )),
-          // DataCell(Text(item!.prezime.toString())),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
         ]);
   }
 
@@ -263,24 +216,24 @@ class TipClanarinaBibliotekaDataSource
   @override
   Future<RemoteDataSourceDetails<TipClanarineBiblioteka>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'bibliotekaId': AuthProvider.bibliotekaId,
       'trajanjeGTE': trajanjeGTE,
       'trajanjeLTE': trajanjeLTE
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Biblioteka,Valuta");
-    if (result != null) {
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Biblioteka,Valuta");
+
       data = result!.resultList;
       count = result!.count;
-      // print(data);
+    } on Exception catch (e) {
+      print(e);
     }
     return RemoteDataSourceDetails(count, data!);
   }

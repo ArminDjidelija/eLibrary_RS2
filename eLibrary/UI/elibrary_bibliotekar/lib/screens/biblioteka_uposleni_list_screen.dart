@@ -7,6 +7,8 @@ import 'package:elibrary_bibliotekar/providers/biblioteka_uposleni_provider.dart
 import 'package:elibrary_bibliotekar/screens/novi_uposleni_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class BibliotekaUposleniListScreen extends StatefulWidget {
   const BibliotekaUposleniListScreen({super.key});
@@ -25,7 +27,6 @@ class _BibliotekaUposleniListScreenState
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -35,28 +36,25 @@ class _BibliotekaUposleniListScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
     provider = context.read<BibliotekaUposleniProvider>();
     _source =
         BibliotekaUposlenikDataSource(provider: provider, context: context);
   }
 
-  TextEditingController _imePrezimeEditingController = TextEditingController();
-  TextEditingController _emailEditingController = TextEditingController();
+  final TextEditingController _imePrezimeEditingController =
+      TextEditingController();
+  final TextEditingController _emailEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Uposleni biblioteka",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
@@ -81,8 +79,6 @@ class _BibliotekaUposleniListScreenState
             controller: _emailEditingController,
             decoration: const InputDecoration(labelText: "Email"),
             onChanged: (value) async {
-              // page = 1;
-              // await updateFilter(_naslovEditingController.text, value);
               _source.filterServerSide(
                   _imePrezimeEditingController.text, value);
             },
@@ -122,7 +118,6 @@ class _BibliotekaUposleniListScreenState
                   DataColumn(label: Text("Korisnicko ime")),
                   DataColumn(label: Text("Email")),
                   DataColumn(label: Text("Akcija")),
-                  // DataColumn(label: Text("Slika")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -157,9 +152,9 @@ class BibliotekaUposlenikDataSource
 
     return DataRow(cells: [
       DataCell(Text(item!.korisnik!.ime.toString())),
-      DataCell(Text(item!.korisnik!.prezime.toString())),
-      DataCell(Text(item!.korisnik!.korisnickoIme.toString())),
-      DataCell(Text(item!.korisnik!.email.toString())),
+      DataCell(Text(item.korisnik!.prezime.toString())),
+      DataCell(Text(item.korisnik!.korisnickoIme.toString())),
+      DataCell(Text(item.korisnik!.email.toString())),
       DataCell(
         ElevatedButton(
             style: const ButtonStyle(
@@ -167,8 +162,19 @@ class BibliotekaUposlenikDataSource
             onPressed: () async {
               try {
                 await provider.delete(item.bibliotekaUposleniId!);
+                QuickAlert.show(
+                    context: context,
+                    width: 450,
+                    type: QuickAlertType.success,
+                    text: "Uposlenik je uspješno izbrisan");
                 filterServerSide("", "");
-              } on Exception catch (e) {}
+              } on Exception catch (e) {
+                QuickAlert.show(
+                    context: context,
+                    width: 450,
+                    type: QuickAlertType.error,
+                    text: "Greška prilikom brisanja");
+              }
             },
             child: const Text(
               "Izbrisi",
@@ -196,25 +202,27 @@ class BibliotekaUposlenikDataSource
   @override
   Future<RemoteDataSourceDetails<BibliotekaUposleni>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezime,
       'emailGTE': email,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print(filter);
-    var result = await provider.get(
-      page: page,
-      pageSize: pageSize,
-      includeTables: 'Korisnik,Biblioteka',
-      filter: filter,
-    );
-    print(result);
-    if (result != null) {
+    try {
+      var result = await provider.get(
+        page: page,
+        pageSize: pageSize,
+        includeTables: 'Korisnik,Biblioteka',
+        filter: filter,
+      );
       data = result.resultList;
       count = result.count;
-      // print(data);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          width: 450,
+          type: QuickAlertType.error,
+          text: "Greška prilikom dohvatanja podataka");
     }
     return RemoteDataSourceDetails(count, data!);
   }

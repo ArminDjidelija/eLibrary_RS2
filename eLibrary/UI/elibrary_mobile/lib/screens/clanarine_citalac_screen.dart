@@ -200,56 +200,141 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
   }
 
   Widget _buildPage() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return CustomScrollView(
+      controller: scrollController, // Attach your scroll controller here
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(left: 10, top: 5),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 5),
+            child: const Text(
               "Napravi članarinu:",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildBiblioteke(),
-          _buildTipoviClanarina(),
-          tipClanarineId > 0
+        ),
+        SliverToBoxAdapter(
+          child: _buildBiblioteke(),
+        ),
+        SliverToBoxAdapter(
+          child: _buildTipoviClanarina(),
+        ),
+        SliverToBoxAdapter(
+          child: tipClanarineId > 0
               ? Container(
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll<Color>(Colors.blue)),
-                      onPressed: () async => {await makePayment()},
-                      child: Text(
-                        "Nastavi na plaćanje",
-                        style: TextStyle(color: Colors.white),
-                      )),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue)),
+                    onPressed: () async => {await makePayment()},
+                    child: const Text(
+                      "Nastavi na plaćanje",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 )
               : Container(),
-          Container(
+        ),
+        SliverToBoxAdapter(
+          child: Container(
             alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: Colors.black, // Boja bordera
-                  width: 2.0, // Širina bordera
+                  color: Colors.black,
+                  width: 2.0,
                 ),
               ),
             ),
-            margin: EdgeInsets.only(left: 10, top: 20, right: 10),
-            child: Text(
+            margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
+            child: const Text(
               "Historija članarina",
               style: TextStyle(fontSize: 24),
             ),
           ),
-          _buildPrijasnjeClanarine(),
-        ],
-      ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == clanarine.length) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      hasNextPage
+                          ? 'Učitavanje...'
+                          : total != 0
+                              ? 'Pregledali ste sve članarine!'
+                              : 'Nema više članarina',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return _buildPrijasnjaPozajmicaCard(
+                    clanarina: clanarine[index]);
+              }
+            },
+            childCount: clanarine.length + 1,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildPage() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           margin: EdgeInsets.only(left: 10, top: 5),
+  //           child: Text(
+  //             "Napravi članarinu:",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildBiblioteke(),
+  //         _buildTipoviClanarina(),
+  //         tipClanarineId > 0
+  //             ? Container(
+  //                 margin: EdgeInsets.all(8),
+  //                 alignment: Alignment.centerRight,
+  //                 child: ElevatedButton(
+  //                     style: ButtonStyle(
+  //                         backgroundColor:
+  //                             MaterialStatePropertyAll<Color>(Colors.blue)),
+  //                     onPressed: () async => {await makePayment()},
+  //                     child: Text(
+  //                       "Nastavi na plaćanje",
+  //                       style: TextStyle(color: Colors.white),
+  //                     )),
+  //               )
+  //             : Container(),
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           decoration: BoxDecoration(
+  //             border: Border(
+  //               top: BorderSide(
+  //                 color: Colors.black, // Boja bordera
+  //                 width: 2.0, // Širina bordera
+  //               ),
+  //             ),
+  //           ),
+  //           margin: EdgeInsets.only(left: 10, top: 20, right: 10),
+  //           child: Text(
+  //             "Historija članarina",
+  //             style: TextStyle(fontSize: 24),
+  //           ),
+  //         ),
+  //         _buildPrijasnjeClanarine(),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Future makePayment() async {
     var secret = dotenv.env['_paypalSecret'];
@@ -304,6 +389,8 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
               ],
               note: "Kontaktirajte nas za bilo kakve poteskoce",
               onSuccess: (Map params) async {
+                Navigator.pop(context);
+
                 print("onSuccess: $params");
                 try {
                   await clanarineProvider.insert({
@@ -318,7 +405,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                       text: "Uspješno kreirana članarina");
                   _firstLoad();
                 } on Exception catch (e) {}
-                Navigator.pop(context);
+                // Navigator.pop(context);
               },
               onError: (error) {
                 print("onSuccess: $error");
@@ -339,35 +426,67 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : ListView.builder(
-            physics:
-                NeverScrollableScrollPhysics(), // Disable ListView scrolling
-            shrinkWrap: true, // Ensure ListView occupies only necessary space
-
-            itemCount: clanarine.length + 1,
-            controller: scrollController,
-            itemBuilder: (_, index) {
-              if (index == clanarine.length) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      hasNextPage
-                          ? 'Učitavanje...'
-                          : total != 0
-                              ? 'Pregledali ste sve clanarine!'
-                              : 'Nema više pozajmica',
-                      style: const TextStyle(fontSize: 16),
+        : SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index == clanarine.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        hasNextPage
+                            ? 'Učitavanje...'
+                            : total != 0
+                                ? 'Pregledali ste sve članarine!'
+                                : 'Nema više članarina',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                return _buildPrijasnjaPozajmicaCard(
-                    clanarina: clanarine[index]);
-              }
-            },
+                  );
+                } else {
+                  return _buildPrijasnjaPozajmicaCard(
+                      clanarina: clanarine[index]);
+                }
+              },
+              childCount: clanarine.length + 1,
+            ),
           );
   }
+
+  // Widget _buildPrijasnjeClanarine() {
+  //   return isFirstLoadRunning
+  //       ? const Center(
+  //           child: CircularProgressIndicator(),
+  //         )
+  //       : ListView.builder(
+  //           physics:
+  //               NeverScrollableScrollPhysics(), // Disable ListView scrolling
+  //           shrinkWrap: true, // Ensure ListView occupies only necessary space
+
+  //           itemCount: clanarine.length + 1,
+  //           controller: scrollController,
+  //           itemBuilder: (_, index) {
+  //             if (index == clanarine.length) {
+  //               return Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: Center(
+  //                   child: Text(
+  //                     hasNextPage
+  //                         ? 'Učitavanje...'
+  //                         : total != 0
+  //                             ? 'Pregledali ste sve clanarine!'
+  //                             : 'Nema više pozajmica',
+  //                     style: const TextStyle(fontSize: 16),
+  //                   ),
+  //                 ),
+  //               );
+  //             } else {
+  //               return _buildPrijasnjaPozajmicaCard(
+  //                   clanarina: clanarine[index]);
+  //             }
+  //           },
+  //         );
+  // }
 
   Widget _buildPrijasnjaPozajmicaCard({required Clanarina clanarina}) {
     return Card(

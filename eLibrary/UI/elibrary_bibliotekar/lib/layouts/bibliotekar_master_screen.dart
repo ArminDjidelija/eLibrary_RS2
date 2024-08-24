@@ -1,3 +1,4 @@
+import 'package:elibrary_bibliotekar/main.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/uloga.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
@@ -113,50 +114,50 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                           const BibliotekaKnjigeListScreen()));
                                 },
                               ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.person_4_outlined,
-                                  color: Colors.white,
-                                ),
-                                title: const Text(
-                                  "Autori",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AutoriListScreen()));
-                                },
+                            // if (AuthProvider.korisnikUloge!.any((x) =>
+                            //     x.uloga?.naziv == "Bibliotekar" ||
+                            //     x.uloga?.naziv == "Menadzer"))
+                            ListTile(
+                              leading: const Icon(
+                                Icons.person_4_outlined,
+                                color: Colors.white,
                               ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.apartment,
+                              title: const Text(
+                                "Autori",
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                title: const Text(
-                                  "Izdavači",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const IzdavaciListScreen()));
-                                },
                               ),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AutoriListScreen()));
+                              },
+                            ),
+                            // if (AuthProvider.korisnikUloge!.any((x) =>
+                            //     x.uloga?.naziv == "Bibliotekar" ||
+                            //     x.uloga?.naziv == "Menadzer"))
+                            ListTile(
+                              leading: const Icon(
+                                Icons.apartment,
+                                color: Colors.white,
+                              ),
+                              title: const Text(
+                                "Izdavači",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const IzdavaciListScreen()));
+                              },
+                            ),
                             if (AuthProvider.korisnikUloge!
                                 .any((x) => x.uloga?.naziv == "Menadzer"))
                               ListTile(
@@ -432,6 +433,27 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                       builder: (context) => UpitiListScreen()));
                                 },
                               ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.logout,
+                                color: Colors.white,
+                              ),
+                              title: const Text(
+                                "Odjava",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                  (Route<dynamic> route) => false,
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),

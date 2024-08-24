@@ -81,6 +81,8 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Opis"),
                   name: 'opis',
+                  minLines: 1,
+                  maxLines: null,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(2),

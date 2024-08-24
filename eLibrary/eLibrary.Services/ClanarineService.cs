@@ -93,7 +93,7 @@ namespace eLibrary.Services
             var prethodnaClanarina = await Context
                 .Clanarines
                 .Where(x=> x.CitalacId == request.CitalacId && x.BibliotekaId == request.BibliotekaId)
-                .OrderBy(x=> x.Kraj)
+                .OrderByDescending(x=> x.Kraj)
                 .FirstOrDefaultAsync();
 
             entity.UplateId=uplata.UplataId;

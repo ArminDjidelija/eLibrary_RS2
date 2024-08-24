@@ -31,21 +31,24 @@ class _HomePageState extends State<HomePage2> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _navigateBottomBar,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Početna"),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: "Pretraga"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month), label: "Pozajmice"),
-          BottomNavigationBarItem(icon: Icon(Icons.euro), label: "Članarine"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.menu), label: "Moj eLibrary"),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _navigateBottomBar,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Početna"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search), label: "Pretraga"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month), label: "Pozajmice"),
+            BottomNavigationBarItem(icon: Icon(Icons.euro), label: "Članarine"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.menu), label: "Moj eLibrary"),
+          ],
+        ),
       ),
     );
   }

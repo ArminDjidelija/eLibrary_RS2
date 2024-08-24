@@ -1,20 +1,16 @@
-import 'dart:io';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/izdavac_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-
-import '../models/autor.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class IzdavaciListScreen extends StatefulWidget {
   const IzdavaciListScreen({super.key});
@@ -39,34 +35,16 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<IzdavacProvider>();
     _source = IzdavacDataSource(provider: provider, context: context);
-    // updateFilter("");
   }
-
-  //   @override
-  // Widget build(BuildContext context) {
-  //   return BibliotekarMasterScreen(
-  //     "Detalji knjige",
-  //     SingleChildScrollView(
-  //       child: Column(
-  //         children: [
-  //           _buildKnjigaDetalji(),
-  //           _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +76,6 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
       if (result != null) {
         data = result!.resultList;
         count = result!.count;
-        // print(data);
       }
       _isLoading = false;
     });
@@ -115,9 +92,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
             controller: _nazivEditingController,
             decoration: const InputDecoration(labelText: "Naziv"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -125,8 +100,6 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
                 _source.filterServerSide(_nazivEditingController.text);
                 setState(() {});
               },
@@ -210,11 +183,7 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
           child: Text(item!.naziv.toString()),
         )),
         DataCell(ElevatedButton(
-            child: Text(
-              "Detalji",
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
+            style: const ButtonStyle(
               backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
             ),
             onPressed: () {
@@ -222,7 +191,11 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
                   builder: (context) => IzdavacDetailsScreen(
                         izdavac: item,
                       )));
-            }))
+            },
+            child: const Text(
+              "Detalji",
+              style: TextStyle(color: Colors.white),
+            )))
       ]);
     } else {
       return DataRow(cells: [
@@ -251,17 +224,20 @@ class IzdavacDataSource extends AdvancedDataTableSource<Izdavac> {
   @override
   Future<RemoteDataSourceDetails<Izdavac>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {'nazivGTE': nazivGTE};
-    print("Metoda u get next row");
-    print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result =
+          await provider.get(filter: filter, page: page, pageSize: pageSize);
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

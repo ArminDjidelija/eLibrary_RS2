@@ -9,6 +9,8 @@ import 'package:elibrary_bibliotekar/screens/citalac_detalji_screen.dart';
 import 'package:elibrary_bibliotekar/screens/novi_citalac_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class CitaociListScreen extends StatefulWidget {
   const CitaociListScreen({super.key});
@@ -28,7 +30,6 @@ class _CitaociListScreenState extends State<CitaociListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -38,8 +39,6 @@ class _CitaociListScreenState extends State<CitaociListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
     provider = context.read<CitaociProvider>();
     _source = CitalacDataSource(provider: provider, context: context);
@@ -83,8 +82,6 @@ class _CitaociListScreenState extends State<CitaociListScreen> {
             controller: _autorEditingController,
             decoration: const InputDecoration(labelText: "Email"),
             onChanged: (value) async {
-              // page = 1;
-              // await updateFilter(_naslovEditingController.text, value);
               _source.filterServerSide(
                   _imePrezimeEditingController.text, value);
             },
@@ -125,7 +122,6 @@ class _CitaociListScreenState extends State<CitaociListScreen> {
                   DataColumn(label: Text("Email")),
                   DataColumn(label: Text("Broj telefona")),
                   DataColumn(label: Text("Institucija")),
-                  // DataColumn(label: Text("Slika")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -168,10 +164,10 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
             },
         cells: [
           DataCell(Text(item!.ime.toString())),
-          DataCell(Text(item!.prezime.toString())),
-          DataCell(Text(item!.email.toString())),
-          DataCell(Text(item!.telefon.toString())),
-          DataCell(Text(item!.institucija.toString())),
+          DataCell(Text(item.prezime.toString())),
+          DataCell(Text(item.email.toString())),
+          DataCell(Text(item.telefon.toString())),
+          DataCell(Text(item.institucija.toString())),
         ]);
   }
 
@@ -193,22 +189,27 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
   @override
   Future<RemoteDataSourceDetails<Citalac>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': imePrezime,
       'emailContains': email,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result =
-        await provider?.get(filter: filter, page: page, pageSize: pageSize);
-    if (result != null) {
+
+    try {
+      var result =
+          await provider.get(filter: filter, page: page, pageSize: pageSize);
+
       data = result!.resultList;
       count = result!.count;
-      // print(data);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
+
     return RemoteDataSourceDetails(count, data!);
   }
 }

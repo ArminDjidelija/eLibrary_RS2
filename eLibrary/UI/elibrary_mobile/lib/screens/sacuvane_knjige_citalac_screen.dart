@@ -138,13 +138,55 @@ class _SacuvaneKnjigeCitalacScreenState
   }
 
   Widget _buildPage() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_buildPrijasnjePenale()],
-      ),
+    return CustomScrollView(
+      controller: scrollController, // Attach your scroll controller here
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.only(left: 10, top: 5),
+            child: const Text(
+              "Sačuvane knjige",
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index == sacuvaneKnjige.length) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      hasNextPage
+                          ? 'Učitavanje...'
+                          : total != 0
+                              ? 'Pregledali ste sve sačuvane knjige!'
+                              : 'Nema više sačuvanih knjiga',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return _buildPrijasnjiPenalCard(knjiga: sacuvaneKnjige[index]);
+              }
+            },
+            childCount: sacuvaneKnjige.length + 1,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildPage() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [_buildPrijasnjePenale()],
+  //     ),
+  //   );
+  // }
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(

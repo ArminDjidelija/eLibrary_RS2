@@ -5,11 +5,11 @@ import 'package:elibrary_bibliotekar/models/obavijest.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/obavijesti_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/obavijest_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class ObavijestiListScreen extends StatefulWidget {
   const ObavijestiListScreen({super.key});
@@ -27,18 +27,15 @@ class _ObavijestiListScreenState extends State<ObavijestiListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<ObavijestiProvider>();
@@ -49,17 +46,16 @@ class _ObavijestiListScreenState extends State<ObavijestiListScreen> {
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Obavijesti",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
-  TextEditingController _naslovEditingController = TextEditingController();
+  final TextEditingController _naslovEditingController =
+      TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -109,17 +105,17 @@ class _ObavijestiListScreenState extends State<ObavijestiListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Naslov"),
+                    child: const Text("Naslov"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Datum"),
+                    child: const Text("Datum"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Akcija"),
+                    child: const Text("Akcija"),
                   )),
                 ],
                 source: _source,
@@ -179,14 +175,26 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
                 "Uredi",
                 style: TextStyle(color: Colors.white),
               )),
-          SizedBox(
+          const SizedBox(
             width: 8,
           ),
           ElevatedButton(
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
               onPressed: () async {
-                await provider.delete(item.obavijestId!);
+                try {
+                  await provider.delete(item.obavijestId!);
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Obavijest je uspješno izbrisana");
+                } on Exception catch (e) {
+                  QuickAlert.show(
+                      context: context,
+                      width: 450,
+                      type: QuickAlertType.error,
+                      text: "Greška prilikom brisanja");
+                }
                 filterServerSide("");
               },
               child: const Text(
@@ -221,18 +229,22 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
       'naslovGTE': naslovGTE,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        orderBy: "Datum",
-        sortDirection: "descending");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          orderBy: "Datum",
+          sortDirection: "descending");
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          width: 450,
+          type: QuickAlertType.error,
+          text: "Greška prilikom dohvatanja podataka");
     }
     return RemoteDataSourceDetails(count, data!);
   }

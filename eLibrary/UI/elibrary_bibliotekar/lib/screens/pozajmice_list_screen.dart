@@ -3,17 +3,13 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
-import 'package:elibrary_bibliotekar/models/uplata.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
 import 'package:elibrary_bibliotekar/providers/produzenje_pozajmice_provider.dart';
-import 'package:elibrary_bibliotekar/providers/uplate_provider.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
+import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -30,8 +26,6 @@ class PozajmiceListScreen extends StatefulWidget {
 class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
   late PozajmiceProvider provider;
   late KnjigaProvider knjigaProvider;
-  // SearchResult<Izdavac>? result;
-  // List<Izdavac> data = [];
   late PozajmicaDataSource _source;
   int page = 1;
   int pageSize = 10;
@@ -39,18 +33,15 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
   bool _isLoading = false;
   bool? vraceno = false;
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<PozajmiceProvider>();
@@ -63,17 +54,15 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Pozajmice",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
-  TextEditingController _imeEditingController = TextEditingController();
+  final TextEditingController _imeEditingController = TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -84,9 +73,7 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
             controller: _imeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value, vraceno);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -97,7 +84,7 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
             child: Container(
                 width: 200,
                 child: FormBuilderCheckbox(
-                  title: Text("Vraceno"),
+                  title: const Text("Vraceno?"),
                   initialValue: false,
                   name: 'moguceProduziti',
                   onChanged: (value) => {
@@ -109,8 +96,6 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                // updateFilter(_naslovEditingController.text,
-                //     _autorEditingController.text);
                 _source.filterServerSide(_imeEditingController.text, vraceno);
                 setState(() {});
               },
@@ -118,13 +103,6 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
           const SizedBox(
             width: 8,
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AutorDetailsScreen()));
-              },
-              child: const Text("Nova uplata")),
         ],
       ),
     );
@@ -142,39 +120,39 @@ class _PozajmiceListScreenState extends State<PozajmiceListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime prezime"),
+                    child: const Text("Ime prezime"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Knjiga"),
+                    child: const Text("Knjiga"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Datum preuzimanja"),
+                    child: const Text("Datum preuzimanja"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Preporučeni rok vraćanja"),
+                    child: const Text("Preporučeni rok vraćanja"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Vraćeno?"),
+                    child: const Text("Vraćeno?"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Akcija"),
+                    child: const Text("Akcija"),
                   )),
                 ],
                 source: _source,
                 addEmptyRows: false,
               )),
         ),
-      ), // Spacer(),
+      ),
     );
   }
 }
@@ -203,250 +181,199 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
 
     final item = data?[index];
 
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => AutorDetailsScreen(
-        //                     autor : item,
-        //                   ))),
-        //         }
-        //     },
-        cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
-          )),
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item.bibliotekaKnjiga!.knjiga!.naslov.toString()),
-          )),
-          // DataCell(FutureBuilder<Knjiga>(
-          //   future: fetchKnjiga(item!.bibliotekaKnjiga!.knjigaId),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return CircularProgressIndicator();
-          //     } else if (snapshot.hasError) {
-          //       return Text('Error: ${snapshot.error}');
-          //     } else if (!snapshot.hasData) {
-          //       return Text('No data');
-          //     } else {
-          //       final knjiga = snapshot.data!;
-          //       return Text("${knjiga.naslov}, ${knjiga.godinaIzdanja}");
-          //       // return Column(
-          //       //   crossAxisAlignment: CrossAxisAlignment.,
-          //       //   children: [
-          //       //     // Text('Autor: ${knjiga.autor}'),
-          //       //     // Dodajte ostale atribute po potrebi
-          //       //   ],
-          //       // );
-          //     }
-          //   },
-          // )),
-          DataCell(Container(
-              alignment: Alignment.centerLeft,
-              child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                      .parseStrict(item!.datumPreuzimanja.toString()))))),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                DateFormat("dd.MM.yyyy. HH:mm").format(
-                    DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(
-                        item!.preporuceniDatumVracanja.toString())),
-              ),
-            ),
+    return DataRow(cells: [
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item.bibliotekaKnjiga!.knjiga!.naslov.toString()),
+      )),
+      DataCell(Container(
+          alignment: Alignment.centerLeft,
+          child:
+              Text(formatDateTimeToLocal(item.datumPreuzimanja.toString())))),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            formatDateTimeToLocal(item.preporuceniDatumVracanja.toString()),
           ),
-          DataCell(item.stvarniDatumVracanja == null ? Text("Ne") : Text("Da")),
-          DataCell(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                item.stvarniDatumVracanja == null
-                    ? Row(
-                        children: [
-                          ElevatedButton(
-                            style: const ButtonStyle(
-                                backgroundColor:
-                                    MaterialStatePropertyAll<Color>(
-                                        Colors.blue)),
-                            onPressed: () {
-                              // Prva akcija dugmeta
-                              print(
-                                  'First button pressed for item: ${item.trajanje}');
-                              QuickAlert.show(
-                                  context: context,
-                                  width: 450,
-                                  type: QuickAlertType.confirm,
-                                  title: "Jeste li sigurni?",
-                                  text:
-                                      "Da li želite potvrditi da je pozajmica uspješno vraćena?",
-                                  confirmBtnText: "Da",
-                                  cancelBtnText: "Ne",
-                                  onConfirmBtnTap: () async {
-                                    print("Potvrdeno: ${item.pozajmicaId}");
-                                    //TODO dodaj na api da je potvrdena,
-                                    await provider
-                                        .potvrdiPozajmicu(item.pozajmicaId!);
-                                    filterServerSide("", vraceno);
-                                    Navigator.pop(context);
-                                  },
-                                  onCancelBtnTap: () {
-                                    print("Cancel: ${item.pozajmicaId}");
-                                    Navigator.pop(context);
-                                  });
-                            },
-                            child: Text(
-                              'Potvrdi vraćanje',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          if (item.produzenjePozajmicas != null &&
-                              item.produzenjePozajmicas!
-                                  .any((element) => element.odobreno == null))
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStatePropertyAll<Color>(
-                                          Colors.blue)),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text("Odobrite produženje"),
-                                      content: Text(
-                                          "Zahtjev za produženjem pozajmice za ${item.produzenjePozajmicas!.firstWhere((element) => element.odobreno == null).produzenje} dana."),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // Zatvara dijalog
-                                          },
-                                          child: Text("Odustani"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            var provider =
-                                                new ProduzenjePozajmiceProvider();
-                                            await provider.update(
-                                                item.produzenjePozajmicas!
-                                                    .firstWhere((element) =>
-                                                        element.odobreno ==
-                                                        null)
-                                                    .produzenjePozajmiceId!,
-                                                {'odobreno': false});
-                                            // Logika za poništavanje
-                                            Navigator.of(context)
-                                                .pop(); // Zatvara dijalog
-                                            filterServerSide("", false);
-                                          },
-                                          child: Text("Poništi"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            var provider =
-                                                new ProduzenjePozajmiceProvider();
-                                            await provider.update(
-                                                item.produzenjePozajmicas!
-                                                    .firstWhere((element) =>
-                                                        element.odobreno ==
-                                                        null)
-                                                    .produzenjePozajmiceId!,
-                                                {'odobreno': true});
-                                            // Logika za poništavanje
-                                            Navigator.of(context)
-                                                .pop(); // Zatvara dijalog
-                                            filterServerSide("", false);
-                                          },
-                                          child: Text("Odobri"),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: Text(
-                                'Produženje',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          ElevatedButton(
-                              style: const ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStatePropertyAll<Color>(
-                                          Colors.blue)),
-                              onPressed: () async {
-                                try {
-                                  await provider.obavijesti(item.pozajmicaId!);
-                                  QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.success,
-                                      title: "Uspješno poslana obavijest");
-                                } on Exception catch (e) {
-                                  QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.error,
-                                      title: e.toString());
-                                }
-                              },
-                              child: const Text(
-                                "Obavijest",
-                                style: TextStyle(color: Colors.white),
-                              ))
-                        ],
-                      )
-                    : ElevatedButton(
+        ),
+      ),
+      DataCell(item.stvarniDatumVracanja == null
+          ? const Text("Ne")
+          : const Text("Da")),
+      DataCell(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            item.stvarniDatumVracanja == null
+                ? Row(
+                    children: [
+                      ElevatedButton(
                         style: const ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll<Color>(Colors.blue)),
                         onPressed: () {
-                          // Prva akcija dugmeta
-                          print(
-                              'First button pressed for item: ${item.trajanje}');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PozajmicaDetailsScreen(
-                                    pozajmica: item,
-                                  )));
+                          QuickAlert.show(
+                              context: context,
+                              width: 450,
+                              type: QuickAlertType.confirm,
+                              title: "Jeste li sigurni?",
+                              text:
+                                  "Da li želite potvrditi da je pozajmica uspješno vraćena?",
+                              confirmBtnText: "Da",
+                              cancelBtnText: "Ne",
+                              onConfirmBtnTap: () async {
+                                try {
+                                  await provider
+                                      .potvrdiPozajmicu(item.pozajmicaId!);
+                                } on Exception catch (e) {}
+                                filterServerSide("", vraceno);
+                                Navigator.pop(context);
+                              },
+                              onCancelBtnTap: () {
+                                print("Cancel: ${item.pozajmicaId}");
+                                Navigator.pop(context);
+                              });
                         },
-                        child: Text(
-                          'Detalji',
+                        child: const Text(
+                          'Potvrdi vraćanje',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                SizedBox(width: 8), // Razmak između dugmadi
-                item.stvarniDatumVracanja != null
-                    ? ElevatedButton(
-                        style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll<Color>(Colors.red)),
-                        onPressed: () {
-                          // Druga akcija dugmeta
-                          print(
-                              'Second button pressed for item: ${item.datumPreuzimanja}');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => NoviPenalScreen(
-                                    pozajmica: item,
-                                  )));
-                        },
-                        child: Text(
-                          'Dodaj penale',
-                          style: TextStyle(color: Colors.white),
+                      const SizedBox(width: 8),
+                      if (item.produzenjePozajmicas != null &&
+                          item.produzenjePozajmicas!
+                              .any((element) => element.odobreno == null))
+                        ElevatedButton(
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll<Color>(Colors.blue)),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Odobrite produženje"),
+                                  content: Text(
+                                      "Zahtjev za produženjem pozajmice za ${item.produzenjePozajmicas!.firstWhere((element) => element.odobreno == null).produzenje} dana."),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Zatvara dijalog
+                                      },
+                                      child: const Text("Odustani"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        var provider =
+                                            new ProduzenjePozajmiceProvider();
+                                        try {
+                                          await provider.update(
+                                              item.produzenjePozajmicas!
+                                                  .firstWhere((element) =>
+                                                      element.odobreno == null)
+                                                  .produzenjePozajmiceId!,
+                                              {'odobreno': false});
+                                        } on Exception catch (e) {}
+                                        Navigator.of(context).pop();
+                                        filterServerSide("", false);
+                                      },
+                                      child: const Text("Poništi"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        var provider =
+                                            new ProduzenjePozajmiceProvider();
+                                        await provider.update(
+                                            item.produzenjePozajmicas!
+                                                .firstWhere((element) =>
+                                                    element.odobreno == null)
+                                                .produzenjePozajmiceId!,
+                                            {'odobreno': true});
+                                        Navigator.of(context).pop();
+                                        filterServerSide("", false);
+                                      },
+                                      child: const Text("Odobri"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text(
+                            'Produženje',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                      )
-                    : Text(""),
-              ],
-            ),
-          )
-          // DataCell(Text(item!.prezime.toString())),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
-        ]);
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      ElevatedButton(
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll<Color>(Colors.blue)),
+                          onPressed: () async {
+                            try {
+                              await provider.obavijesti(item.pozajmicaId!);
+                              QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.success,
+                                  title: "Uspješno poslana obavijest");
+                            } on Exception catch (e) {
+                              QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  title: e.toString());
+                            }
+                          },
+                          child: const Text(
+                            "Obavijest",
+                            style: TextStyle(color: Colors.white),
+                          ))
+                    ],
+                  )
+                : ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.blue)),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PozajmicaDetailsScreen(
+                                pozajmica: item,
+                              )));
+                    },
+                    child: const Text(
+                      'Detalji',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+            const SizedBox(width: 8),
+            item.stvarniDatumVracanja != null
+                ? ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.red)),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NoviPenalScreen(
+                                pozajmica: item,
+                              )));
+                    },
+                    child: const Text(
+                      'Dodaj penale',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : const Text(""),
+          ],
+        ),
+      )
+    ]);
   }
 
   void filterServerSide(ime, checked) {
@@ -467,25 +394,28 @@ class PozajmicaDataSource extends AdvancedDataTableSource<Pozajmica> {
   @override
   Future<RemoteDataSourceDetails<Pozajmica>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    print("Metoda u get next row");
     filter = {
       'imePrezimeGTE': imePrezimeGTE,
       'vraceno': vraceno,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    var result = await provider?.get(
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Citalac,BibliotekaKnjiga.Knjiga,ProduzenjePozajmicas",
-        orderBy: "DatumPreuzimanja",
-        sortDirection: "descending",
-        filter: filter);
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+    try {
+      var result = await provider.get(
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Citalac,BibliotekaKnjiga.Knjiga,ProduzenjePozajmicas",
+          orderBy: "DatumPreuzimanja",
+          sortDirection: "descending",
+          filter: filter);
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          width: 450,
+          type: QuickAlertType.error,
+          text: "Greška prilikom dohvatanja podataka");
     }
     return RemoteDataSourceDetails(count, data!);
   }

@@ -1,15 +1,14 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/kanton.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
-import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class BibliotekaDetailsScreen extends StatefulWidget {
   Biblioteka? biblioteka;
@@ -38,7 +37,6 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
   void initState() {
     bibliotekeProvider = context.read<BibliotekeProvider>();
     kantonProvider = context.read<KantonProvider>();
-    // TODO: implement initState
     super.initState();
     _initialValue = {
       'bibliotekaId': widget.biblioteka?.bibliotekaId.toString(),
@@ -69,10 +67,11 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Biblioteka detalji",
-        Column(
-          children: [_buildForm(), _saveRow()],
-        ));
+      "Biblioteka detalji",
+      Column(
+        children: [_buildForm(), _saveRow()],
+      ),
+    );
   }
 
   Widget _buildForm() {
@@ -87,24 +86,24 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naziv"),
+                  decoration: const InputDecoration(labelText: "Naziv"),
                   name: 'naziv',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Adresa"),
+                  decoration: const InputDecoration(labelText: "Adresa"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   name: 'adresa',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -113,13 +112,15 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Opis"),
+                  decoration: const InputDecoration(labelText: "Opis"),
+                  minLines: 1,
+                  maxLines: null,
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   name: 'opis',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -128,35 +129,35 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Web"),
+                  decoration: const InputDecoration(labelText: "Web"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   name: 'web',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   name: 'telefon',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Mail"),
+                  decoration: const InputDecoration(labelText: "Mail"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   name: 'mail',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -167,7 +168,7 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   width: 400,
                   child: FormBuilderDropdown(
                     name: "kantonId",
-                    decoration: InputDecoration(labelText: "Kanton"),
+                    decoration: const InputDecoration(labelText: "Kanton"),
                     items: kantoni
                             .map((e) => DropdownMenuItem(
                                 value: e.kantonId.toString(),
@@ -195,20 +196,45 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 if (formCheck == true) {
                   var request = Map.from(_formKey.currentState!.value);
                   if (widget.biblioteka == null) {
-                    bibliotekeProvider.insert(request);
+                    try {
+                      await bibliotekeProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno dodata biblioteka",
+                          width: 300);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri dodavanju biblioteke",
+                          width: 300);
+                    }
                   } else {
-                    bibliotekeProvider.update(
-                        widget.biblioteka!.bibliotekaId!, request);
+                    try {
+                      await bibliotekeProvider.update(
+                          widget.biblioteka!.bibliotekaId!, request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno modifikovana biblioteka",
+                          width: 400);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri modifikovanju biblioteke",
+                          width: 400);
+                    }
                   }
                 }
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

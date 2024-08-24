@@ -8,19 +8,25 @@ import 'package:elibrary_bibliotekar/models/ciljna_grupa.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
+import 'package:elibrary_bibliotekar/models/knjiga_ciljna_grupa.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/uvez.dart';
 import 'package:elibrary_bibliotekar/models/vrsta_grade.dart';
 import 'package:elibrary_bibliotekar/models/vrsta_sadrzaja.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/ciljne_grupe_provider.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
 import 'package:elibrary_bibliotekar/providers/jezici_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_autori_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_ciljna_grupa_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -47,6 +53,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
   late AutoriProvider autoriProvider;
   late CiljneGrupeProvider ciljneGrupeProvider;
   late VrsteSadrzajaProvider vrsteSadrzajaProvider;
+  late KnjigaAutoriProvider knjigaAutoriProvider;
+  late KnjigaCiljnaGrupaProvider knjigaCiljnaGrupaProvider;
+  late KnjigaVrsteSadrzajaProvider knjigaVrsteSadrzajaProvider;
 
   SearchResult<Jezik>? jeziciResult;
   SearchResult<Uvez>? uveziResult;
@@ -67,6 +76,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
   Jezik? pocetniJezik;
   Izdavac? pocetniIzdavac;
 
+  List<Autor> autoriList = [];
+  List<CiljnaGrupa> ciljneGrupeList = [];
+  List<VrstaSadrzaja> vrsteSadrzajaList = [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -82,6 +95,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
     autoriProvider = context.read<AutoriProvider>();
     ciljneGrupeProvider = context.read<CiljneGrupeProvider>();
     vrsteSadrzajaProvider = context.read<VrsteSadrzajaProvider>();
+    knjigaAutoriProvider = context.read<KnjigaAutoriProvider>();
+    knjigaVrsteSadrzajaProvider = context.read<KnjigaVrsteSadrzajaProvider>();
+    knjigaCiljnaGrupaProvider = context.read<KnjigaCiljnaGrupaProvider>();
+
     // TODO: implement initState
     super.initState();
     _initialValue = {
@@ -119,6 +136,32 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
     autoriResult = await autoriProvider.get();
     ciljneGrupeResult = await ciljneGrupeProvider.get();
     vrsteSadrzajaResult = await vrsteSadrzajaProvider.get();
+
+    if (widget.knjiga?.knjigaId != null) {
+      var autoriKnjigaResult = await knjigaAutoriProvider.get(
+          filter: {'knjigaId': widget.knjiga!.knjigaId!},
+          retrieveAll: true,
+          includeTables: "Autor");
+      autoriList = autoriKnjigaResult.resultList.map((e) => e.autor!).toList();
+
+      var ciljneGrupeKnjigaResult = await knjigaCiljnaGrupaProvider.get(
+          filter: {'knjigaId': widget.knjiga!.knjigaId!},
+          retrieveAll: true,
+          includeTables: "CiljnaGrupa");
+      ciljneGrupeList = ciljneGrupeKnjigaResult.resultList
+          .map((e) => e.ciljnaGrupa!)
+          .toList();
+
+      var vrsteSadrzajaKnjigaResult = await knjigaVrsteSadrzajaProvider.get(
+          filter: {'knjigaId': widget.knjiga!.knjigaId!},
+          retrieveAll: true,
+          includeTables: "VrstaSadrzaja");
+
+      vrsteSadrzajaList = vrsteSadrzajaKnjigaResult.resultList
+          .map((e) => e.vrstaSadrzaja!)
+          .toList();
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -148,6 +191,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Naslov"),
                   name: 'naslov',
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
@@ -158,6 +204,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Godina izdanja"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: 'godinaIzdanja',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
@@ -169,6 +218,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Broj izdanja"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: 'brojIzdanja',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
@@ -180,6 +232,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Broj stranica"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: 'brojStranica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
@@ -192,7 +247,12 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Opis"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: 'napomena',
+                  minLines: 1,
+                  maxLines: null,
                 ))
               ],
             ),
@@ -201,6 +261,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "ISBN"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: 'isbn',
                 )),
                 SizedBox(
@@ -209,6 +272,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Expanded(
                     child: DropdownSearch<Jezik>(
                   selectedItem: pocetniJezik,
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   popupProps: const PopupPropsMultiSelection.menu(
                       // showSelectedItems: true,
                       isFilterOnline: true,
@@ -243,6 +309,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     child: FormBuilderDropdown(
                   name: "uvezId",
                   decoration: InputDecoration(labelText: "Uvez"),
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   items: uveziResult?.resultList
                           .map((e) => DropdownMenuItem(
                               value: e.uvezId.toString(),
@@ -261,6 +330,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 ),
                 Expanded(
                     child: FormBuilderDropdown(
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
                   name: "vrsteGradeId",
                   decoration: InputDecoration(labelText: "Vrsta građe"),
                   items: vrsteGradeResult?.resultList
@@ -280,6 +352,9 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                 Container(
                     width: 250,
                     child: DropdownSearch<Izdavac>(
+                      enabled: AuthProvider.korisnikUloge!
+                              .any((x) => x.uloga?.naziv == "Administrator") ||
+                          widget.knjiga == null,
                       selectedItem: pocetniIzdavac,
                       popupProps: const PopupPropsMultiSelection.menu(
                           // showSelectedItems: true,
@@ -307,159 +382,165 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                       onSaved: (newValue) => {
                         if (newValue != null) {print(newValue.izdavacId)}
                       },
-                    )
-                    // FormBuilderDropdown(
-                    //   name: "izdavacId",
-                    //   decoration: InputDecoration(labelText: "Izdavac"),
-                    //   items: izdavaciResult?.resultList
-                    //           .map((e) => DropdownMenuItem(
-                    //               value: e.izdavacId.toString(),
-                    //               child: Text(e.naziv ?? "")))
-                    //           .toList() ??
-                    //       [],
-                    // )
-                    ),
+                    )),
                 SizedBox(
                   width: 10,
                 ),
-                if (isEditing == false) ...[
-                  Expanded(
-                      child: DropdownSearch<Autor>.multiSelection(
-                    popupProps: const PopupPropsMultiSelection.menu(
-                        isFilterOnline: true,
-                        showSearchBox: true,
-                        searchDelay: Duration(milliseconds: 5)),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                            labelText: "Odaberi autore",
-                            hintText: "Unesite ime i prezime autora")),
-                    asyncItems: (String filter) async {
-                      var autori = await getAutori(filter);
-                      return autori;
-                    },
-                    onChanged: (List<Autor> c) {
-                      if (c != null || c.isNotEmpty) {
-                        autori = c.map((a) => a.autorId!).toList();
-                      }
-                      c.forEach((element) {
-                        print(element.autorId);
-                      });
-                    },
-                    compareFn: (item1, item2) => item1.autorId == item2.autorId,
-                    itemAsString: (Autor u) =>
-                        "${u.ime} ${u.prezime}, ${u.godinaRodjenja}",
-                    validator: (List<Autor>? c) {
-                      if (c == null || c.isEmpty) {
-                        return 'Obavezno polje';
-                      }
-                    },
-                    onSaved: (newValue) => {
-                      if (newValue != null) {print(newValue.length)}
-                    },
-                  )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DropdownSearch<CiljnaGrupa>.multiSelection(
-                    popupProps: const PopupPropsMultiSelection.menu(
-                        isFilterOnline: true,
-                        showSearchBox: true,
-                        searchDelay: Duration(milliseconds: 5)),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                            labelText: "Odaberi ciljne grupe",
-                            hintText: "Unesite naziv ciljne grupe")),
-                    asyncItems: (String filter) async {
-                      var ciljneGrupe = await getCiljneGrupe(filter);
-                      return ciljneGrupe;
-                    },
-                    onChanged: (List<CiljnaGrupa> c) {
-                      if (c != null || c.isNotEmpty) {
-                        ciljneGrupe = c.map((a) => a.ciljnaGrupaId!).toList();
-                      }
-                      c.forEach((element) {
-                        print(element.ciljnaGrupaId);
-                      });
-                    },
-                    compareFn: (item1, item2) =>
-                        item1.ciljnaGrupaId == item2.ciljnaGrupaId,
-                    itemAsString: (CiljnaGrupa u) => "${u.naziv}",
-                    validator: (List<CiljnaGrupa>? c) {
-                      if (c == null || c.isEmpty) {
-                        return 'Obavezno polje';
-                      }
-                    },
-                    onSaved: (newValue) => {
-                      if (newValue != null) {print(newValue.length)}
-                    },
-                  )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DropdownSearch<VrstaSadrzaja>.multiSelection(
-                    popupProps: const PopupPropsMultiSelection.menu(
-                        isFilterOnline: true,
-                        showSearchBox: true,
-                        searchDelay: Duration(milliseconds: 5)),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                            labelText: "Odaberi vrste sadržaja",
-                            hintText: "Unesite naziv vrste sadržaja")),
-                    asyncItems: (String filter) async {
-                      var vrsteSadrzaja = await getVrsteSadrzaja(filter);
-                      return vrsteSadrzaja;
-                    },
-                    onChanged: (List<VrstaSadrzaja> c) {
-                      if (c != null || c.isNotEmpty) {
-                        vrsteSadrzaja =
-                            c.map((a) => a.vrstaSadrzajaId!).toList();
-                      }
-                      c.forEach((element) {
-                        print(element.vrstaSadrzajaId);
-                      });
-                    },
-                    compareFn: (item1, item2) =>
-                        item1.vrstaSadrzajaId == item2.vrstaSadrzajaId,
-                    itemAsString: (VrstaSadrzaja u) => "${u.naziv}",
-                    validator: (List<VrstaSadrzaja>? c) {
-                      if (c == null || c.isEmpty) {
-                        return 'Obavezno polje';
-                      }
-                    },
-                    onSaved: (newValue) => {
-                      if (newValue != null) {print(newValue.length)}
-                    },
-                  ))
-                ],
+                // if (isEditing == false) ...[
+                Expanded(
+                    child: DropdownSearch<Autor>.multiSelection(
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
+                  selectedItems: autoriList,
+                  popupProps: const PopupPropsMultiSelection.menu(
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5)),
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                          labelText: "Odaberi autore",
+                          hintText: "Unesite ime i prezime autora")),
+                  asyncItems: (String filter) async {
+                    var autori = await getAutori(filter);
+                    return autori;
+                  },
+                  onChanged: (List<Autor> c) {
+                    if (c != null || c.isNotEmpty) {
+                      autori = c.map((a) => a.autorId!).toList();
+                      autoriList = c;
+                    }
+                    c.forEach((element) {
+                      print(element.autorId);
+                    });
+                  },
+                  compareFn: (item1, item2) => item1.autorId == item2.autorId,
+                  itemAsString: (Autor u) =>
+                      "${u.ime} ${u.prezime}, ${u.godinaRodjenja}",
+                  validator: (List<Autor>? c) {
+                    if (c == null || c.isEmpty) {
+                      return 'Obavezno polje';
+                    }
+                  },
+                  onSaved: (newValue) => {
+                    if (newValue != null) {print(newValue.length)}
+                  },
+                )),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: DropdownSearch<CiljnaGrupa>.multiSelection(
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
+                  selectedItems: ciljneGrupeList,
+                  popupProps: const PopupPropsMultiSelection.menu(
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5)),
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                          labelText: "Odaberi ciljne grupe",
+                          hintText: "Unesite naziv ciljne grupe")),
+                  asyncItems: (String filter) async {
+                    var ciljneGrupe = await getCiljneGrupe(filter);
+                    return ciljneGrupe;
+                  },
+                  onChanged: (List<CiljnaGrupa> c) {
+                    if (c != null || c.isNotEmpty) {
+                      ciljneGrupe = c.map((a) => a.ciljnaGrupaId!).toList();
+                      ciljneGrupeList = c;
+                    }
+                    c.forEach((element) {
+                      print(element.ciljnaGrupaId);
+                    });
+                  },
+                  compareFn: (item1, item2) =>
+                      item1.ciljnaGrupaId == item2.ciljnaGrupaId,
+                  itemAsString: (CiljnaGrupa u) => "${u.naziv}",
+                  validator: (List<CiljnaGrupa>? c) {
+                    if (c == null || c.isEmpty) {
+                      return 'Obavezno polje';
+                    }
+                  },
+                  onSaved: (newValue) => {
+                    if (newValue != null) {print(newValue.length)}
+                  },
+                )),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: DropdownSearch<VrstaSadrzaja>.multiSelection(
+                  enabled: AuthProvider.korisnikUloge!
+                          .any((x) => x.uloga?.naziv == "Administrator") ||
+                      widget.knjiga == null,
+                  selectedItems: vrsteSadrzajaList,
+                  popupProps: const PopupPropsMultiSelection.menu(
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5)),
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                          labelText: "Odaberi vrste sadržaja",
+                          hintText: "Unesite naziv vrste sadržaja")),
+                  asyncItems: (String filter) async {
+                    var vrsteSadrzaja = await getVrsteSadrzaja(filter);
+                    return vrsteSadrzaja;
+                  },
+                  onChanged: (List<VrstaSadrzaja> c) {
+                    if (c != null || c.isNotEmpty) {
+                      vrsteSadrzaja = c.map((a) => a.vrstaSadrzajaId!).toList();
+                      vrsteSadrzajaList = c;
+                    }
+                    c.forEach((element) {
+                      print(element.vrstaSadrzajaId);
+                    });
+                  },
+                  compareFn: (item1, item2) =>
+                      item1.vrstaSadrzajaId == item2.vrstaSadrzajaId,
+                  itemAsString: (VrstaSadrzaja u) => "${u.naziv}",
+                  validator: (List<VrstaSadrzaja>? c) {
+                    if (c == null || c.isEmpty) {
+                      return 'Obavezno polje';
+                    }
+                  },
+                  onSaved: (newValue) => {
+                    if (newValue != null) {print(newValue.length)}
+                  },
+                ))
               ],
+              // ],
             ),
-            Row(
-              children: [
-                Container(
-                    width: 300,
-                    child: FormBuilderField(
-                      name: "imageId",
-                      builder: (field) {
-                        return InputDecorator(
-                          decoration:
-                              InputDecoration(label: Text("Odaberite sliku")),
-                          child: ListTile(
-                            leading: Icon(Icons.image),
-                            title: Text("Select image"),
-                            trailing: Icon(Icons.file_upload),
-                            onTap: getImage,
-                          ),
-                        );
-                      },
-                      // validator: FormBuilderValidators.compose([
-                      //   FormBuilderValidators.required(
-                      //       errorText: "Slika je obavezna"),
-                      // ]),
-                    ))
-              ],
-            )
+            if (AuthProvider.korisnikUloge!
+                    .any((x) => x.uloga?.naziv == "Administrator") ||
+                widget.knjiga == null)
+              Row(
+                children: [
+                  Container(
+                      width: 300,
+                      child: FormBuilderField(
+                        name: "imageId",
+                        builder: (field) {
+                          return InputDecorator(
+                            decoration:
+                                InputDecoration(label: Text("Odaberite sliku")),
+                            child: ListTile(
+                              leading: Icon(Icons.image),
+                              title: Text("Select image"),
+                              trailing: Icon(Icons.file_upload),
+                              onTap: getImage,
+                            ),
+                          );
+                        },
+                        // validator: FormBuilderValidators.compose([
+                        //   FormBuilderValidators.required(
+                        //       errorText: "Slika je obavezna"),
+                        // ]),
+                      ))
+                ],
+              )
           ],
         ),
       ),
@@ -467,72 +548,101 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
   }
 
   Widget _saveRow() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ElevatedButton(
-              onPressed: () {
-                var formCheck = _formKey.currentState?.saveAndValidate();
-                print(autori);
-                print(ciljneGrupe);
-                print(vrsteSadrzaja);
-                if (widget.knjiga == null && formCheck == true) {
-                  // List<List<int>> autoriList =
-                  //     _formKey.currentState?.value['autori'];
+    if (AuthProvider.korisnikUloge!
+            .any((x) => x.uloga?.naziv == "Administrator") ||
+        widget.knjiga == null) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+                onPressed: () async {
+                  var formCheck = _formKey.currentState?.saveAndValidate();
+                  print(autori);
+                  print(ciljneGrupe);
+                  print(vrsteSadrzaja);
+                  if (widget.knjiga == null && formCheck == true) {
+                    // List<List<int>> autoriList =
+                    //     _formKey.currentState?.value['autori'];
 
-                  // List<int> autori = autoriList.expand((list) => list).toList();
-                  // print(autori);
+                    // List<int> autori = autoriList.expand((list) => list).toList();
+                    // print(autori);
 
-                  // List<List<int>> ciljneGrupeList =
-                  //     _formKey.currentState?.value['ciljneGrupe'];
-                  // List<int> ciljneGrupe =
-                  //     ciljneGrupeList.expand((list) => list).toList();
-                  // print(ciljneGrupe);
+                    // List<List<int>> ciljneGrupeList =
+                    //     _formKey.currentState?.value['ciljneGrupe'];
+                    // List<int> ciljneGrupe =
+                    //     ciljneGrupeList.expand((list) => list).toList();
+                    // print(ciljneGrupe);
 
-                  // List<List<int>> vrsteSadrzajaList =
-                  //     _formKey.currentState?.value['vrsteSadrzaja'];
-                  // List<int> vrsteSadrzaja =
-                  //     vrsteSadrzajaList.expand((list) => list).toList();
-                  // print(vrsteSadrzaja);
+                    // List<List<int>> vrsteSadrzajaList =
+                    //     _formKey.currentState?.value['vrsteSadrzaja'];
+                    // List<int> vrsteSadrzaja =
+                    //     vrsteSadrzajaList.expand((list) => list).toList();
+                    // print(vrsteSadrzaja);
 
-                  var request = Map.from(_formKey.currentState!.value);
+                    var request = Map.from(_formKey.currentState!.value);
 
-                  request['autori'] = autori;
-                  request['ciljneGrupe'] = ciljneGrupe;
-                  request['vrsteSadrzaja'] = vrsteSadrzaja;
-                  request['jezikId'] = jezikId;
-                  request['izdavacId'] = izdavacId;
-                  request['slika'] = _base64Image;
-                  print(request);
+                    request['autori'] = autori;
+                    request['ciljneGrupe'] = ciljneGrupe;
+                    request['vrsteSadrzaja'] = vrsteSadrzaja;
+                    request['jezikId'] = jezikId;
+                    request['izdavacId'] = izdavacId;
+                    request['slika'] = _base64Image;
+                    print(request);
+                    //return;
+                    try {
+                      await knjigaProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno dodata knjiga",
+                          width: 300);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri dodavanju knjige",
+                          width: 300);
+                    }
+                  } else if (formCheck == true) {
+                    _base64Image ??= widget.knjiga?.slika;
+                    var request = Map.from(_formKey.currentState!.value);
+                    request['autori'] =
+                        autoriList.map((e) => e.autorId!).toList();
+                    request['ciljneGrupe'] =
+                        ciljneGrupeList.map((e) => e.ciljnaGrupaId!).toList();
+                    request['vrsteSadrzaja'] = vrsteSadrzajaList
+                        .map((e) => e.vrstaSadrzajaId!)
+                        .toList();
+                    request['jezikId'] = jezikId;
+                    request['izdavacId'] = izdavacId;
+                    request['slika'] = _base64Image;
 
-                  knjigaProvider.insert(request);
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: "Uspješno dodata knjiga",
-                      width: 300);
-                } else if (formCheck == true) {
-                  _base64Image ??= widget.knjiga?.slika;
-                  var request = Map.from(_formKey.currentState!.value);
-                  request['jezikId'] = jezikId;
-                  request['izdavacId'] = izdavacId;
-                  request['slika'] = _base64Image;
-
-                  // print(knjigaUpdate);
-                  knjigaProvider.update(widget.knjiga!.knjigaId!, request);
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: "Uspješno modifikovana knjiga",
-                      width: 400);
-                }
-              },
-              child: Text("Sacuvaj"))
-        ],
-      ),
-    );
+                    try {
+                      await knjigaProvider.update(
+                          widget.knjiga!.knjigaId!, request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno modifikovana knjiga",
+                          width: 400);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška sa ažuriranjem knjige",
+                          width: 300);
+                    }
+                  }
+                },
+                child: Text("Sacuvaj"))
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 
   File? _image;
@@ -567,9 +677,6 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
         filter: {'nazivGTE': filter},
         orderBy: 'Naziv',
         sortDirection: 'ascending');
-    if (result == null) {
-      return [];
-    }
     return result.resultList;
   }
 
@@ -580,9 +687,6 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
         filter: {'imePrezimeGTE': filter},
         orderBy: 'Ime',
         sortDirection: 'ascending');
-    if (result == null) {
-      return [];
-    }
     return result.resultList;
   }
 
@@ -593,9 +697,6 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
         filter: {'nazivGTE': filter},
         orderBy: 'Naziv',
         sortDirection: 'ascending');
-    if (result == null) {
-      return [];
-    }
     return result.resultList;
   }
 
@@ -606,9 +707,6 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
         filter: {'nazivGTE': filter},
         orderBy: 'Naziv',
         sortDirection: 'ascending');
-    if (result == null) {
-      return [];
-    }
     return result.resultList;
   }
 }

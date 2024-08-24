@@ -1,16 +1,13 @@
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/upit.dart';
-import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/providers/upiti_provider.dart';
-import 'package:elibrary_bibliotekar/screens/autor_details_screen.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/novi_uposleni_screen.dart';
 import 'package:elibrary_bibliotekar/screens/upit_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class UpitiListScreen extends StatefulWidget {
   const UpitiListScreen({super.key});
@@ -26,12 +23,10 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
@@ -43,7 +38,6 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
     provider = context.read<UpitiProvider>();
     _source = UpitiDataSource(provider: provider, context: context);
     setState(() {});
-    //updateFilter("");
   }
 
   @override
@@ -54,7 +48,7 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
           child: Column(
             children: [
               _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
             ],
           ),
         ));
@@ -71,9 +65,7 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
             controller: _imePrezimeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
@@ -88,13 +80,6 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
           const SizedBox(
             width: 8,
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => BibliotekaDetailsScreen()));
-              },
-              child: const Text("Nova biblioteka")),
         ],
       ),
     );
@@ -112,27 +97,22 @@ class _UpitiListScreenState extends State<UpitiListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime"),
-                  )),
-                  // DataColumn(
-                  //     label: Container(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Text("Adresa"),
-                  // )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("Naslov"),
+                    child: const Text("Ime"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Odgovoreno"),
+                    child: const Text("Naslov"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Akcija"),
+                    child: const Text("Odgovoreno"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Akcija"),
                   )),
                 ],
                 source: _source,
@@ -175,22 +155,21 @@ class UpitiDataSource extends AdvancedDataTableSource<Upit> {
       )),
       DataCell(Container(
         alignment: Alignment.centerLeft,
-        child: item.odgovor == null ? Text("Ne") : Text("Da"),
+        child: item.odgovor == null ? const Text("Ne") : const Text("Da"),
       )),
-      // DataCell(Container(
-      //   alignment: Alignment.centerLeft,
-      //   child: Text(item!.adresa.toString()),
-      // )),
       DataCell(Row(
         children: [
           ElevatedButton(
             style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => UpitDetailsScreen(
-                        upit: item,
-                      )));
+                    upit: item,
+                  ),
+                ),
+              );
             },
             child: const Text(
               'Detalji',
@@ -219,24 +198,24 @@ class UpitiDataSource extends AdvancedDataTableSource<Upit> {
   @override
   Future<RemoteDataSourceDetails<Upit>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'imePrezimeGTE': nazivGTE,
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        orderBy: 'UpitId',
-        sortDirection: 'Descending',
-        includeTables: "Citalac");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          orderBy: 'UpitId',
+          sortDirection: 'Descending',
+          includeTables: "Citalac");
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context, type: QuickAlertType.error, text: e.toString());
     }
     return RemoteDataSourceDetails(count, data!);
   }

@@ -1,14 +1,13 @@
-import 'package:elibrary_mobile/layouts/base_mobile_screen.dart';
 import 'package:elibrary_mobile/models/knjiga.dart';
 import 'package:elibrary_mobile/models/search_result.dart';
 import 'package:elibrary_mobile/models/vrsta_grade.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_mobile/screens/napredna_pretraga_knjige_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class PocetnaKnjigaPretragaScreen extends StatefulWidget {
   String naslov = "";
@@ -41,7 +40,6 @@ class _PocetnaKnjigaPretragaScreenState
   late ScrollController scrollController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     knjigaProvider = context.read<KnjigaProvider>();
@@ -62,7 +60,8 @@ class _PocetnaKnjigaPretragaScreenState
     );
   }
 
-  TextEditingController _naslovEditingController = TextEditingController();
+  final TextEditingController _naslovEditingController =
+      TextEditingController();
 
   Widget _buildAppBarHeader() {
     return Container(
@@ -87,7 +86,6 @@ class _PocetnaKnjigaPretragaScreenState
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // Implement search functionality here
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => NaprednaPretragaKnjiga(
                         vrstaGradeId: _selectedVrstaGrade,
@@ -130,9 +128,7 @@ class _PocetnaKnjigaPretragaScreenState
                                   groupValue: _selectedVrstaGrade,
                                   onChanged: (value) {
                                     setState(() {
-                                      _selectedVrstaGrade =
-                                          value!; // Sačuvajte odabranu vrednost
-                                      print(_selectedVrstaGrade);
+                                      _selectedVrstaGrade = value!;
                                     });
                                   },
                                 ),
@@ -162,14 +158,22 @@ class _PocetnaKnjigaPretragaScreenState
   }
 
   Future _initForm() async {
-    vrstaGradeResult = await vrstaGradeProvider.get(retrieveAll: true);
+    try {
+      vrstaGradeResult = await vrstaGradeProvider.get(retrieveAll: true);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška",
+          text: e.toString());
+      return;
+    }
     var pocetni = VrstaGrade();
     pocetni.vrstaGradeId = 0;
     pocetni.naziv = "Bilo koji tip građe";
     if (vrstaGradeResult?.resultList != null) {
-      vrstaGradeResult?.resultList!.insert(0, pocetni);
+      vrstaGradeResult?.resultList.insert(0, pocetni);
     } else {
-      // Ako je resultList null, inicijalizirajte ga s novim elementom
       vrstaGradeResult?.resultList = [pocetni];
     }
     setState(() {});

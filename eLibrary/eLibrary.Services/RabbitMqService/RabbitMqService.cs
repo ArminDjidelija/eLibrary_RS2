@@ -1,11 +1,7 @@
 ﻿using eLibrary.Model.Messages;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace eLibrary.Services.RabbitMqService
 {
@@ -13,11 +9,13 @@ namespace eLibrary.Services.RabbitMqService
     {
         public async Task SendAnEmail(EmailDTO mail)
         {
-            var hostname = Environment.GetEnvironmentVariable("_rabbitMqHost") ?? "localhost";
+            var hostname = Environment.GetEnvironmentVariable("_rabbitMqHost") ?? "rabbitmq";
             var username = Environment.GetEnvironmentVariable("_rabbitMqUser") ?? "guest";
             var password = Environment.GetEnvironmentVariable("_rabbitMqPassword") ?? "guest";
+            var port = int.Parse(Environment.GetEnvironmentVariable("_rabbitMqPort") ?? "5672");
 
-            var factory = new ConnectionFactory { HostName = hostname, UserName = username, Password = password };
+            Console.WriteLine($"{hostname}:{username}:{password}");
+            var factory = new ConnectionFactory { HostName = hostname, UserName = username, Password = password, Port = port };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
@@ -25,7 +23,8 @@ namespace eLibrary.Services.RabbitMqService
                               durable: false,
                               exclusive: false,
                               autoDelete: false,
-                              arguments: null);
+                              arguments: null
+                              );
 
             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(mail));
 

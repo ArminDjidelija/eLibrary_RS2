@@ -31,7 +31,6 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
   @override
   void initState() {
     korisnikProvider = context.read<KorisnikProvider>();
-    // TODO: implement initState
     super.initState();
 
     initForm();
@@ -73,33 +72,33 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                 Expanded(
                     child: FormBuilderTextField(
                   controller: _imeController,
-                  decoration: InputDecoration(labelText: "Ime"),
+                  decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
                   controller: _prezimeController,
-                  decoration: InputDecoration(labelText: "Prezime"),
+                  decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
                   controller: _telefonController,
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
@@ -112,38 +111,30 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Stara lozinka"),
+                  decoration: const InputDecoration(labelText: "Stara lozinka"),
                   name: 'staraLozinka',
-                  validator: FormBuilderValidators.compose([
-                    // FormBuilderValidators.required(),
-                    // FormBuilderValidators.minLength(4),
-                  ]),
+                  validator: FormBuilderValidators.compose([]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Nova lozinka"),
+                  decoration: const InputDecoration(labelText: "Nova lozinka"),
                   name: 'lozinka',
-                  validator: FormBuilderValidators.compose([
-                    // FormBuilderValidators.required(),
-                    // FormBuilderValidators.minLength(4),
-                  ]),
+                  validator: FormBuilderValidators.compose([]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka potvrda"),
+                  decoration:
+                      const InputDecoration(labelText: "Lozinka potvrda"),
                   name: 'lozinkaPotvrda',
-                  validator: FormBuilderValidators.compose([
-                    // FormBuilderValidators.required(),
-                    // FormBuilderValidators.minLength(4),
-                  ]),
+                  validator: FormBuilderValidators.compose([]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -164,9 +155,6 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
               onPressed: () async {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
-                  //TODO provjera username  i email da li vec postoji
-
-                  print("Sve uredu");
                   var request = Map.from(_formKey.currentState!.value);
 
                   try {
@@ -186,11 +174,9 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                         type: QuickAlertType.error,
                         text: e.toString());
                   }
-                } else {
-                  print("Belaj");
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

@@ -40,7 +40,6 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
     korisnikProvider = context.read<KorisnikProvider>();
     kantonProvider = context.read<KantonProvider>();
     ulogeProvider = context.read<UlogeProvider>();
-    // TODO: implement initState
     super.initState();
 
     initForm();
@@ -48,17 +47,16 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
 
   Future initForm() async {
     kantoniResult = await kantonProvider.get();
-
-    print("retreived kantoni: ${kantoniResult?.resultList.length}");
   }
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
-        "Novi korisnik",
-        Column(
-          children: [_buildForm(), _saveRow()],
-        ));
+      "Novi korisnik",
+      Column(
+        children: [_buildForm(), _saveRow()],
+      ),
+    );
   }
 
   Widget _buildForm() {
@@ -73,46 +71,46 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Ime"),
+                  decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Prezime"),
+                  decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Email"),
+                  decoration: const InputDecoration(labelText: "Email"),
                   name: 'email',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.email(),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(5),
                   ]),
                 )),
@@ -122,50 +120,50 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Korisnicko ime"),
+                  decoration:
+                      const InputDecoration(labelText: "Korisnicko ime"),
                   name: 'korisnickoIme',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka"),
+                  decoration: const InputDecoration(labelText: "Lozinka"),
                   name: 'lozinka',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka potvrda"),
+                  decoration:
+                      const InputDecoration(labelText: "Lozinka potvrda"),
                   name: 'lozinkaPotvrda',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
             ),
             Row(
               children: [
-                Container(
+                SizedBox(
                     width: 300,
                     child: DropdownSearch<Uloga>.multiSelection(
                       popupProps: const PopupPropsMultiSelection.menu(
-                          // isFilterOnline: true,
-                          // showSearchBox: true,
                           searchDelay: Duration(milliseconds: 5)),
                       dropdownDecoratorProps: const DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
@@ -211,16 +209,15 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
                   //TODO provjera username  i email da li vec postoji
 
-                  print("Sve uredu");
                   var request = Map.from(_formKey.currentState!.value);
 
                   try {
-                    korisnikProvider.insert(request);
+                    await korisnikProvider.insert(request);
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
@@ -231,11 +228,9 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                         type: QuickAlertType.error,
                         text: e.toString());
                   }
-                } else {
-                  print("Belaj");
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

@@ -1,21 +1,18 @@
 import 'dart:async';
-import 'dart:ffi';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
-import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
-import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/biblioteka_knjige_detalji_screen.dart';
 import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class BibliotekaKnjigeListScreen extends StatefulWidget {
   const BibliotekaKnjigeListScreen({super.key});
@@ -37,7 +34,6 @@ class _BibliotekaKnjigeListScreenState
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -47,7 +43,6 @@ class _BibliotekaKnjigeListScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     provider = context.read<BibliotekaKnjigaProvider>();
     _source = KnjigaDataSource(provider: provider, context: context);
@@ -61,15 +56,16 @@ class _BibliotekaKnjigeListScreenState
           child: Column(
             children: [
               _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
             ],
           ),
         ));
   }
 
-  TextEditingController _naslovEditingController = TextEditingController();
-  TextEditingController _autorEditingController = TextEditingController();
-  TextEditingController _isbnEditingController = TextEditingController();
+  final TextEditingController _naslovEditingController =
+      TextEditingController();
+  final TextEditingController _autorEditingController = TextEditingController();
+  final TextEditingController _isbnEditingController = TextEditingController();
 
   Widget _buildSearch() {
     return Padding(
@@ -111,10 +107,6 @@ class _BibliotekaKnjigeListScreenState
           )),
           ElevatedButton(
               onPressed: () async {
-                var filter = {
-                  'naslovGTE': _naslovEditingController.text,
-                  'autor': _autorEditingController.text
-                };
                 _source.filterServerSide(_naslovEditingController.text,
                     _autorEditingController.text, _isbnEditingController.text);
                 setState(() {});
@@ -135,29 +127,6 @@ class _BibliotekaKnjigeListScreenState
     );
   }
 
-  Future<void> updateFilter(String naslov, String autor, String isbn) async {
-    _source.filterServerSide("", "", "");
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {};
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(
-        // filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Knjiga");
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-      }
-      _isLoading = false;
-    });
-  }
-
   Widget _buildPaginatedTable() {
     return Expanded(
       child: Padding(
@@ -167,12 +136,10 @@ class _BibliotekaKnjigeListScreenState
               width: double.infinity,
               child: AdvancedPaginatedDataTable(
                 dataRowHeight: 75,
-                columns: [
+                columns: const [
                   DataColumn(label: Text("Naziv")),
                   DataColumn(label: Text("ISBN")),
                   DataColumn(label: Text("Godina izdanja")),
-                  // DataColumn(label: Text("Broj izdanja")),
-                  // DataColumn(label: Text("Broj stranica")),
                   DataColumn(label: Text("Slika")),
                   DataColumn(label: Text("Akcija")),
                 ],
@@ -217,16 +184,12 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
               child: imageFromString(item.knjiga!.slika!),
             )
           : Image.asset(
-              "assets/images/fit.png",
+              "assets/images/empty.png",
               height: 75,
               width: 75,
             )),
       DataCell(ElevatedButton(
-          child: Text(
-            "Detalji",
-            style: TextStyle(color: Colors.white),
-          ),
-          style: ButtonStyle(
+          style: const ButtonStyle(
             backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
           ),
           onPressed: () {
@@ -234,7 +197,11 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
                 builder: (context) => BibliotekaKnjigaDetailsScreen(
                       bibliotekaKnjiga: item,
                     )));
-          }))
+          },
+          child: const Text(
+            "Detalji",
+            style: TextStyle(color: Colors.white),
+          )))
     ]);
   }
 
@@ -257,7 +224,6 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
   @override
   Future<RemoteDataSourceDetails<BibliotekaKnjiga>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'naslovGTE': naslov,
@@ -265,17 +231,24 @@ class KnjigaDataSource extends AdvancedDataTableSource<BibliotekaKnjiga> {
       'isbn': isbn,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Knjiga");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider?.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Knjiga");
+      if (result != null) {
+        data = result!.resultList;
+        count = result!.count;
+        // print(data);
+      }
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

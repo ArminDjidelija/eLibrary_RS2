@@ -1,25 +1,17 @@
 import 'dart:convert';
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_mobile/models/autor.dart';
 import 'package:elibrary_mobile/models/biblioteka.dart';
 import 'package:elibrary_mobile/models/jezik.dart';
 import 'package:elibrary_mobile/models/knjiga.dart';
-import 'package:elibrary_mobile/models/knjiga_autor.dart';
 import 'package:elibrary_mobile/providers/autori_provider.dart';
-import 'package:elibrary_mobile/providers/biblioteka_knjiga_provider.dart';
 import 'package:elibrary_mobile/providers/biblioteka_provider.dart';
 import 'package:elibrary_mobile/providers/jezici_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
-import 'package:elibrary_mobile/providers/utils.dart';
 import 'package:elibrary_mobile/screens/knjiga_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/quickalert.dart';
-import 'package:quickalert/widgets/quickalert_buttons.dart';
 
 class NaprednaPretragaKnjiga extends StatefulWidget {
   String? naslov;
@@ -52,8 +44,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
   String dropdown = 'Relevantnost';
   Map<String, Map<String?, String?>> sortOptions = {
     'Relevantnost': {'orderBy': null, 'sortDirection': null},
-    // 'Date (Newest First)': {'orderBy': '', 'sortDirection': 'desc'},
-    // 'Date (Oldest First)': {'orderBy': 'date', 'sortDirection': 'asc'},
     'Naslov A-Z': {'orderBy': 'Naslov', 'sortDirection': 'ascending'},
     'Naslov Z-A': {'orderBy': 'Naslov', 'sortDirection': 'descending'},
     'Godina izdanja rastuća': {
@@ -74,7 +64,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     knjigaProvider = context.read<KnjigaProvider>();
@@ -83,7 +72,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
     jezikProvider = context.read<JezikProvider>();
     autoriProvider = context.read<AutoriProvider>();
 
-    // _initForm();
     _firstLoad();
     scrollController = ScrollController()..addListener(_loadMore);
     // _initForm();
@@ -167,7 +155,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
         searchRequest['jezikId'] = jezikId;
       }
       searchRequest['autor'] = autorController.text;
-
+      print("load more");
       var knjigeResult = await knjigaProvider.get(
           page: page,
           pageSize: 10,
@@ -176,7 +164,13 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
           sortDirection: sortDirection,
           includeTables: 'Izdavac,Uvez,Jezik');
       if (knjigeResult.resultList.isNotEmpty) {
-        knjige.addAll(knjigeResult!.resultList);
+        for (var i = 0; i < knjigeResult.resultList.length; i++) {
+          knjige.add(knjigeResult.resultList[i]);
+        }
+
+        //knjige.addAll(knjigeResult!.resultList);
+
+        // setState(() {});
       } else {
         setState(() {
           hasNextPage = false;
@@ -239,19 +233,19 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
           ),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Opcija pretrage',
                   textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownSearch<Biblioteka>(
                   selectedItem: odabranaBiblioteka,
-                  popupProps: PopupPropsMultiSelection.menu(
+                  popupProps: const PopupPropsMultiSelection.menu(
                     isFilterOnline: true,
                     showSearchBox: true,
                     searchDelay: Duration(milliseconds: 5),
@@ -279,7 +273,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                 ),
                 DropdownSearch<Jezik>(
                   selectedItem: odabraniJezik,
-                  popupProps: PopupPropsMultiSelection.menu(
+                  popupProps: const PopupPropsMultiSelection.menu(
                     isFilterOnline: true,
                     showSearchBox: true,
                     searchDelay: Duration(milliseconds: 5),
@@ -297,7 +291,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                   onChanged: (Jezik? c) {
                     jezikId = c!.jezikId!;
                     odabraniJezik = c;
-                    // print(c.naziv);
                   },
                   itemAsString: (Jezik u) => "${u.naziv}",
                   onSaved: (newValue) {
@@ -306,7 +299,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                     }
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   controller: autorController,
                   decoration: InputDecoration(
@@ -315,12 +308,11 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     filled: true,
-                    // fillColor: Colors.white,
                     contentPadding:
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -333,18 +325,17 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                         odabranaBiblioteka = null;
                         odabraniJezik = null;
                         autorController.text = "";
-                        // dropdown = "Relevantnost";
                         _firstLoad();
                       },
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     TextButton(
                       child: const Text('Close'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     TextButton(
                       child: const Text('Pretraga'),
                       onPressed: () {
@@ -431,8 +422,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: knjige.length +
-                      2, // Povećan broj za dva dodatna elementa (header + footer)
+                  itemCount: knjige.length + 2,
                   controller: scrollController,
                   itemBuilder: (_, index) {
                     if (index == 0) {
@@ -473,7 +463,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       child: InkWell(
         onTap: () {
-          // Handle card tap
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => KnjigaScreen(
               knjiga: book,
@@ -481,7 +470,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
           ));
         },
         child: Container(
-          height: 200, // Postavite željenu visinu kartice
+          height: 200,
           child: Row(
             children: [
               Container(
@@ -516,20 +505,21 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Text("Učitavanje autora...");
+                            return const Text("Učitavanje autora...");
                           } else if (snapshot.hasError) {
-                            return Text("Greška sa učitavanjem autora");
+                            return const Text("Greška sa učitavanjem autora");
                           } else {
                             return Text(
                               "Autori: ${snapshot.data!.join(', ')}",
-                              style: TextStyle(fontSize: 18),
+                              style: const TextStyle(fontSize: 18),
                             );
                           }
                         },
                       ),
+                      Text(
+                          "Autori: ${book.knjigaAutoris!.map((e) => e.autor!.ime! + " " + e.autor!.prezime!).join(', ')}"),
                       Text("Godina izdanja: ${book.godinaIzdanja}"),
                       Text("Jezik: ${book.jezik!.naziv}"),
-                      // Text("Broj izdanja: ${book.brojIzdanja}"),
                     ],
                   ),
                 ),
@@ -542,6 +532,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
   }
 
   Future<List<String>> getAutoriKnjige(int knjigaId) async {
+    print("get autori knjige");
     var knjigaAutori = await knjigaAutoriProvider.get(
         retrieveAll: true,
         includeTables: "Autor",
@@ -569,6 +560,8 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
   }
 
   Future<List<Jezik>> getJezike(String? naziv) async {
+    print("get jezike");
+
     var jezici = await jezikProvider
         .get(filter: {'nazivGTE': naziv}, page: 1, pageSize: 10);
     var pocetni = Jezik();
@@ -583,6 +576,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
   }
 
   Future<List<Autor>> gatAutore(String? imePrezime) async {
+    print("get autore");
     var autori = await autoriProvider
         .get(filter: {'imePrezimeGTE': imePrezime}, page: 1, pageSize: 10);
 

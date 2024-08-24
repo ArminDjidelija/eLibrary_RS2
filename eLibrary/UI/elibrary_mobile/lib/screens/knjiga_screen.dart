@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:autoscale_tabbarview/autoscale_tabbarview.dart';
 import 'package:elibrary_mobile/models/biblioteka_knjiga.dart';
 import 'package:elibrary_mobile/models/jezik.dart';
@@ -59,7 +57,6 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   SearchResult<KnjigaCiljnaGrupa>? knjigaCiljneGrupeResult;
   SearchResult<BibliotekaKnjiga>? bibliotekaKnjigaResult;
   List<Kanton> kantoni = [];
-  // SearchResult<Pozajmica>? pozajmiceResult;
 
   List<Knjiga> knjigaList = [];
   List<Pozajmica> pozajmicaList = [];
@@ -183,11 +180,11 @@ class _KnjigaScreenState extends State<KnjigaScreen>
       margin: const EdgeInsets.only(left: 8, right: 8, bottom: 6),
       decoration: BoxDecoration(
           border: Border.all(),
-          borderRadius: BorderRadius.all(Radius.circular(15))),
+          borderRadius: const BorderRadius.all(Radius.circular(15))),
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -204,10 +201,8 @@ class _KnjigaScreenState extends State<KnjigaScreen>
           Padding(
             padding: const EdgeInsets.only(right: 45.0),
             child: IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                // Implement search functionality here
-              },
+              icon: const Icon(Icons.search),
+              onPressed: () {},
             ),
           ),
         ],
@@ -224,7 +219,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               border: Border.all(),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +233,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               border: Border.all(),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,16 +254,17 @@ class _KnjigaScreenState extends State<KnjigaScreen>
           height: 250,
           child: widget.knjiga?.slika != null
               ? imageFromString(widget.knjiga!.slika!)
-              : Center(child: Text("Nema slike!")),
+              : const Center(child: Text("Nema slike!")),
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 widget.knjiga?.naslov ?? 'Nema naslova!',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               knjigAutorResult == null
                   ? const Text("Nema autora")
@@ -276,13 +272,13 @@ class _KnjigaScreenState extends State<KnjigaScreen>
                       knjigAutorResult!.resultList
                           .map((ka) => '${ka.autor!.ime} ${ka.autor!.prezime}')
                           .join(', '),
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
               knjigaVrstaSadrzajaResult == null
                   ? const Text("Nema vrsti sadrzaja")
                   : Text(
                       "Vrste: ${knjigaVrstaSadrzajaResult!.resultList.map((ka) => '${ka.vrstaSadrzaja!.naziv}').join(', ')}",
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
               jezik == null
                   ? const Text("Nema jezika")
@@ -314,10 +310,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
             controller: _tabController,
             children: [
               _buildDetalji(),
-
               _buildFondovi(),
-
-              // Placeholder(),
             ],
           )
         ],
@@ -325,42 +318,12 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     );
   }
 
-  Future<List<String>> _getAutoriKnjiga(int id) async {
-    var knjigaAutori = await knjigaAutoriProvider
-        .get(filter: {'knjigaId': id}, includeTables: 'Autor');
-    var lista = knjigaAutori.resultList;
-    var autori =
-        lista.map((e) => "${e.autor!.ime} ${e.autor!.prezime}").toList();
-    return autori;
-  }
-
-  Future<Knjiga> _getKnjiga(int id) async {
-    var knjiga = await knjigaProvider.getById(id);
-    return knjiga;
-  }
-
-  // Function to calculate days left
-  Future<int?> _calculateDaysLeft(String dateStr) async {
-    try {
-      // Parse the ISO 8601 date string into a DateTime object
-      final date = DateTime.parse(dateStr);
-      final currentDate = DateTime.now();
-
-      // Calculate the difference in days
-      final difference = date.difference(currentDate).inDays;
-      return difference;
-    } catch (e) {
-      print('Error parsing date: $e');
-      return null;
-    }
-  }
-
   Widget _buildFondovi() {
     if (bibliotekaKnjigaResult?.resultList != null) {
       return ListView(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         children: bibliotekaKnjigaResult!.resultList
             .map((e) => _buildBibliotekaCard(
                 title: e.biblioteka!.naziv!,
@@ -373,7 +336,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     } else {
       return Container(
         height: 50,
-        child: Center(
+        child: const Center(
           child: Text("Nema podataka"),
         ),
       );
@@ -388,7 +351,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
     required int id,
   }) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -397,18 +360,13 @@ class _KnjigaScreenState extends State<KnjigaScreen>
             Container(
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 'Ustanova: ${title}',
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
-            // SizedBox(height: 8.0),
-            // Text(
-            //   title,
-            //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            // ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             kantoni.isNotEmpty
                 ? _buildInfoRow(
                     'Kanton',
@@ -419,7 +377,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
                 : Container(),
             address != null ? _buildInfoRow('Adresa', address) : Container(),
             _buildInfoRow('Dostupno pozajmica', availability.toString()),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               children: [
                 availability != null && availability > 0
@@ -427,25 +385,25 @@ class _KnjigaScreenState extends State<KnjigaScreen>
                         onPressed: () {
                           _rezervisiKnjigu(id!);
                         },
-                        style: ButtonStyle(
+                        style: const ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll<Color>(Colors.blue),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Rezerviši knjigu na 24h',
                           style: TextStyle(color: Colors.white),
                         ),
                       )
                     : Container(),
-                Spacer(),
+                const Spacer(),
                 IconButton(
-                    icon: Icon(Icons.help_outline),
+                    icon: const Icon(Icons.help_outline),
                     onPressed: () {
                       QuickAlert.show(
                           context: context,
                           type: QuickAlertType.info,
                           text:
-                              "Nakon rezervisanja knjige, ista će Vas čekati u biblioteci 24h ukoliko Vam odobre rezervaciju.",
+                              "Nakon rezervisanja knjige, ista će Vas čekati u biblioteci ukoliko Vam odobre rezervaciju.",
                           title: "Informacija");
                     }),
               ],
@@ -464,7 +422,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Text(value),
@@ -475,177 +433,197 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   }
 
   Widget _buildDetalji() {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: Container(
-                child: Column(
-                  children: [
-                    Table(
-                      border: TableBorder.all(
-                          color: Colors.black,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: IntrinsicColumnWidth(),
-                        1: FlexColumnWidth()
-                      },
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Naslov"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.knjiga!.naslov.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Autori"),
-                          ),
-                          knjigAutorResult == null
-                              ? const Text("Nema autora")
-                              : Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(knjigAutorResult!.resultList
-                                      .map((ka) =>
-                                          '${ka.autor!.ime} ${ka.autor!.prezime}')
-                                      .join(', ')),
-                                )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Vrste sadržaja"),
-                          ),
-                          knjigaVrstaSadrzajaResult == null
-                              ? const Text("Nema vrsti sadrzaja")
-                              : Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(knjigaVrstaSadrzajaResult!
-                                      .resultList
-                                      .map((ka) => '${ka.vrstaSadrzaja!.naziv}')
-                                      .join(', ')),
-                                )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Ciljne grupe"),
-                          ),
-                          knjigaCiljneGrupeResult == null
-                              ? const Text("Nema ciljnih grupa")
-                              : Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(knjigaCiljneGrupeResult!
-                                      .resultList
-                                      .map((ka) => '${ka.ciljnaGrupa!.naziv}')
-                                      .join(', ')),
-                                )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("ISBN"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.knjiga!.isbn.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Godina izdanja"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child:
-                                Text(widget.knjiga!.godinaIzdanja.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Broj izdanja"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.knjiga!.brojIzdanja.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Broj stranica"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.knjiga!.brojStranica.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Jezik"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: jezik == null
-                                ? const Text("")
-                                : Text(jezik!.naziv.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Uvez"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: widget.knjiga?.uvez == null
-                                ? const Text("")
-                                : Text(widget!.knjiga.uvez!.naziv.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Izdavac"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: widget.knjiga?.izdavac == null
-                                ? const Text("")
-                                : Text(
-                                    widget.knjiga!.izdavac!.naziv.toString()),
-                          )
-                        ]),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: Container(
+              child: Column(
+                children: [
+                  Table(
+                    border: TableBorder.all(
+                        color: Colors.black,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5))),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: IntrinsicColumnWidth(),
+                      1: FlexColumnWidth()
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      _buildTableRow(
+                          "Naslov", widget.knjiga!.naslov.toString()),
+                      TableRow(children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Text("Autori"),
+                        ),
+                        knjigAutorResult == null
+                            ? const Text("Nema autora")
+                            : Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text(knjigAutorResult!.resultList
+                                    .map((ka) =>
+                                        '${ka.autor!.ime} ${ka.autor!.prezime}')
+                                    .join(', ')),
+                              )
+                      ]),
+                      TableRow(children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Text("Vrste sadržaja"),
+                        ),
+                        knjigaVrstaSadrzajaResult == null
+                            ? const Text("Nema vrsti sadrzaja")
+                            : Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text(knjigaVrstaSadrzajaResult!
+                                    .resultList
+                                    .map((ka) => '${ka.vrstaSadrzaja!.naziv}')
+                                    .join(', ')),
+                              )
+                      ]),
+                      TableRow(children: [
+                        const Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Text("Ciljne grupe"),
+                        ),
+                        knjigaCiljneGrupeResult == null
+                            ? const Text("Nema ciljnih grupa")
+                            : Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Text(knjigaCiljneGrupeResult!.resultList
+                                    .map((ka) => '${ka.ciljnaGrupa!.naziv}')
+                                    .join(', ')),
+                              )
+                      ]),
+                      _buildTableRow("ISBN", widget.knjiga.isbn.toString()),
+                      _buildTableRow("Godina izdanja",
+                          widget.knjiga.godinaIzdanja.toString()),
+                      _buildTableRow(
+                          "Broj izdanja", widget.knjiga.brojIzdanja.toString()),
+                      _buildTableRow("Broj stranica",
+                          widget.knjiga.brojStranica.toString()),
+                      _buildTableRow(
+                          "Jezik", jezik == null ? "" : jezik!.naziv),
+                      _buildTableRow(
+                          "Uvez",
+                          widget.knjiga.uvez == null
+                              ? ""
+                              : widget.knjiga.uvez!.naziv),
+                      _buildTableRow(
+                          "Izdavac",
+                          widget.knjiga.izdavac == null
+                              ? ""
+                              : widget.knjiga.izdavac!.naziv),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("ISBN"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: Text(widget.knjiga!.isbn.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Godina izdanja"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child:
+                      //         Text(widget.knjiga!.godinaIzdanja.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Broj izdanja"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: Text(widget.knjiga!.brojIzdanja.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Broj stranica"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: Text(widget.knjiga!.brojStranica.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Jezik"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: jezik == null
+                      //         ? const Text("")
+                      //         : Text(jezik!.naziv.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Uvez"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: widget.knjiga?.uvez == null
+                      //         ? const Text("")
+                      //         : Text(widget!.knjiga.uvez!.naziv.toString()),
+                      //   )
+                      // ]),
+                      // TableRow(children: [
+                      //   const Padding(
+                      //     padding: EdgeInsets.all(5),
+                      //     child: Text("Izdavac"),
+                      //   ),
+                      //   Padding(
+                      //     padding: const EdgeInsets.all(5),
+                      //     child: widget.knjiga?.izdavac == null
+                      //         ? const Text("")
+                      //         : Text(
+                      //             widget.knjiga!.izdavac!.naziv.toString()),
+                      //   )
+                      // ]),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
+  }
+
+  TableRow _buildTableRow(String? label, String? value) {
+    return TableRow(children: [
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(label ?? ""),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(value ?? ""),
+      ),
+    ]);
   }
 
   Future _rezervisiKnjigu(int id) async {
@@ -663,7 +641,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
   }
 
   Widget _emptyDetalji() {
-    return Center(child: Text('Nema dostupnih biblioteka'));
+    return const Center(child: Text('Nema dostupnih biblioteka'));
   }
 
   Future _removeSacuvanaKnjiga(int id) async {

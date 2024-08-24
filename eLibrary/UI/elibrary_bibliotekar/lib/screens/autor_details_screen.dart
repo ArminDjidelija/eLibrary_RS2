@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class AutorDetailsScreen extends StatefulWidget {
   Autor? autor;
@@ -82,7 +84,7 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                   decoration: InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
                 SizedBox(
@@ -93,7 +95,7 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                   decoration: InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
                 SizedBox(
@@ -122,14 +124,41 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 if (formCheck == true) {
                   var request = Map.from(_formKey.currentState!.value);
                   if (widget.autor == null) {
-                    autoriProvider.insert(request);
+                    try {
+                      await autoriProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno dodat autor",
+                          width: 300);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri dodavanju autora",
+                          width: 300);
+                    }
                   } else {
-                    autoriProvider.update(widget.autor!.autorId!, request);
+                    try {
+                      await autoriProvider.update(
+                          widget.autor!.autorId!, request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno modifikovan autor",
+                          width: 400);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri ažuriranju autora",
+                          width: 300);
+                    }
                   }
                 }
                 // print(knjigaSlanje);

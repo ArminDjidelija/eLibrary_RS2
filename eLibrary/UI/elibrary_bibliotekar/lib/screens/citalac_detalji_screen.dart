@@ -1,23 +1,14 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:elibrary_bibliotekar/models/citalac.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica_info.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
+import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/novi_penal_screen.dart';
 import 'package:elibrary_bibliotekar/screens/pozajmica_detalji_screen.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
-import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
 import 'package:elibrary_bibliotekar/models/knjiga_autor.dart';
 import 'package:elibrary_bibliotekar/models/knjiga_ciljna_grupa.dart';
@@ -32,20 +23,11 @@ import 'package:elibrary_bibliotekar/providers/knjiga_ciljna_grupa_provider.dart
 import 'package:elibrary_bibliotekar/providers/knjiga_provider.dart';
 import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/providers/pozajmice_provider.dart';
-import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
-import 'package:elibrary_bibliotekar/screens/biblioteka_knjiga_edit_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjiga_details_screen.dart';
-import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
-import 'package:elibrary_bibliotekar/screens/nova_pozajmica_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class CitalacDetaljiScreen extends StatefulWidget {
   Citalac? citalac;
@@ -73,9 +55,7 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
   SearchResult<Knjiga>? knjigaResult;
   List<BibliotekaKnjiga> data = [];
   List<PozajmicaInfo> pozajmicaInfo = [];
-  // late Jezi? knjiga;
-  // late Knjiga? knjiga;
-  // late Knjiga? knjiga;
+
   late PozajmiceDataSource _source;
   int page = 1;
   int pageSize = 10;
@@ -85,7 +65,6 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
   final GlobalKey chartKey = GlobalKey();
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
@@ -95,7 +74,6 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<BibliotekaKnjigaProvider>();
@@ -108,13 +86,10 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
     knjigaProvider = context.read<KnjigaProvider>();
     uvezProvider = context.read<UvezProvider>();
 
-    // knjiga = widget.bibliotekaKnjiga?.knjiga;
     _source = PozajmiceDataSource(
         provider: pozajmiceProvider,
         context: context,
         citalacId: widget.citalac!.citalacId);
-
-    // initForm();
   }
 
   @override
@@ -125,78 +100,13 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Poravnanje sadržaja od vrha
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildKnjigaDetalji(),
               _isLoading ? const Text("Nema podataka") : _buildPaginatedTable(),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  TextEditingController _naslovEditingController = TextEditingController();
-  TextEditingController _autorEditingController = TextEditingController();
-  TextEditingController _isbnEditingController = TextEditingController();
-
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-              child: TextField(
-            controller: _naslovEditingController,
-            decoration: const InputDecoration(labelText: "Naziv"),
-            onChanged: (value) async {
-              _source.filterServerSide(value, _autorEditingController.text,
-                  _isbnEditingController.text);
-            },
-          )),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-              child: TextField(
-            controller: _autorEditingController,
-            decoration: const InputDecoration(labelText: "Autor"),
-            onChanged: (value) async {
-              _source.filterServerSide(_naslovEditingController.text, value,
-                  _isbnEditingController.text);
-            },
-          )),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-              child: TextField(
-            controller: _isbnEditingController,
-            decoration: const InputDecoration(labelText: "ISBN"),
-            onChanged: (value) async {
-              _source.filterServerSide(_naslovEditingController.text,
-                  _autorEditingController.text, value);
-            },
-          )),
-          ElevatedButton(
-              onPressed: () async {
-                _source.filterServerSide(_naslovEditingController.text,
-                    _autorEditingController.text, _isbnEditingController.text);
-                setState(() {});
-              },
-              child: const Text("Pretraga")),
-          const SizedBox(
-            width: 8,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                //
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => KnjigaDetailsScreen()));
-              },
-              child: const Text("Nova knjiga")),
-        ],
       ),
     );
   }
@@ -220,226 +130,86 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
   }
 
   Widget _buildKnjigaDetalji() {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: Colors.black),
-            //       borderRadius: const BorderRadius.all(Radius.circular(5.0))),
-            //   width: 400,
-            //   child: Column(
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.all(5.0),
-            //         child: knjiga?.slika != null
-            //             ? Container(
-            //                 width: 350,
-            //                 height: 440,
-            //                 child: imageFromString(knjiga!.slika!),
-            //               )
-            //             : Text("Nema slike!"),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: Container(
-                child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Table(
+                  border: TableBorder.all(
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.all(Radius.circular(5))),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: IntrinsicColumnWidth(),
+                    1: FlexColumnWidth()
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   children: [
-                    Table(
-                      border: TableBorder.all(
-                          color: Colors.black,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: IntrinsicColumnWidth(),
-                        1: FlexColumnWidth()
-                      },
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Ime"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.citalac!.ime.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Prezime"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.citalac!.prezime.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Email"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.citalac!.email.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Korisnicko ime"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child:
-                                Text(widget.citalac!.korisnickoIme.toString()),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text("Institucija"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(widget.citalac!.institucija.toString()),
-                          )
-                        ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("ISBN"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: Text(knjiga!.isbn.toString()),
-                        //   )
-                        // ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("Godina izdanja"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: Text(knjiga!.godinaIzdanja.toString()),
-                        //   )
-                        // ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("Broj izdanja"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: Text(knjiga!.brojIzdanja.toString()),
-                        //   )
-                        // ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("Broj stranica"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: Text(knjiga!.brojStranica.toString()),
-                        //   )
-                        // ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("Jezik"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: knjiga?.jezik == null
-                        //         ? const Text("")
-                        //         : Text(knjiga!.jezik!.naziv.toString()),
-                        //   )
-                        // ]),
-                        // TableRow(children: [
-                        //   const Padding(
-                        //     padding: EdgeInsets.all(5),
-                        //     child: Text("Uvez"),
-                        //   ),
-                        //   Padding(
-                        //     padding: const EdgeInsets.all(5),
-                        //     child: knjiga?.uvez == null
-                        //         ? const Text("")
-                        //         : Text(knjiga!.uvez!.naziv.toString()),
-                        //   )
-                        // ]),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text("Ime"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(widget.citalac!.ime.toString()),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text("Prezime"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(widget.citalac!.prezime.toString()),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text("Email"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(widget.citalac!.email.toString()),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text("Korisnicko ime"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(widget.citalac!.korisnickoIme.toString()),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text("Institucija"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(widget.citalac!.institucija.toString()),
+                      )
+                    ]),
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Future initForm() async {
-  //   int? knjigaId = widget.bibliotekaKnjiga?.knjigaId;
-
-  //   try {
-  //     knjigaAutoriResult = await knjigaAutoriProvider.get(
-  //         filter: {'knjigaId': knjigaId},
-  //         retrieveAll: true,
-  //         includeTables: 'Autor');
-
-  //     knjigaVrsteSadrzajaResult = await knjigaVrsteSadrzajaProvider.get(
-  //         filter: {'knjigaId': knjigaId},
-  //         retrieveAll: true,
-  //         includeTables: 'VrstaSadrzaja');
-
-  //     knjigaCiljneGrupeResult = await knjigaCiljnaGrupaProvider.get(
-  //         filter: {'knjigaId': knjigaId},
-  //         retrieveAll: true,
-  //         includeTables: 'CiljnaGrupa');
-
-  //     knjigaResult = await knjigaProvider.get(
-  //         filter: {'knjigaId': knjigaId},
-  //         retrieveAll: true,
-  //         includeTables: 'Uvez,Jezik,Izdavac');
-
-  //     var pozajmicaInfoResult = await provider
-  //         .getReportData(widget.bibliotekaKnjiga!.bibliotekaKnjigaId!);
-
-  //     pozajmicaInfo = pozajmicaInfoResult;
-
-  //     if (knjigaResult?.count == 1 && knjigaResult?.resultList != null) {
-  //       knjiga = knjigaResult!.resultList[0];
-  //     }
-  //   } on Exception catch (e) {
-  //     print("Greška neka");
-  //   }
-
-  //   setState(() {});
-  //   print(
-  //       "${knjigaAutoriResult?.count} ${knjigaVrsteSadrzajaResult?.count} ${knjigaCiljneGrupeResult?.count}");
-  // }
-
-  Widget _buildApp() {
-    return Container(
-      child: Column(
-        children: [],
+                const SizedBox(
+                  height: 5,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -472,12 +242,8 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
       // DataCell(Text(
       //     "${item!.citalac!.ime.toString()} ${item!.citalac!.prezime.toString()}")),
       DataCell(Text(item!.bibliotekaKnjiga!.knjiga!.naslov.toString())),
-      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-              .parseStrict(item!.datumPreuzimanja!.toString())))),
-      DataCell(Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-              .parseStrict(item!.stvarniDatumVracanja!.toString())))),
+      DataCell(Text(formatDateTimeToLocal(item!.datumPreuzimanja!.toString()))),
+      DataCell(Text(formatDateToLocal(item!.stvarniDatumVracanja!.toString()))),
       DataCell(
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -488,31 +254,30 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
                       MaterialStatePropertyAll<Color>(Colors.blue)),
               onPressed: () {
                 // Prva akcija dugmeta
-                print('First button pressed for item: ${item.trajanje}');
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PozajmicaDetailsScreen(
                           pozajmica: item,
                         )));
               },
-              child: Text(
+              child: const Text(
                 'Detalji',
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            SizedBox(width: 8), // Razmak između dugmadi
+            const SizedBox(width: 8),
             ElevatedButton(
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
               onPressed: () {
-                // Druga akcija dugmeta
-                print(
-                    'Second button pressed for item: ${item.datumPreuzimanja}');
-                Navigator.of(context).push(MaterialPageRoute(
+                Navigator.of(context).push(
+                  MaterialPageRoute(
                     builder: (context) => NoviPenalScreen(
-                          pozajmica: item,
-                        )));
+                      pozajmica: item,
+                    ),
+                  ),
+                );
               },
-              child: Text(
+              child: const Text(
                 'Dodaj penale',
                 style: TextStyle(color: Colors.white),
               ),
@@ -542,26 +307,29 @@ class PozajmiceDataSource extends AdvancedDataTableSource<Pozajmica> {
   @override
   Future<RemoteDataSourceDetails<Pozajmica>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
     filter = {
       'citalacId': citalacId,
       'vraceno': true,
       'bibliotekaId': AuthProvider.bibliotekaId
     };
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "BibliotekaKnjiga.Knjiga,Citalac",
-        orderBy: "DatumPreuzimanja",
-        sortDirection: "descending");
-    if (result != null) {
-      data = result!.resultList;
-      count = result!.count;
-      // print(data);
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "BibliotekaKnjiga.Knjiga,Citalac",
+          orderBy: "DatumPreuzimanja",
+          sortDirection: "descending");
+      data = result.resultList;
+      count = result.count;
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: e.toString(),
+          width: 300);
     }
     return RemoteDataSourceDetails(count, data!);
   }

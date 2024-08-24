@@ -32,6 +32,7 @@ import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
 import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -114,79 +115,156 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
-  TextEditingController _usernameController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool _obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
-            child: Card(
-              child: Column(
-                children: [
-                  Image.asset(
-                    "assets/images/fit.png",
-                    height: 100,
-                    width: 100,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                        labelText: "Username", prefixIcon: Icon(Icons.email)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                        labelText: "Password",
-                        prefixIcon: Icon(Icons.password)),
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        var provider = new KorisnikProvider();
-                        print(
-                            "Credentials: ${_usernameController.text} : ${_passwordController.text}");
-                        AuthProvider.username = _usernameController.text;
-                        AuthProvider.password = _passwordController.text;
-                        // provider.get();
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(30.0),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 100,
+                          width: 100,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Dobrodošli na eLibrary",
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Prijavite se na Vaš račun",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: "Korisničko ime",
+                            prefixIcon: const Icon(Icons.email),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Molim vas unesite korisničko ime.";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            labelText: "Lozinka",
+                            prefixIcon: const Icon(Icons.password_outlined),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              icon: _obscurePassword
+                                  ? const Icon(Icons.visibility_outlined)
+                                  : const Icon(Icons.visibility_off_outlined),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Unesite lozinku!";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              var provider = KorisnikProvider();
+                              AuthProvider.username = _usernameController.text;
+                              AuthProvider.password = _passwordController.text;
 
-                        try {
-                          var user = await provider.login(
-                              AuthProvider.username!, AuthProvider.password!);
-                          print("Authenticated!");
-                          if (user.bibliotekaId != null) {
-                            AuthProvider.bibliotekaId = user.bibliotekaId;
-                          }
-                          AuthProvider.korisnikId = user.korisnikId;
+                              try {
+                                var user = await provider.login(
+                                    AuthProvider.username!,
+                                    AuthProvider.password!);
 
-                          if (user.korisniciUloges != null) {
-                            AuthProvider.korisnikUloge = user.korisniciUloges;
-                          }
+                                if (user.bibliotekaId != null) {
+                                  AuthProvider.bibliotekaId = user.bibliotekaId;
+                                }
+                                AuthProvider.korisnikId = user.korisnikId;
 
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => KnjigeListScreen()));
-                        } on Exception catch (e) {
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              text: "Pogrešni kredencijali za login",
-                              title: "Greška");
-                        }
-                      },
-                      child: Text("Login"))
-                ],
+                                if (user.korisniciUloges != null) {
+                                  AuthProvider.korisnikUloge =
+                                      user.korisniciUloges;
+                                }
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => KnjigeListScreen()));
+                              } on Exception catch (e) {
+                                QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    text: "Pogrešni kredencijali za login",
+                                    title: "Greška");
+                              }
+                            }
+                          },
+                          child: const Text("Login"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

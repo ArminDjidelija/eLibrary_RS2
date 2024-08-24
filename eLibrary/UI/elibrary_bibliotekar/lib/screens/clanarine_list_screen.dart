@@ -3,12 +3,14 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/clanarina.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
+import 'package:elibrary_bibliotekar/providers/utils.dart';
 import 'package:elibrary_bibliotekar/screens/nova_clanarina_screen.dart';
-import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class ClanarineListScreen extends StatefulWidget {
   const ClanarineListScreen({super.key});
@@ -28,64 +30,35 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
   bool _isLoading = false;
 
   @override
-  // TODO: implement context
   BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     provider = context.read<ClanarineProvider>();
     _source = ClanarinaDataSource(provider: provider, context: context);
-    // updateFilter("");
   }
 
   @override
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Članarine",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
-  Future<void> updateFilter(String imePrezime) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var filter = {
-      'imePrezimeGTE': imePrezime,
-      'page': page,
-      'pageSize': pageSize,
-      'includeTables': 'Biblioteka,Valuta'
-    };
-    print("Metoda u updatefilter");
-    print(filter);
-    result = await provider.get(filter: filter);
-    setState(() {
-      if (result != null) {
-        data = result!.resultList;
-        count = result!.count;
-        // print(data);
-      }
-      _isLoading = false;
-    });
-  }
-
-  TextEditingController _imePrezimeEditingController = TextEditingController();
+  final TextEditingController _imePrezimeEditingController =
+      TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -96,30 +69,24 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
             controller: _imePrezimeEditingController,
             decoration: const InputDecoration(labelText: "Ime prezime"),
             onChanged: (value) async {
-              // page = 1;
               _source.filterServerSide(value);
-              // await updateFilter(value, _autorEditingController.text);
             },
           )),
           const SizedBox(
             width: 8,
           ),
-          // ElevatedButton(
-          //     onPressed: () async {
-          //       // updateFilter(_naslovEditingController.text,
-          //       //     _autorEditingController.text);
-          //       _source.filterServerSide(_imePrezimeEditingController.text);
-          //       setState(() {});
-          //     },
-          //     child: const Text("Pretraga")),
+          ElevatedButton(
+              onPressed: () async {
+                _source.filterServerSide(_imePrezimeEditingController.text);
+              },
+              child: const Text("Pretraga")),
           const SizedBox(
             width: 8,
           ),
           ElevatedButton(
               onPressed: () async {
-                //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => NovaClanarinaScreen()));
+                    builder: (context) => const NovaClanarinaScreen()));
               },
               child: const Text("Nova clanarina")),
         ],
@@ -139,39 +106,39 @@ class _ClanarineListScreenState extends State<ClanarineListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Citalac"),
+                    child: const Text("Citalac"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Tip clanarine"),
+                    child: const Text("Tip clanarine"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Iznos"),
+                    child: const Text("Iznos"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Pocetak clanarine"),
+                    child: const Text("Pocetak clanarine"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Kraj clanarine"),
+                    child: const Text("Kraj clanarine"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Aktivna"),
+                    child: const Text("Aktivna"),
                   )),
                 ],
                 source: _source,
                 addEmptyRows: false,
               )),
         ),
-      ), // Spacer(),
+      ),
     );
   }
 }
@@ -183,7 +150,7 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
   int page = 1;
   int pageSize = 10;
   dynamic filter;
-  dynamic imePrezimeGTE = null;
+  dynamic imePrezimeGTE;
   BuildContext context;
   ClanarinaDataSource({required this.provider, required this.context});
 
@@ -195,51 +162,33 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
 
     final item = data?[index];
 
-    return DataRow(
-        // onSelectChanged: (selected) => {
-        //       if (selected == true)
-        //         {
-        //           Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (context) => TipClanarineBibliotekaDetailsScreen(
-        //                     tipClanarineBiblioteka: item,
-        //                   ))),
-        //         }
-        //     },
-        cells: [
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            // child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
-            child: Text("${item!.citalac!.ime} ${item!.citalac!.prezime}"),
-          )),
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.tipClanarineBiblioteka!.naziv.toString()),
-          )),
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(item!.iznos!.toStringAsFixed(2)),
-          )),
-          DataCell(Container(
-            alignment: Alignment.centerLeft,
-            child: Text(DateFormat("dd.MM.yyyy. HH:mm").format(
-                DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                    .parseStrict(item!.pocetak!.toString()))),
-          )),
-          DataCell(
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                DateFormat("dd.MM.yyyy. HH:mm").format(
-                    DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                        .parseStrict(item!.kraj!.toString())),
-              ),
-            ),
-          ),
-          DataCell(DateTime.parse(item.kraj!).isAfter(DateTime.now())
-              ? Text("Da")
-              : Text("Ne")),
-          // DataCell(Text(item!.godinaRodjenja.toString())),
-        ]);
+    return DataRow(cells: [
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text("${item!.citalac!.ime} ${item.citalac!.prezime}"),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item.tipClanarineBiblioteka!.naziv.toString()),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(item.iznos!.toStringAsFixed(2)),
+      )),
+      DataCell(Container(
+        alignment: Alignment.centerLeft,
+        child: Text(formatDateTimeToLocal(item.pocetak!.toString())),
+      )),
+      DataCell(
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(formatDateTimeToLocal(item.kraj!.toString())),
+        ),
+      ),
+      DataCell(DateTime.parse(item.kraj!).isAfter(DateTime.now())
+          ? const Text("Da")
+          : const Text("Ne")),
+    ]);
   }
 
   void filterServerSide(imePrezime) {
@@ -259,22 +208,28 @@ class ClanarinaDataSource extends AdvancedDataTableSource<Clanarina> {
   @override
   Future<RemoteDataSourceDetails<Clanarina>> getNextPage(
       NextPageRequest pageRequest) async {
-    // TODO: implement getNextPage
     page = (pageRequest.offset ~/ pageSize).toInt() + 1;
-    filter = {'imePrezimeGTE': imePrezimeGTE};
-    print("Metoda u get next row");
-    print(filter);
-    var result = await provider?.get(
-        filter: filter,
-        page: page,
-        pageSize: pageSize,
-        includeTables: "Citalac,Uplate,TipClanarineBiblioteka",
-        orderBy: "ClanarinaId",
-        sortDirection: "Descending");
-    if (result != null) {
+    filter = {
+      'imePrezimeGTE': imePrezimeGTE,
+      'bibliotekaId': AuthProvider.bibliotekaId
+    };
+
+    try {
+      var result = await provider.get(
+          filter: filter,
+          page: page,
+          pageSize: pageSize,
+          includeTables: "Citalac,Uplate,TipClanarineBiblioteka",
+          orderBy: "ClanarinaId",
+          sortDirection: "Descending");
       data = result.resultList;
       count = result.count;
-      print(data);
+    } on Exception catch (e) {
+      QuickAlert.show(
+          context: context,
+          width: 450,
+          type: QuickAlertType.error,
+          text: "Greška prilikom dohvatanja podataka");
     }
     return RemoteDataSourceDetails(count, data!);
   }

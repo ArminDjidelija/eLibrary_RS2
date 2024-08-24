@@ -1,7 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/citalac.dart';
-import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/tip_clanarine_biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/tip_uplate.dart';
 import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
@@ -9,11 +8,12 @@ import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
-import 'package:elibrary_bibliotekar/screens/tip_clanarine_biblioteka_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class NovaClanarinaScreen extends StatefulWidget {
   const NovaClanarinaScreen({super.key});
@@ -44,7 +44,6 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     tipClanarineBibliotekaProvider =
@@ -91,7 +90,7 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                     child: FormBuilderDropdown(
                   onChanged: (value) => {},
                   name: "tipClanarineBibliotekaId",
-                  decoration: InputDecoration(labelText: "Tip clanarine"),
+                  decoration: const InputDecoration(labelText: "Tip clanarine"),
                   items: tipoviClanarina
                           .map((e) => DropdownMenuItem(
                               value: e.tipClanarineBibliotekaId.toString(),
@@ -102,13 +101,13 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderDropdown(
                   name: "tipUplateId",
-                  decoration: InputDecoration(labelText: "Tip uplate"),
+                  decoration: const InputDecoration(labelText: "Tip uplate"),
                   items: tipoviUplata
                           .map((e) => DropdownMenuItem(
                               value: e.tipUplateId.toString(),
@@ -125,12 +124,11 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
               children: [
                 Expanded(
                     child: DropdownSearch<Citalac>(
-                  popupProps: PopupPropsMultiSelection.menu(
-                      // showSelectedItems: true,
+                  popupProps: const PopupPropsMultiSelection.menu(
                       isFilterOnline: true,
                       showSearchBox: true,
                       searchDelay: Duration(milliseconds: 5)),
-                  dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
                           labelText: "Odaberi korisnika",
                           hintText: "Unesite ime i prezime čitaoca")),
@@ -140,7 +138,6 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                   },
                   onChanged: (Citalac? c) {
                     citalacId = c!.citalacId;
-                    // _getClanarine(c);
                   },
                   itemAsString: (Citalac u) =>
                       "${u.ime} ${u.prezime} --- ${u.korisnickoIme} --- ${u.email}",
@@ -172,13 +169,25 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formCheck == true) {
-                  request['citalacId'] = citalacId;
-                  request['bibliotekaId'] = AuthProvider.bibliotekaId;
-                  await clanarineProvider.insert(request);
+                  try {
+                    request['citalacId'] = citalacId;
+                    request['bibliotekaId'] = AuthProvider.bibliotekaId;
+                    await clanarineProvider.insert(request);
+                    QuickAlert.show(
+                        context: context,
+                        width: 450,
+                        type: QuickAlertType.success,
+                        text: "Članarina je uspješno dodata");
+                  } on Exception catch (e) {
+                    QuickAlert.show(
+                        context: context,
+                        width: 450,
+                        type: QuickAlertType.error,
+                        text: "Greška prilikom dodavanja");
+                  }
                 }
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

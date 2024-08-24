@@ -35,6 +35,7 @@ import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 void main() {
   runZonedGuarded(() async {
@@ -116,85 +117,167 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
-  TextEditingController _usernameController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool _obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
-            child: Card(
-              child: Column(
-                children: [
-                  Image.asset(
-                    "assets/images/fit.png",
-                    height: 100,
-                    width: 100,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                        labelText: "Username", prefixIcon: Icon(Icons.email)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                        labelText: "Password",
-                        prefixIcon: Icon(Icons.password)),
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        print(
-                            "Credentials: ${_usernameController.text} : ${_passwordController.text}");
-                        AuthProvider.username = _usernameController.text;
-                        AuthProvider.password = _passwordController.text;
-                        // provider.get();
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(30.0),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 100,
+                          width: 100,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Dobrodošli na eLibrary",
+                          style: Theme.of(context).textTheme.headlineLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Prijavite se na Vaš račun",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: "Korisničko ime",
+                            prefixIcon: const Icon(Icons.email),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Molim vas unesite korisničko ime.";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            labelText: "Lozinka",
+                            prefixIcon: const Icon(Icons.password_outlined),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              icon: _obscurePassword
+                                  ? const Icon(Icons.visibility_outlined)
+                                  : const Icon(Icons.visibility_off_outlined),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Unesite lozinku!";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              var provider = CitaociProvider();
+                              AuthProvider.username = _usernameController.text;
+                              AuthProvider.password = _passwordController.text;
 
-                        try {
-                          //var data = await provider.get();
-                          CitaociProvider cp = new CitaociProvider();
-                          var citalac = await cp.login(
-                              AuthProvider.username!, AuthProvider.password!);
-                          AuthProvider.citalacId = citalac.citalacId;
-                          AuthProvider.ime = citalac.ime;
-                          AuthProvider.prezime = citalac.prezime;
-                          AuthProvider.kantonId = citalac.kantonId;
-                          AuthProvider.institucija = citalac.institucija;
-                          AuthProvider.telefon = citalac.telefon;
-                          print("Authenticated!");
+                              try {
+                                //var data = await provider.get();
+                                CitaociProvider cp = new CitaociProvider();
+                                var citalac = await cp.login(
+                                    AuthProvider.username!,
+                                    AuthProvider.password!);
+                                AuthProvider.citalacId = citalac.citalacId;
+                                AuthProvider.ime = citalac.ime;
+                                AuthProvider.prezime = citalac.prezime;
+                                AuthProvider.kantonId = citalac.kantonId;
+                                AuthProvider.institucija = citalac.institucija;
+                                AuthProvider.telefon = citalac.telefon;
+                                print("Authenticated!");
 
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => HomePage2()));
-                        } on Exception catch (e) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: Text("Error"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text("Ok"))
-                                    ],
-                                    content: Text(e.toString()),
-                                  ));
-                        }
-                      },
-                      child: Text("Login"))
-                ],
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => HomePage2()));
+                              } on Exception catch (e) {
+                                // showDialog(
+                                //     context: context,
+                                //     builder: (context) => AlertDialog(
+                                //           title: Text("Error"),
+                                //           actions: [
+                                //             TextButton(
+                                //                 onPressed: () =>
+                                //                     Navigator.pop(context),
+                                //                 child: Text("Ok"))
+                                //           ],
+                                //           content: Text(e.toString()),
+                                //         ));
+                                QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    title: e.toString());
+                              }
+                            }
+                          },
+                          child: const Text("Login"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

@@ -229,6 +229,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                     Expanded(
                         child: FormBuilderTextField(
                       decoration: InputDecoration(labelText: "Stara lozinka"),
+                      obscureText: true,
                       name: 'lozinka',
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
@@ -249,6 +250,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                         child: FormBuilderTextField(
                       decoration: InputDecoration(labelText: "Nova lozinka"),
                       name: 'novaLozinka',
+                      obscureText: true,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),
@@ -269,6 +271,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                       decoration:
                           InputDecoration(labelText: "Potvrda nove lozinke"),
                       name: 'lozinkaPotvrda',
+                      obscureText: true,
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),

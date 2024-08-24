@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class IzdavacDetailsScreen extends StatefulWidget {
   Izdavac? izdavac;
@@ -41,7 +43,6 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
     } else {
       isEditing = false;
     }
-    //initForm();
   }
 
   @override
@@ -72,7 +73,7 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
                         errorText: "Vrijednost je obavezna"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -90,14 +91,41 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formValidate = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
                 if (formValidate == true) {
                   if (widget.izdavac == null) {
-                    izdavacProvider.insert(request);
+                    try {
+                      await izdavacProvider.insert(request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno dodat izdavač",
+                          width: 300);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri dodavanju izdavača",
+                          width: 300);
+                    }
                   } else {
-                    izdavacProvider.update(widget.izdavac!.izdavacId!, request);
+                    try {
+                      await izdavacProvider.update(
+                          widget.izdavac!.izdavacId!, request);
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          text: "Uspješno modifikovan izdavač",
+                          width: 400);
+                    } on Exception catch (e) {
+                      QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: "Greška pri ažuriranju izdavača",
+                          width: 300);
+                    }
                   }
                 }
               },
