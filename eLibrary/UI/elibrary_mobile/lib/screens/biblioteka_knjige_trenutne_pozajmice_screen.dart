@@ -231,7 +231,11 @@ class _BibliotekaKnjigaDetailsScreenState
                             height: 440,
                             child: imageFromString(knjiga!.slika!),
                           )
-                        : Text("Nema slike!"),
+                        : Container(
+                            width: 350,
+                            height: 440,
+                            child: Image.asset("assets/images/empty.png"),
+                          ),
                   )
                 ],
               ),

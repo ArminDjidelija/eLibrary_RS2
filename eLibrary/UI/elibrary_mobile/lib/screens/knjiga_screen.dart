@@ -254,7 +254,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
           height: 250,
           child: widget.knjiga?.slika != null
               ? imageFromString(widget.knjiga!.slika!)
-              : const Center(child: Text("Nema slike!")),
+              : Center(child: Image.asset('assets/images/empty.png')),
         ),
         const SizedBox(width: 16),
         Expanded(

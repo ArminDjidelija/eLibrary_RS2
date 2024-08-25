@@ -227,7 +227,7 @@ class _BibliotekaKnjigaDetailsScreenState
                             height: 440,
                             child: imageFromString(knjiga!.slika!),
                           )
-                        : Text("Nema slike!"),
+                        : Text("Nesma slike!"),
                   )
                 ],
               ),

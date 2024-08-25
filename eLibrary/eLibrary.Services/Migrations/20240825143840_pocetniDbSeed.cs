@@ -61,8 +61,8 @@ namespace eLibrary.Services.Migrations
                 columns: new[] { "CitalacId", "DatumRegistracije", "Email", "Ime", "Institucija", "IsDeleted", "KantonId", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Status", "Telefon", "VrijemeBrisanja" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 7, 20, 14, 48, 41, 913, DateTimeKind.Unspecified), "citalac1@gmail.com", "Citalac1", "Fakultet informacijskih tehnologija", false, 7, "citalac1", "hkQWX9j6A9fmDteJh3G8uYfLwW0=", "Mze6gFYvmgrOG8urSD+mhg==", "Citalac1", true, "06060606", null },
-                    { 2, new DateTime(2024, 7, 20, 14, 48, 41, 913, DateTimeKind.Unspecified), "citalac2@gmail.com", "Citalac2", "Fakultet informacijskih tehnologija", false, 7, "citalac2", "lUm1ZkjJ+8kF1mKNyCNUZToua6Y=", "dgCBLLURssjdW6U+61MC+Q==", "Citalac2", true, "06060606", null }
+                    { 1, new DateTime(2024, 7, 20, 14, 48, 41, 913, DateTimeKind.Unspecified), "citalac1@gmail.com", "Citalac1", "Fakultet informacijskih tehnologija", false, 7, "citalac1", "+dpXT2QPV/TFBTdzpXgDm1SPA24=", "Mze6gFYvmgrOG8urSD+mhg==", "Citalac1", true, "06060606", null },
+                    { 2, new DateTime(2024, 7, 20, 14, 48, 41, 913, DateTimeKind.Unspecified), "citalac2@gmail.com", "Citalac2", "Fakultet informacijskih tehnologija", false, 7, "citalac2", "+dpXT2QPV/TFBTdzpXgDm1SPA24=", "Mze6gFYvmgrOG8urSD+mhg==", "Citalac2", true, "06060606", null }
                 });
 
             migrationBuilder.InsertData(
@@ -100,9 +100,9 @@ namespace eLibrary.Services.Migrations
                 columns: new[] { "KorisnikId", "Email", "Ime", "IsDeleted", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Status", "Telefon", "VrijemeBrisanja" },
                 values: new object[,]
                 {
-                    { 1, "admin@elibrary.ba", "Admin", false, "admin", "c1WzmHn/IfIrmkynZcsLyWHuzqE=", "dgCBLLURssjdW6U+61MC+Q==", "Admin", true, "06060606060606", null },
-                    { 2, "bibl1@gmail.com", "Bibliotekar1", false, "bibliotekar1", "9MF7KTZlFft51eQvyTtlgmYQlOs=", "dgCBLLURssjdW6U+61MC+Q==", "Bibliotekar1", true, "06060606", null },
-                    { 3, "bibl2@gmail.com", "Bibliotekar2", false, "bibliotekar2", "aK8cml17lpwbriKaVDWacJdixas=", "dgCBLLURssjdW6U+61MC+Q==", "Bibliotekar2", true, "06060606", null }
+                    { 1, "admin@elibrary.ba", "Admin", false, "admin",  "+dpXT2QPV/TFBTdzpXgDm1SPA24=", "Mze6gFYvmgrOG8urSD+mhg==", "Admin", true, "06060606060606", null },
+                    { 2, "bibl1@gmail.com", "Bibliotekar1", false, "bibliotekar1",  "+dpXT2QPV/TFBTdzpXgDm1SPA24=", "Mze6gFYvmgrOG8urSD+mhg==", "Bibliotekar1", true, "06060606", null },
+                    { 3, "bibl2@gmail.com", "Bibliotekar2", false, "bibliotekar2",  "+dpXT2QPV/TFBTdzpXgDm1SPA24=", "Mze6gFYvmgrOG8urSD+mhg==", "Bibliotekar2", true, "06060606", null }
                 });
 
             migrationBuilder.InsertData(

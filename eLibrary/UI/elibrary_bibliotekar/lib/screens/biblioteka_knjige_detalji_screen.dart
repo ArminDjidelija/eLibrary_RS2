@@ -175,7 +175,11 @@ class _BibliotekaKnjigaDetailsScreenState
                                   ? imageFromString(knjiga!.slika!)
                                   : Image.asset("assets/images/empty.png"),
                             )
-                          : Container()),
+                          : SizedBox(
+                              width: 350,
+                              height: 440,
+                              child: Image.asset("assets/images/empty.png"),
+                            )),
                 ],
               ),
             ),
