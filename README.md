@@ -27,4 +27,6 @@ Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnolo
 - **Email:** `sb-zruwp32228752@personal.example.com`
 - **Lozinka:** `ZW+_2y3?`
 
+## Mikroservis
+- **Rabbitmq je iskorišten za slanje mailova prilikom registracije novog korisnika ili čitaoca** 
   
