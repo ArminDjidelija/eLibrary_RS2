@@ -163,6 +163,7 @@ class _TipClanarineBibliotekaDetailsScreenState
                           width: 450,
                           type: QuickAlertType.success,
                           text: "Tip clanarine je uspješno dodat");
+                      _formKey.currentState?.reset();
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

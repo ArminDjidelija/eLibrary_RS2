@@ -13,6 +13,7 @@ BibliotekaKnjiga _$BibliotekaKnjigaFromJson(Map<String, dynamic> json) =>
       knjigaId: (json['knjigaId'] as num?)?.toInt(),
     )
       ..brojKopija = (json['brojKopija'] as num?)?.toInt()
+      ..trenutnoDostupno = (json['trenutnoDostupno'] as num?)?.toInt()
       ..datumDodavanja = json['datumDodavanja'] as String?
       ..lokacija = json['lokacija'] as String?
       ..dostupnoCitaonica = (json['dostupnoCitaonica'] as num?)?.toInt()
@@ -27,6 +28,7 @@ Map<String, dynamic> _$BibliotekaKnjigaToJson(BibliotekaKnjiga instance) =>
       'bibliotekaId': instance.bibliotekaId,
       'knjigaId': instance.knjigaId,
       'brojKopija': instance.brojKopija,
+      'trenutnoDostupno': instance.trenutnoDostupno,
       'datumDodavanja': instance.datumDodavanja,
       'lokacija': instance.lokacija,
       'dostupnoCitaonica': instance.dostupnoCitaonica,

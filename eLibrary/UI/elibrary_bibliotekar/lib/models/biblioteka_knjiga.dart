@@ -12,6 +12,7 @@ class BibliotekaKnjiga {
   String? lokacija;
   int? dostupnoCitaonica;
   int? dostupnoPozajmica;
+  int? trenutnoDostupno;
   // Biblioteka? biblioteka;
   Knjiga? knjiga;
   // List<Pozajmices>? pozajmices;

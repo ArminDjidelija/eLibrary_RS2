@@ -87,8 +87,9 @@ namespace eLibrary.Services
             if (bk != null)
                 throw new UserException("Vec imate ovu knjigu u fondovima biblioteke");
 
-            var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync();
-            entity.BibliotekaId = bibliotekaId;
+            //var bibliotekaId = await currentUserService.GetBibliotekaIdFromUserAsync();
+            //entity.BibliotekaId = bibliotekaId;
+            entity.DatumDodavanja = DateTime.Now;
         }
 
         public override async Task CustomMapPagedResponseAsync(List<Model.BibliotekaKnjigeDTOs.BibliotekaKnjige> result, CancellationToken cancellationToken = default)

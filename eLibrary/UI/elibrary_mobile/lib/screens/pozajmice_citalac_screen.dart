@@ -579,7 +579,8 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             if (pozajmica.produzenjePozajmicas!
                     .where((element) => element.odobreno == null)
                     .isEmpty ||
-                pozajmica.produzenjePozajmicas!.isEmpty)
+                pozajmica.produzenjePozajmicas!.isEmpty &&
+                    pozajmica.moguceProduziti == true)
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(

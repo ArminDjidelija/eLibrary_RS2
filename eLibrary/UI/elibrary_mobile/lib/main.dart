@@ -253,18 +253,6 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => HomePage2()));
                               } on Exception catch (e) {
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context) => AlertDialog(
-                                //           title: Text("Error"),
-                                //           actions: [
-                                //             TextButton(
-                                //                 onPressed: () =>
-                                //                     Navigator.pop(context),
-                                //                 child: Text("Ok"))
-                                //           ],
-                                //           content: Text(e.toString()),
-                                //         ));
                                 QuickAlert.show(
                                     context: context,
                                     type: QuickAlertType.error,

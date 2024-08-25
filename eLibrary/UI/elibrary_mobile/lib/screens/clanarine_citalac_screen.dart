@@ -359,10 +359,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                     }
                   },
                   "description": "Clanarina ce se dodati.",
-                  // "payment_options": {
-                  //   "allowed_payment_method":
-                  //       "INSTANT_FUNDING_SOURCE"
-                  // },
                   "item_list": {
                     "items": [
                       {
@@ -372,18 +368,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                         "currency": "USD"
                       }
                     ],
-
-                    // Optional
-                    //   "shipping_address": {
-                    //     "recipient_name": "Tharwat samy",
-                    //     "line1": "tharwat",
-                    //     "line2": "",
-                    //     "city": "tharwat",
-                    //     "country_code": "EG",
-                    //     "postal_code": "25025",
-                    //     "phone": "+00000000",
-                    //     "state": "ALex"
-                    //  },
                   }
                 }
               ],
@@ -404,6 +388,9 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                       type: QuickAlertType.success,
                       text: "Uspješno kreirana članarina");
                   _firstLoad();
+                  odabranaClanarina = null;
+                  odabranaBiblioteka = null;
+                  odabraniTipClanarine = null;
                 } on Exception catch (e) {}
                 // Navigator.pop(context);
               },
@@ -420,73 +407,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
       ),
     );
   }
-
-  Widget _buildPrijasnjeClanarine() {
-    return isFirstLoadRunning
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == clanarine.length) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        hasNextPage
-                            ? 'Učitavanje...'
-                            : total != 0
-                                ? 'Pregledali ste sve članarine!'
-                                : 'Nema više članarina',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  );
-                } else {
-                  return _buildPrijasnjaPozajmicaCard(
-                      clanarina: clanarine[index]);
-                }
-              },
-              childCount: clanarine.length + 1,
-            ),
-          );
-  }
-
-  // Widget _buildPrijasnjeClanarine() {
-  //   return isFirstLoadRunning
-  //       ? const Center(
-  //           child: CircularProgressIndicator(),
-  //         )
-  //       : ListView.builder(
-  //           physics:
-  //               NeverScrollableScrollPhysics(), // Disable ListView scrolling
-  //           shrinkWrap: true, // Ensure ListView occupies only necessary space
-
-  //           itemCount: clanarine.length + 1,
-  //           controller: scrollController,
-  //           itemBuilder: (_, index) {
-  //             if (index == clanarine.length) {
-  //               return Padding(
-  //                 padding: const EdgeInsets.all(8.0),
-  //                 child: Center(
-  //                   child: Text(
-  //                     hasNextPage
-  //                         ? 'Učitavanje...'
-  //                         : total != 0
-  //                             ? 'Pregledali ste sve clanarine!'
-  //                             : 'Nema više pozajmica',
-  //                     style: const TextStyle(fontSize: 16),
-  //                   ),
-  //                 ),
-  //               );
-  //             } else {
-  //               return _buildPrijasnjaPozajmicaCard(
-  //                   clanarina: clanarine[index]);
-  //             }
-  //           },
-  //         );
-  // }
 
   Widget _buildPrijasnjaPozajmicaCard({required Clanarina clanarina}) {
     return Card(

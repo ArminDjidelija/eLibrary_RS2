@@ -294,18 +294,20 @@ class _SacuvaneKnjigeCitalacScreenState
   }
 
   Future _ukloniSacuvanuKnjigu(int? korisnikSacuvanaKnjigaId) async {
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.confirm,
-      title: "Jeste li sigurni?",
-      confirmBtnText: "Da",
-      cancelBtnText: "Ne",
-      onConfirmBtnTap: () async => {
-        await korisnikSacuvanaKnjigaProvider.delete(korisnikSacuvanaKnjigaId!),
-        setState(() {
-          _firstLoad();
-        })
-      },
-    );
+    try {
+      await korisnikSacuvanaKnjigaProvider.delete(korisnikSacuvanaKnjigaId!);
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          title: "Knjiga je uspešno uklonjena!");
+      _firstLoad();
+      setState(() {});
+    } on Exception catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: e.toString(),
+      );
+    }
   }
 }

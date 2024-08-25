@@ -3,6 +3,7 @@ import 'package:elibrary_bibliotekar/models/biblioteka.dart';
 import 'package:elibrary_bibliotekar/models/kanton.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteke_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteke_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -207,7 +208,12 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                           context: context,
                           type: QuickAlertType.success,
                           text: "Uspješno dodata biblioteka",
-                          width: 300);
+                          width: 300,
+                          onCancelBtnTap: () => {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => BibliotekeListScreen(),
+                                ))
+                              });
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

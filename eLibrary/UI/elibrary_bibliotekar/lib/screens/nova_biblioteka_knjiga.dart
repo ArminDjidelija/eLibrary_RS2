@@ -1,7 +1,9 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteka_knjige_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -40,24 +42,9 @@ class _NovaBibliotekaKnjigaScreenState
     bibliotekaKnjigaProvider = context.read<BibliotekaKnjigaProvider>();
     _initialValue = {
       'knjigaId': widget.knjiga?.knjigaId.toString(),
-      // 'bibliotekaId': 2,
+      'bibliotekaId': AuthProvider.bibliotekaId.toString(),
     };
-    //initForm();
   }
-
-  // Future initForm() async {
-  //   jeziciResult = await jezikProvider.get();
-  //   vrsteGradeResult = await vrstaGradeProvider.get();
-  //   izdavaciResult = await izdavacProvider.get();
-  //   uveziResult = await uvezProvider.get();
-  //   autoriResult = await autoriProvider.get();
-  //   ciljneGrupeResult = await ciljneGrupeProvider.get();
-  //   vrsteSadrzajaResult = await vrsteSadrzajaProvider.get();
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   print("retreived jezici: ${jeziciResult?.resultList.length}");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +68,7 @@ class _NovaBibliotekaKnjigaScreenState
                 Expanded(
                     child: Text(
                   "${widget.knjiga.naslov!}, ${widget.knjiga.isbn!}",
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ))
               ],
             ),
@@ -89,31 +76,32 @@ class _NovaBibliotekaKnjigaScreenState
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Broj kopija"),
+                  decoration: const InputDecoration(labelText: "Broj kopija"),
                   name: 'brojKopija',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
                         errorText: "Broj kopija je obavezna vrijednost"),
                     FormBuilderValidators.numeric(
                         errorText: "Broj kopija mora biti broj"),
-                    FormBuilderValidators.min(1),
+                    FormBuilderValidators.min(1,
+                        errorText: "Broj kopija mora biti veći od 0"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lokacija"),
+                  decoration: const InputDecoration(labelText: "Lokacija"),
                   name: 'lokacija',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
                   decoration:
-                      InputDecoration(labelText: "Dostupno za citaonicu"),
+                      const InputDecoration(labelText: "Dostupno za citaonicu"),
                   name: 'dostupnoCitaonica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
@@ -121,26 +109,28 @@ class _NovaBibliotekaKnjigaScreenState
                             "Broj pozajmica u citaonici je obavezna vrijednost"),
                     FormBuilderValidators.numeric(
                         errorText: "Broj pozajmica mora biti broj"),
-                    FormBuilderValidators.min(1),
+                    FormBuilderValidators.min(1,
+                        errorText: "Broj mora biti veći od 0"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
                   decoration:
-                      InputDecoration(labelText: "Dostupno za pozajmicu"),
+                      const InputDecoration(labelText: "Dostupno za pozajmicu"),
                   name: 'dostupnoPozajmica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
                         errorText: "Broj pozajmica je obavezna vrijednost"),
                     FormBuilderValidators.numeric(
                         errorText: "Broj pozajmica mora biti broj"),
-                    FormBuilderValidators.min(1),
+                    FormBuilderValidators.min(1,
+                        errorText: "Broj mora biti veći od 0"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -158,16 +148,24 @@ class _NovaBibliotekaKnjigaScreenState
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 var request = Map.from(_formKey.currentState!.value);
-                request['bibliotekaId'] = 2;
+                request['bibliotekaId'] = AuthProvider.bibliotekaId;
                 request['knjigaId'] = widget.knjiga.knjigaId;
-                print(request);
 
                 if (formCheck == true) {
                   try {
-                    bibliotekaKnjigaProvider.insert(request);
+                    await bibliotekaKnjigaProvider.insert(request);
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Uspješno dodata knjiga u biblioteku!");
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => BibliotekaKnjigeListScreen(),
+                      ),
+                    );
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,
@@ -175,10 +173,8 @@ class _NovaBibliotekaKnjigaScreenState
                         text: e.toString());
                   }
                 }
-
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

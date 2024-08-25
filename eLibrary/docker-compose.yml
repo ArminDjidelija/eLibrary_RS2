@@ -58,6 +58,7 @@ services:
         - _rabbitMqUser=${_rabbitMqUser}
         - _rabbitMqPassword=${_rabbitMqPassword}
         - _rabbitMqPort=${_rabbitMqPort}
+        - _saPassword=${_saPassword}
       ports:
         - 5023:5023
       networks:

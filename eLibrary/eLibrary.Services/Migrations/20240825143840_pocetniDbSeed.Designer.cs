@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eLibrary.Services.Database;
 
@@ -11,9 +12,11 @@ using eLibrary.Services.Database;
 namespace eLibrary.Services.Migrations
 {
     [DbContext(typeof(ELibraryContext))]
-    partial class ELibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20240825143840_pocetniDbSeed")]
+    partial class pocetniDbSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,7 +235,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 12,
                             BibliotekaId = 2,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3430),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(514),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -244,7 +247,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 13,
                             BibliotekaId = 2,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3449),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(519),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -256,7 +259,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 15,
                             BibliotekaId = 2,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3453),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(523),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -268,7 +271,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 16,
                             BibliotekaId = 2,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3458),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(526),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -280,7 +283,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 17,
                             BibliotekaId = 2,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3462),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(529),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -292,7 +295,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 18,
                             BibliotekaId = 3,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3466),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(533),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -304,7 +307,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 19,
                             BibliotekaId = 3,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3471),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(536),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -316,7 +319,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 20,
                             BibliotekaId = 3,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3475),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(540),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -328,7 +331,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 21,
                             BibliotekaId = 3,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3480),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(543),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -340,7 +343,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 22,
                             BibliotekaId = 3,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3484),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(547),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -352,7 +355,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 26,
                             BibliotekaId = 4,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3487),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(550),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -364,7 +367,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 27,
                             BibliotekaId = 4,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3491),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(553),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -376,7 +379,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 28,
                             BibliotekaId = 4,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3498),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(557),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -388,7 +391,7 @@ namespace eLibrary.Services.Migrations
                             BibliotekaKnjigaId = 29,
                             BibliotekaId = 4,
                             BrojKopija = 30,
-                            DatumDodavanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3502),
+                            DatumDodavanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(560),
                             DostupnoCitaonica = 25,
                             DostupnoPozajmica = 20,
                             IsDeleted = false,
@@ -434,7 +437,7 @@ namespace eLibrary.Services.Migrations
                         {
                             BibliotekaUposleniId = 1,
                             BibliotekaId = 2,
-                            DatumUposlenja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3010),
+                            DatumUposlenja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(195),
                             IsDeleted = false,
                             KorisnikId = 2
                         },
@@ -442,7 +445,7 @@ namespace eLibrary.Services.Migrations
                         {
                             BibliotekaUposleniId = 2,
                             BibliotekaId = 3,
-                            DatumUposlenja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3072),
+                            DatumUposlenja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(270),
                             IsDeleted = false,
                             KorisnikId = 3
                         });
@@ -729,8 +732,8 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             KantonId = 7,
                             KorisnickoIme = "citalac1",
-                            LozinkaHash = "hkQWX9j6A9fmDteJh3G8uYfLwW0=",
-                            LozinkaSalt = "Mze6gFYvmgrOG8urSD+mhg==",
+                            LozinkaHash = "2pka8gGVbEqAsY4ijeBsTJehv9Y==",
+                            LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
                             Prezime = "Citalac1",
                             Status = true,
                             Telefon = "06060606"
@@ -809,8 +812,8 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 1,
                             IsDeleted = false,
                             Iznos = 4.00m,
-                            Kraj = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3936),
-                            Pocetak = new DateTime(2024, 8, 10, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3932),
+                            Kraj = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(969),
+                            Pocetak = new DateTime(2024, 8, 10, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(966),
                             TipClanarineBibliotekaId = 1,
                             UplateId = 1
                         },
@@ -821,8 +824,8 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 1,
                             IsDeleted = false,
                             Iznos = 10.00m,
-                            Kraj = new DateTime(2024, 12, 8, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3948),
-                            Pocetak = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3946),
+                            Kraj = new DateTime(2024, 12, 8, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(975),
+                            Pocetak = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(973),
                             TipClanarineBibliotekaId = 2,
                             UplateId = 2
                         },
@@ -833,8 +836,8 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 2,
                             IsDeleted = false,
                             Iznos = 4.00m,
-                            Kraj = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3954),
-                            Pocetak = new DateTime(2024, 8, 10, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3952),
+                            Kraj = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(980),
+                            Pocetak = new DateTime(2024, 8, 10, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(978),
                             TipClanarineBibliotekaId = 1,
                             UplateId = 3
                         },
@@ -845,8 +848,8 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 2,
                             IsDeleted = false,
                             Iznos = 4.00m,
-                            Kraj = new DateTime(2024, 12, 8, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3959),
-                            Pocetak = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3957),
+                            Kraj = new DateTime(2024, 12, 8, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(985),
+                            Pocetak = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(983),
                             TipClanarineBibliotekaId = 1,
                             UplateId = 4
                         });
@@ -1373,7 +1376,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             KnjigaCiljnaGrupaId = 12,
-                            CiljnaGrupaId = 5,
+                            CiljnaGrupaId = 15,
                             IsDeleted = false,
                             KnjigaId = 6
                         },
@@ -2376,11 +2379,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 7,
                             BibliotekaKnjigaId = 12,
                             CitalacId = 1,
-                            DatumPreuzimanja = new DateTime(2024, 6, 26, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3553),
+                            DatumPreuzimanja = new DateTime(2024, 6, 26, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(596),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 3, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3558),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3560),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 3, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(601),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(603),
                             Trajanje = 7
                         },
                         new
@@ -2388,11 +2391,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 8,
                             BibliotekaKnjigaId = 15,
                             CitalacId = 1,
-                            DatumPreuzimanja = new DateTime(2024, 7, 6, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3564),
+                            DatumPreuzimanja = new DateTime(2024, 7, 6, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(607),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3566),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3568),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(608),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(610),
                             Trajanje = 7
                         },
                         new
@@ -2400,11 +2403,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 9,
                             BibliotekaKnjigaId = 16,
                             CitalacId = 1,
-                            DatumPreuzimanja = new DateTime(2024, 7, 16, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3572),
+                            DatumPreuzimanja = new DateTime(2024, 7, 16, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(614),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3574),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 12, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3576),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(615),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 12, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(617),
                             Trajanje = 7
                         },
                         new
@@ -2412,11 +2415,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 10,
                             BibliotekaKnjigaId = 12,
                             CitalacId = 2,
-                            DatumPreuzimanja = new DateTime(2024, 6, 26, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3581),
+                            DatumPreuzimanja = new DateTime(2024, 6, 26, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(621),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 3, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3583),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3585),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 3, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(622),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 2, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(624),
                             Trajanje = 7
                         },
                         new
@@ -2424,11 +2427,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 11,
                             BibliotekaKnjigaId = 13,
                             CitalacId = 2,
-                            DatumPreuzimanja = new DateTime(2024, 7, 6, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3588),
+                            DatumPreuzimanja = new DateTime(2024, 7, 6, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(628),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3590),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 12, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3592),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 13, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(629),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 12, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(631),
                             Trajanje = 7
                         },
                         new
@@ -2436,11 +2439,11 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 12,
                             BibliotekaKnjigaId = 12,
                             CitalacId = 2,
-                            DatumPreuzimanja = new DateTime(2024, 7, 16, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3596),
+                            DatumPreuzimanja = new DateTime(2024, 7, 16, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(635),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 7, 23, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3598),
-                            StvarniDatumVracanja = new DateTime(2024, 7, 22, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3600),
+                            PreporuceniDatumVracanja = new DateTime(2024, 7, 23, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(636),
+                            StvarniDatumVracanja = new DateTime(2024, 7, 22, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(638),
                             Trajanje = 7
                         },
                         new
@@ -2448,10 +2451,10 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 13,
                             BibliotekaKnjigaId = 12,
                             CitalacId = 1,
-                            DatumPreuzimanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3603),
+                            DatumPreuzimanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(642),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 9, 1, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3605),
+                            PreporuceniDatumVracanja = new DateTime(2024, 9, 1, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(643),
                             Trajanje = 7
                         },
                         new
@@ -2459,10 +2462,10 @@ namespace eLibrary.Services.Migrations
                             PozajmicaId = 14,
                             BibliotekaKnjigaId = 12,
                             CitalacId = 2,
-                            DatumPreuzimanja = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3609),
+                            DatumPreuzimanja = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(647),
                             IsDeleted = false,
                             MoguceProduziti = true,
-                            PreporuceniDatumVracanja = new DateTime(2024, 9, 1, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3610),
+                            PreporuceniDatumVracanja = new DateTime(2024, 9, 1, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(648),
                             Trajanje = 7
                         });
                 });
@@ -2558,7 +2561,7 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             Odobreno = true,
                             Ponistena = true,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3638),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(677),
                             State = "Ponistena"
                         },
                         new
@@ -2570,7 +2573,7 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             Odobreno = true,
                             Ponistena = true,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3643),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(681),
                             State = "Zavrsena"
                         },
                         new
@@ -2582,7 +2585,7 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             Odobreno = true,
                             Ponistena = true,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3647),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(689),
                             State = "Ponistena"
                         },
                         new
@@ -2594,7 +2597,7 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             Odobreno = true,
                             Ponistena = true,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3662),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(692),
                             State = "Zavrsena"
                         },
                         new
@@ -2604,7 +2607,7 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 1,
                             DatumKreiranja = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3665),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(695),
                             State = "Kreirana"
                         },
                         new
@@ -2614,7 +2617,7 @@ namespace eLibrary.Services.Migrations
                             CitalacId = 2,
                             DatumKreiranja = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            RokRezervacije = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3668),
+                            RokRezervacije = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(698),
                             State = "Kreirana"
                         },
                         new
@@ -2791,7 +2794,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 1,
-                            BibliotekaId = 2,
+                            BibliotekaId = 1,
                             IsDeleted = false,
                             Iznos = 4.00m,
                             Naziv = "Mjesečna",
@@ -2801,7 +2804,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 2,
-                            BibliotekaId = 2,
+                            BibliotekaId = 1,
                             IsDeleted = false,
                             Iznos = 10.00m,
                             Naziv = "Tromjesečna",
@@ -2811,7 +2814,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 3,
-                            BibliotekaId = 2,
+                            BibliotekaId = 1,
                             IsDeleted = false,
                             Iznos = 15.00m,
                             Naziv = "Polugodišnja",
@@ -2821,7 +2824,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 4,
-                            BibliotekaId = 2,
+                            BibliotekaId = 1,
                             IsDeleted = false,
                             Iznos = 20.00m,
                             Naziv = "Godišnja",
@@ -2831,7 +2834,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 5,
-                            BibliotekaId = 3,
+                            BibliotekaId = 2,
                             IsDeleted = false,
                             Iznos = 5.00m,
                             Naziv = "Mjesečna",
@@ -2841,7 +2844,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 6,
-                            BibliotekaId = 3,
+                            BibliotekaId = 2,
                             IsDeleted = false,
                             Iznos = 30.00m,
                             Naziv = "Godišnja",
@@ -2851,7 +2854,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             TipClanarineBibliotekaId = 7,
-                            BibliotekaId = 4,
+                            BibliotekaId = 3,
                             IsDeleted = false,
                             Iznos = 35.00m,
                             Naziv = "Godišnja",
@@ -3039,7 +3042,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 1,
                             BibliotekaId = 2,
                             CitalacId = 1,
-                            DatumUplate = new DateTime(2024, 8, 10, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3723),
+                            DatumUplate = new DateTime(2024, 8, 10, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(756),
                             IsDeleted = false,
                             Iznos = 4.00m,
                             TipUplateId = 1,
@@ -3050,7 +3053,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 2,
                             BibliotekaId = 2,
                             CitalacId = 1,
-                            DatumUplate = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3729),
+                            DatumUplate = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(761),
                             IsDeleted = false,
                             Iznos = 10.00m,
                             TipUplateId = 1,
@@ -3061,7 +3064,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 3,
                             BibliotekaId = 2,
                             CitalacId = 2,
-                            DatumUplate = new DateTime(2024, 8, 10, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3732),
+                            DatumUplate = new DateTime(2024, 8, 10, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(764),
                             IsDeleted = false,
                             Iznos = 4.00m,
                             TipUplateId = 2,
@@ -3072,7 +3075,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 4,
                             BibliotekaId = 2,
                             CitalacId = 2,
-                            DatumUplate = new DateTime(2024, 9, 9, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3736),
+                            DatumUplate = new DateTime(2024, 9, 9, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(768),
                             IsDeleted = false,
                             Iznos = 10.00m,
                             TipUplateId = 1,
@@ -3083,7 +3086,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 5,
                             BibliotekaId = 2,
                             CitalacId = 1,
-                            DatumUplate = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3740),
+                            DatumUplate = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(771),
                             IsDeleted = false,
                             Iznos = 10.00m,
                             TipUplateId = 1,
@@ -3094,7 +3097,7 @@ namespace eLibrary.Services.Migrations
                             UplataId = 6,
                             BibliotekaId = 2,
                             CitalacId = 2,
-                            DatumUplate = new DateTime(2024, 8, 25, 17, 37, 21, 384, DateTimeKind.Local).AddTicks(3743),
+                            DatumUplate = new DateTime(2024, 8, 25, 16, 38, 39, 597, DateTimeKind.Local).AddTicks(774),
                             IsDeleted = false,
                             Iznos = 10.00m,
                             TipUplateId = 1,

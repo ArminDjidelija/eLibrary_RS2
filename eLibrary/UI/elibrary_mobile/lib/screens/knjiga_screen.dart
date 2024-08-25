@@ -390,7 +390,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
                               MaterialStatePropertyAll<Color>(Colors.blue),
                         ),
                         child: const Text(
-                          'Rezerviši knjigu na 24h',
+                          'Rezerviši knjigu',
                           style: TextStyle(color: Colors.white),
                         ),
                       )
@@ -628,7 +628,7 @@ class _KnjigaScreenState extends State<KnjigaScreen>
 
   Future _rezervisiKnjigu(int id) async {
     try {
-      rezervacijeProvider.insert(
+      await rezervacijeProvider.insert(
           {'citalacId': AuthProvider.citalacId, 'bibliotekaKnjigaId': id});
       QuickAlert.show(
           context: context,

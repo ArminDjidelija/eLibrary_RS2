@@ -81,7 +81,7 @@ class _IzdavaciListScreenState extends State<IzdavaciListScreen> {
     });
   }
 
-  TextEditingController _nazivEditingController = TextEditingController();
+  final TextEditingController _nazivEditingController = TextEditingController();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),

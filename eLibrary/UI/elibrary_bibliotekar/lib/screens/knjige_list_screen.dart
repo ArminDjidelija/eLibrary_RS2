@@ -349,7 +349,12 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
                   height: 75,
                   child: imageFromString(item.slika!),
                 )
-              : const Text("")),
+              : Container(
+                  width: 75,
+                  height: 75,
+                  child: Image.asset(
+                    "assets/images/empty.png",
+                  ))),
           if (AuthProvider.korisnikUloge!
               .where((element) => element.uloga!.naziv == "Administrator")
               .isEmpty)

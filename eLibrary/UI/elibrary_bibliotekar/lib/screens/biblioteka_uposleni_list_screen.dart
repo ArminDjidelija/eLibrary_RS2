@@ -117,7 +117,7 @@ class _BibliotekaUposleniListScreenState
                   DataColumn(label: Text("Prezime")),
                   DataColumn(label: Text("Korisnicko ime")),
                   DataColumn(label: Text("Email")),
-                  DataColumn(label: Text("Akcija")),
+                  // DataColumn(label: Text("Akcija")),
                 ],
                 source: _source,
                 addEmptyRows: false,
@@ -155,32 +155,32 @@ class BibliotekaUposlenikDataSource
       DataCell(Text(item.korisnik!.prezime.toString())),
       DataCell(Text(item.korisnik!.korisnickoIme.toString())),
       DataCell(Text(item.korisnik!.email.toString())),
-      DataCell(
-        ElevatedButton(
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
-            onPressed: () async {
-              try {
-                await provider.delete(item.bibliotekaUposleniId!);
-                QuickAlert.show(
-                    context: context,
-                    width: 450,
-                    type: QuickAlertType.success,
-                    text: "Uposlenik je uspješno izbrisan");
-                filterServerSide("", "");
-              } on Exception catch (e) {
-                QuickAlert.show(
-                    context: context,
-                    width: 450,
-                    type: QuickAlertType.error,
-                    text: "Greška prilikom brisanja");
-              }
-            },
-            child: const Text(
-              "Izbrisi",
-              style: TextStyle(color: Colors.white),
-            )),
-      )
+      // DataCell(
+      //   ElevatedButton(
+      //       style: const ButtonStyle(
+      //           backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
+      //       onPressed: () async {
+      //         try {
+      //           await provider.delete(item.bibliotekaUposleniId!);
+      //           QuickAlert.show(
+      //               context: context,
+      //               width: 450,
+      //               type: QuickAlertType.success,
+      //               text: "Uposlenik je uspješno izbrisan");
+      //           filterServerSide("", "");
+      //         } on Exception catch (e) {
+      //           QuickAlert.show(
+      //               context: context,
+      //               width: 450,
+      //               type: QuickAlertType.error,
+      //               text: "Greška prilikom brisanja");
+      //         }
+      //       },
+      //       child: const Text(
+      //         "Izbrisi",
+      //         style: TextStyle(color: Colors.white),
+      //       )),
+      // )
     ]);
   }
 

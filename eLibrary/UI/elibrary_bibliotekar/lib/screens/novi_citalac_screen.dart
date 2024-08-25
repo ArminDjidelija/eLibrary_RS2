@@ -3,6 +3,7 @@ import 'package:elibrary_bibliotekar/models/kanton.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
+import 'package:elibrary_bibliotekar/screens/citaoci_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -42,8 +43,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
 
   Future initForm() async {
     kantoniResult = await kantonProvider.get();
-
-    print("retreived kantoni: ${kantoniResult?.resultList.length}");
+    setState(() {});
   }
 
   @override
@@ -67,43 +67,43 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Ime"),
+                  decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Prezime"),
+                  decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(2),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Email"),
+                  decoration: const InputDecoration(labelText: "Email"),
                   name: 'email',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.email(),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
@@ -116,38 +116,40 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Korisnicko ime"),
+                  decoration:
+                      const InputDecoration(labelText: "Korisnicko ime"),
                   name: 'korisnickoIme',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka"),
+                  decoration: const InputDecoration(labelText: "Lozinka"),
                   name: 'lozinka',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lozinka potvrda"),
+                  decoration:
+                      const InputDecoration(labelText: "Lozinka potvrda"),
                   name: 'lozinkaPotvrda',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.minLength(4),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -156,16 +158,16 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Institucija"),
+                  decoration: const InputDecoration(labelText: "Institucija"),
                   name: 'institucija',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderDropdown(
                   name: "kantonId",
-                  decoration: InputDecoration(labelText: "Kanton"),
+                  decoration: const InputDecoration(labelText: "Kanton"),
                   items: kantoniResult?.resultList
                           .map((e) => DropdownMenuItem(
                               value: e.kantonId.toString(),
@@ -202,20 +204,33 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   try {
                     await citaociProvider.insert(request);
                     QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.success,
-                        text: "Uspješno kreiran novi čitalac!");
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: "Uspješno kreiran novi čitalac!",
+                      onCancelBtnTap: () => {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => CitaociListScreen(),
+                          ),
+                        ),
+                      },
+                      onConfirmBtnTap: () => {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => CitaociListScreen(),
+                          ),
+                        ),
+                      },
+                    );
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.error,
                         text: e.toString());
                   }
-                } else {
-                  print("Belaj");
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

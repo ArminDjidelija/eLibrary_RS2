@@ -485,7 +485,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                           return const Text('Greška pri učitavanju slike');
                         },
                       )
-                    : Container(),
+                    : Image.asset('assets/images/empty.png'),
               ),
               Expanded(
                 child: Padding(

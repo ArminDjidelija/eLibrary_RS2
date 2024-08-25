@@ -23,7 +23,12 @@ class CitaociProvider extends BaseProvider<Citalac> {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var response = await http.post(uri, headers: headers);
+    var response;
+    try {
+      response = await http.post(uri, headers: headers);
+    } on Exception catch (e) {
+      throw new Exception("Greška prilikom prijave");
+    }
 
     if (response.body == "") {
       throw new Exception("Pogrešan username ili lozinka");

@@ -126,7 +126,27 @@ namespace eLibrary.Services
         public override async Task BeforeInsertAsync(RezervacijeInsertRequest request, Rezervacije entity, CancellationToken cancellationToken = default)
         {
             entity.DatumKreiranja = DateTime.Now;
+            var bibliotekaKnjiga = await Context.BibliotekaKnjiges.FindAsync(request.BibliotekaKnjigaId);
+            if (bibliotekaKnjiga == null)
+                throw new UserException("Pogrešna biblioteka knjiga");
+            var clanarina = await Context
+                .Clanarines
+                .Where(x => x.CitalacId == request.CitalacId &&
+                    x.BibliotekaId == bibliotekaKnjiga.BibliotekaId &&
+                    x.Kraj > DateTime.Now).FirstOrDefaultAsync();
+            if (clanarina == null)
+                throw new UserException("Nemate clanarinu u ovoj biblioteci!");
 
+            var penal = await Context
+                .Penalis
+                .Include(x => x.Pozajmica)
+                .ThenInclude(x => x.BibliotekaKnjiga)
+                .Where(x => x.Pozajmica.CitalacId == request.CitalacId &&
+                    x.Pozajmica.BibliotekaKnjiga.BibliotekaId == bibliotekaKnjiga.BibliotekaId &&
+                    x.UplataId == null).FirstOrDefaultAsync();
+
+            if (penal != null)
+                throw new UserException("Imate neplacene penale u ovoj biblioteci!");
         }
 
         public async Task<Model.RezervacijeDTOs.Rezervacije> OdobriAsync(int rezervacijaId, CancellationToken cancellationToken = default)

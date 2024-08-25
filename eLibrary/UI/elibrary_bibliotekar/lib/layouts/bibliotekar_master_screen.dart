@@ -92,9 +92,8 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                         const KnjigeListScreen()));
                               },
                             ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.menu_book,
@@ -159,7 +158,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                               },
                             ),
                             if (AuthProvider.korisnikUloge!
-                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.card_membership_outlined,
@@ -180,7 +179,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                 },
                               ),
                             if (AuthProvider.korisnikUloge!
-                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.credit_card,
@@ -201,7 +200,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                 },
                               ),
                             if (AuthProvider.korisnikUloge!
-                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.attach_money_outlined,
@@ -240,9 +239,8 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                         const CitaociListScreen()));
                               },
                             ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.loyalty_outlined,
@@ -262,9 +260,8 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                           const PozajmiceListScreen()));
                                 },
                               ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.lock_clock_outlined,
@@ -326,9 +323,8 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                           const KorisniciListScreen()));
                                 },
                               ),
-                            if (AuthProvider.korisnikUloge!.any((x) =>
-                                x.uloga?.naziv == "Bibliotekar" ||
-                                x.uloga?.naziv == "Menadzer"))
+                            if (AuthProvider.korisnikUloge!
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.notifications_active_outlined,
@@ -349,7 +345,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                                 },
                               ),
                             if (AuthProvider.korisnikUloge!
-                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.work,
@@ -389,7 +385,7 @@ class _BibliotekarMasterScreenState extends State<BibliotekarMasterScreen> {
                               },
                             ),
                             if (AuthProvider.korisnikUloge!
-                                .any((x) => x.uloga?.naziv == "Menadzer"))
+                                .any((x) => x.uloga?.naziv == "Bibliotekar"))
                               ListTile(
                                 leading: const Icon(
                                   Icons.house,

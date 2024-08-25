@@ -1,6 +1,7 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
+import 'package:elibrary_bibliotekar/screens/autori_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -136,6 +137,12 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                           type: QuickAlertType.success,
                           text: "Uspješno dodat autor",
                           width: 300);
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => AutoriListScreen(),
+                      //   ),
+                      // );
+                      _formKey.currentState?.reset();
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

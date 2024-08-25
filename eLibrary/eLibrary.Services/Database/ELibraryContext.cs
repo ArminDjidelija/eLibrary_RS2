@@ -674,8 +674,7 @@ public static class ModelBuilderExtensions
             new Database.Autori { AutorId = 8, Ime = "Mark", Prezime = "Twain", GodinaRodjenja = 1835 },
             new Database.Autori { AutorId = 9, Ime = "Charles", Prezime = "Dickens", GodinaRodjenja = 1845 },
             new Database.Autori { AutorId = 10, Ime = "Jules", Prezime = "Verne", GodinaRodjenja = 1828 },
-            new Database.Autori { AutorId = 11, Ime = "Meša", Prezime = "Selimović", GodinaRodjenja = 1910 },
-            new Database.Autori { AutorId = 12, Ime = "Feđa", Prezime = "Štukan", GodinaRodjenja = 1974 }
+            new Database.Autori { AutorId = 11, Ime = "Meša", Prezime = "Selimović", GodinaRodjenja = 1910 }
         );
 
 
@@ -687,6 +686,7 @@ public static class ModelBuilderExtensions
    new Database.CiljneGrupe { CiljnaGrupaId = 5, Naziv = "14-18" },
    new Database.CiljneGrupe { CiljnaGrupaId = 6, Naziv = "Opšte štivo" }
         );
+
         modelBuilder.Entity<Database.Kantoni>().HasData(
     new Database.Kantoni { KantonId = 1, Naziv = "Unsko-sanski kanton", Skracenica = "USK" },
     new Database.Kantoni { KantonId = 2, Naziv = "Posavski kanton", Skracenica = "PK" },
@@ -744,13 +744,12 @@ new Database.Valute { ValutaId = 2, Naziv = "Euro", Skracenica = "EUR" }
         modelBuilder.Entity<Database.Uvezi>().HasData(
 new Database.Uvezi { UvezId = 1, Naziv = "Mehki" },
 new Database.Uvezi { UvezId = 2, Naziv = "Tvrdi" },
-new Database.Uvezi { UvezId = 5, Naziv = "Bez uveza" }
+new Database.Uvezi { UvezId = 3, Naziv = "Bez uveza" }
         );
 
         modelBuilder.Entity<Database.Uloge>().HasData(
 new Database.Uloge { UlogaId = 1, Naziv = "Bibliotekar" },
-new Database.Uloge { UlogaId = 2, Naziv = "Administrator" },
-new Database.Uloge { UlogaId = 3, Naziv = "Menadzer" }
+new Database.Uloge { UlogaId = 2, Naziv = "Administrator" }
         );
 
         modelBuilder.Entity<Database.TipoviUplatum>().HasData(
@@ -796,117 +795,46 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
     new Database.Citaoci
     {
         CitalacId = 1,
-        Ime = "Nedim",
-        Prezime = "Mustafić",
-        Email = "nedim@gmail.com",
+        Ime = "Citalac1",
+        Prezime = "Citalac1",
+        Email = "citalac1@gmail.com",
         Telefon = "06060606",
-        KorisnickoIme = "nedim",
-        LozinkaHash = "qRhawiSrna2wYUJ2X409WTLVcFE=",
-        LozinkaSalt = "OKjxuh/R+pAdr7OZJxbaPw==",
+        KorisnickoIme = "citalac1",
+        LozinkaHash = "2pka8gGVbEqAsY4ijeBsTJehv9Y==",
+        LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
         Status = true,
         Institucija = "Fakultet informacijskih tehnologija",
         DatumRegistracije = DateTime.Parse("2024-07-20 14:48:41.913"),
-        KantonId = 4
+        KantonId = 7
     },
     new Database.Citaoci
     {
         CitalacId = 2,
-        Ime = "Ensar",
-        Prezime = "Čevra",
-        Email = "ensar@gmail.com",
-        Telefon = "06245645645665",
-        KorisnickoIme = "ensar",
-        LozinkaHash = "pPHFEdB0fs1jkY7nIIhSOz95gO4=",
-        LozinkaSalt = "B7vl9rToyYXnfW93niHFeA==",
+        Ime = "Citalac2",
+        Prezime = "Citalac2",
+        Email = "citalac2@gmail.com",
+        Telefon = "06060606",
+        KorisnickoIme = "citalac2",
+        LozinkaHash = "lUm1ZkjJ+8kF1mKNyCNUZToua6Y=",
+        LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
         Status = true,
         Institucija = "Fakultet informacijskih tehnologija",
-        DatumRegistracije = DateTime.Parse("2024-07-20 14:50:48.380"),
+        DatumRegistracije = DateTime.Parse("2024-07-20 14:48:41.913"),
         KantonId = 7
-    },
-    new Database.Citaoci
-    {
-        CitalacId = 3,
-        Ime = "Adnan",
-        Prezime = "Humačkić",
-        Email = "adnan@gmail.com",
-        Telefon = "06245645645665",
-        KorisnickoIme = "adnan",
-        LozinkaHash = "bCjZ1m2TOG0riBnuKnVldry0WIw=",
-        LozinkaSalt = "rBc/mOO5FGenmnDJknziLQ==",
-        Status = true,
-        Institucija = "Fakultet informacijskih tehnologija",
-        DatumRegistracije = DateTime.Parse("2024-07-20 14:51:37.137"),
-        KantonId = 10
-    },
-    new Database.Citaoci
-    {
-        CitalacId = 4,
-        Ime = "Armina",
-        Prezime = "Kukrica",
-        Email = "armina@gmail.com",
-        Telefon = "06245645645665",
-        KorisnickoIme = "armina",
-        LozinkaHash = "8D7RuSseoVrZqMHnluIGI35IEB0=",
-        LozinkaSalt = "u5ryQL32st+ka2ZdvE0c+Q==",
-        Status = true,
-        Institucija = "Fakultet informacijskih tehnologija",
-        DatumRegistracije = DateTime.Parse("2024-07-20 14:51:57.743"),
-        KantonId = 7
-    },
-    new Database.Citaoci
-    {
-        CitalacId = 5,
-        Ime = "Omar",
-        Prezime = "Čolakhodžić",
-        Email = "omar@gmail.com",
-        Telefon = "123456789",
-        KorisnickoIme = "omar",
-        LozinkaHash = "ARDDRi6wBmL9WL1rjUM2saWZ8xs=",
-        LozinkaSalt = "cZSWSeV7I6VLubSRJqk24w==",
-        Status = true,
-        Institucija = "Fakultet informacijskih tehnologija Mostar",
-        DatumRegistracije = DateTime.Parse("2024-07-27 00:21:44.000"),
-        KantonId = 7
-    });
+    }
+   );
+
 
         modelBuilder.Entity<Database.Korisnici>().HasData(
         new Database.Korisnici
         {
             KorisnikId = 1,
-            Ime = "Armin",
-            Prezime = "Đidelija",
-            Email = "administrator@elibrary.ba",
+            Ime = "Admin",
+            Prezime = "Admin",
+            Email = "admin@elibrary.ba",
             Telefon = "06060606060606",
             KorisnickoIme = "admin",
-            LozinkaHash = "Kx2LXRCues8YMgvZVdPw5Sog6AY=",
-            LozinkaSalt = "Mze6gFYvmgrOG8urSD+mhg==",
-            Status = true,
-            IsDeleted = false,
-            VrijemeBrisanja = null
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 2,
-            Ime = "Sadzida",
-            Prezime = "Dziho",
-            Email = "sadzida@gmail.com",
-            Telefon = "123456",
-            KorisnickoIme = "sadzida",
-            LozinkaHash = "IJkGlOqAg/rO4d5XZNZANcE+oB0=",
-            LozinkaSalt = "hQUHyw2/xOR9SgSrzImM5g==",
-            Status = true,
-            IsDeleted = false,
-            VrijemeBrisanja = null
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 3,
-            Ime = "Zaim",
-            Prezime = "Mehic",
-            Email = "zaim@gmail.com",
-            Telefon = "123456",
-            KorisnickoIme = "zaim",
-            LozinkaHash = "hTo8O0Tf5Gti0X21sTJcAOXjxHE=",
+            LozinkaHash = "c1WzmHn/IfIrmkynZcsLyWHuzqE=",
             LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
             Status = true,
             IsDeleted = false,
@@ -914,126 +842,1196 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
         },
         new Database.Korisnici
         {
-            KorisnikId = 4,
-            Ime = "armina",
-            Prezime = "kukrica",
-            Email = "armina@gmail.com",
-            Telefon = "123456",
-            KorisnickoIme = "armina.kukrica",
-            LozinkaHash = "yqQNeXOd4XocaafqiB+59dvWYbs=",
-            LozinkaSalt = "rHFL2A0lqS3itvCiuRyhVg==",
+            KorisnikId = 2,
+            Ime = "Bibliotekar1",
+            Prezime = "Bibliotekar1",
+            Email = "bibl1@gmail.com",
+            Telefon = "06060606",
+            KorisnickoIme = "bibliotekar1",
+            LozinkaHash = "9MF7KTZlFft51eQvyTtlgmYQlOs=",
+            LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
             Status = true,
             IsDeleted = false,
             VrijemeBrisanja = null
         },
         new Database.Korisnici
         {
-            KorisnikId = 5,
-            Ime = "armina",
-            Prezime = "kukrica",
-            Email = "armina@gmail.com",
-            Telefon = "123456",
-            KorisnickoIme = "armina.kukrica",
-            LozinkaHash = "VYY4BksWLWbNSdO9XZYdwPUFLzk=",
-            LozinkaSalt = "BxKdmowDCc5jl8GyLj+n4w==",
-            Status = true,
-            IsDeleted = true,
-            VrijemeBrisanja = DateTime.Parse("2024-08-11 13:06:29.1313135")
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 6,
-            Ime = "Menadzer",
-            Prezime = "Prezime",
-            Email = "menadzer@gmail.com",
-            Telefon = "062109192",
-            KorisnickoIme = "menadzer",
-            LozinkaHash = "cC+io0VNs0yfz9Tm+++kOaTx0Fo=",
-            LozinkaSalt = "kKZ2nUKX6yke8yMCQBWaSg==",
-            Status = true,
-            IsDeleted = false,
-            VrijemeBrisanja = null
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 7,
-            Ime = "Menadzer",
-            Prezime = "Prezime",
-            Email = "menadzer@gmail.com",
-            Telefon = "065168468",
-            KorisnickoIme = "sjeverni",
-            LozinkaHash = "MDBkR0P1YzZv1Vn5b1oWrQiHYws=",
-            LozinkaSalt = "e+1Vf6DBobsBHoJe5qDqFw==",
-            Status = true,
-            IsDeleted = true,
-            VrijemeBrisanja = DateTime.Parse("2024-08-11 13:05:32.1668117")
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 8,
-            Ime = "Osman",
-            Prezime = "Hadzikic",
-            Email = "osman@gmail.com",
-            Telefon = "0656565",
-            KorisnickoIme = "osman",
-            LozinkaHash = "oDWoyvj7xIqrF1W+4BRF3nhAzfI=",
-            LozinkaSalt = "XsrX8H2nlXkhwTVnEHt5TA==",
-            Status = true,
-            IsDeleted = true,
-            VrijemeBrisanja = DateTime.Parse("2024-08-11 21:41:30.7786302")
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 9,
-            Ime = "novi",
-            Prezime = "prezime",
-            Email = "mail@mail.com",
-            Telefon = "123456",
-            KorisnickoIme = "novi",
-            LozinkaHash = "6QprCbiUAp7PpqZE9C3WQRIJzOE=",
-            LozinkaSalt = "0DlJBwyQAYwRuA5X92t3rw==",
-            Status = true,
-            IsDeleted = true,
-            VrijemeBrisanja = DateTime.Parse("2024-08-11 21:42:14.6254696")
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 10,
-            Ime = "armin",
-            Prezime = "dido",
-            Email = "didelija.armin@gmail.com",
-            Telefon = "telefon",
-            KorisnickoIme = "djido",
-            LozinkaHash = "RQc+vqwpRtGqt5PJWNxlSCMW7F4=",
-            LozinkaSalt = "RKHTT6eMngdXoWnlkJgeNA==",
-            Status = true,
-            IsDeleted = false,
-            VrijemeBrisanja = null
-        },
-        new Database.Korisnici
-        {
-            KorisnikId = 11,
-            Ime = "armin",
-            Prezime = "dido",
-            Email = "didelija.armin@gmail.com",
-            Telefon = "telefon",
-            KorisnickoIme = "djidoo",
-            LozinkaHash = "XzUrBzqHdihkHSoLsItCv/VbKIU=",
-            LozinkaSalt = "XQMWbwIwvsMs5MMBfaU6qw==",
+            KorisnikId = 3,
+            Ime = "Bibliotekar2",
+            Prezime = "Bibliotekar2",
+            Email = "bibl2@gmail.com",
+            Telefon = "06060606",
+            KorisnickoIme = "bibliotekar2",
+            LozinkaHash = "aK8cml17lpwbriKaVDWacJdixas=",
+            LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
             Status = true,
             IsDeleted = false,
             VrijemeBrisanja = null
         }
         );
 
+        modelBuilder.Entity<KorisniciUloge>().HasData(
+           new KorisniciUloge
+           {
+               KorisnikUlogaId = 1,
+               UlogaId = 2,
+               KorisnikId = 1,
+               IsDeleted = false,
+               VrijemeBrisanja = null
+           },
+           new KorisniciUloge
+           {
+               KorisnikUlogaId = 2,
+               UlogaId = 1,
+               KorisnikId = 2,
+               IsDeleted = false,
+               VrijemeBrisanja = null
+           },
+           new KorisniciUloge
+           {
+               KorisnikUlogaId = 3,
+               UlogaId = 1,
+               KorisnikId = 3,
+               IsDeleted = false,
+               VrijemeBrisanja = null
+           }
+        );
+
+        modelBuilder.Entity<BibliotekaUposleni>().HasData(
+            new BibliotekaUposleni
+            {
+                BibliotekaUposleniId = 1,
+                KorisnikId = 2,
+                BibliotekaId = 2,
+                DatumUposlenja = DateTime.Now
+            },
+            new BibliotekaUposleni
+            {
+                BibliotekaUposleniId = 2,
+                KorisnikId = 3,
+                BibliotekaId = 3,
+                DatumUposlenja = DateTime.Now
+            }
+            );
+
+
+        modelBuilder.Entity<Knjige>().HasData(
+            new Knjige
+            {
+                KnjigaId = 1,
+                Naslov = "Starac i more",
+                GodinaIzdanja = 2020,
+                BrojIzdanja = 1,
+                BrojStranica = 89,
+                Isbn = "978-9958-771-38-5",
+                Napomena = "",
+                Slika = null,
+                UvezId = 1,
+                JezikId = 1,
+                IzdavacId = 1,
+                VrsteGradeId = 1,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 2,
+            Naslov = "Ana Karenjina",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 890,
+            Isbn = "978-86-521-3555-4",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 4,
+            Naslov = "Rat i mir 1",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 800,
+            Isbn = "978-86-521-4508-9",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 5,
+            Naslov = "Proces",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 220,
+            Isbn = "978-86-447-0687-8",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 6,
+            Naslov = "Kapetanova kći",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 123,
+            Isbn = "9788663693722",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 7,
+            Naslov = "105 pjesama",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 230,
+            Isbn = "978-9958-771-38-5",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 8,
+            Naslov = "1984",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 267,
+            Isbn = "978-86-7674-205-9",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 9,
+            Naslov = "Pustolovine Toma Sawyera",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 430,
+            Isbn = "978-953-0-60381-3",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 10,
+            Naslov = "Put oko svijeta za 80 dana",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 56,
+            Isbn = "978-9958-41-300-1",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 13,
+            Naslov = "Rat i mir II",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 832,
+            Isbn = "978-86-521-4509-6",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 14,
+            Naslov = "Zločin i kazna",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 616,
+            Isbn = "978-9958-18-142-9",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 15,
+            Naslov = "Derviš i smrt",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 418,
+            Isbn = "978-9958-29-222-4",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            },
+            new Knjige
+            {
+            KnjigaId = 20,
+            Naslov = "Dekameron",
+            GodinaIzdanja = 2020,
+            BrojIzdanja = 1,
+            BrojStranica = 160,
+            Isbn = "953-196-904-3",
+            Napomena = "",
+            Slika = null,
+            UvezId = 1,
+            JezikId = 1,
+            IzdavacId = 1,
+            VrsteGradeId = 1,
+            IsDeleted = false,
+            VrijemeBrisanja = null
+            }
+            //new Knjige
+            //{
+            //KnjigaId = 1,
+            //Naslov = "Starac i more",
+            //GodinaIzdanja = 2020,
+            //BrojIzdanja = 1,
+            //BrojStranica = 89,
+            //Isbn = "978-9958-771-38-5",
+            //Napomena = "",
+            //Slika = null,
+            //UvezId = 1,
+            //JezikId = 1,
+            //IzdavacId = 1,
+            //VrsteGradeId = 1,
+            //IsDeleted = false,
+            //VrijemeBrisanja = null
+            //},
+            //new Knjige
+            //{
+            //KnjigaId = 1,
+            //Naslov = "Starac i more",
+            //GodinaIzdanja = 2020,
+            //BrojIzdanja = 1,
+            //BrojStranica = 89,
+            //Isbn = "978-9958-771-38-5",
+            //Napomena = "",
+            //Slika = null,
+            //UvezId = 1,
+            //JezikId = 1,
+            //IzdavacId = 1,
+            //VrsteGradeId = 1,
+            //IsDeleted = false,
+            //VrijemeBrisanja = null
+            //}
+            );
+
+
+        modelBuilder.Entity<KnjigaAutori>().HasData(
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 1,
+                 AutorId = 2,
+                 KnjigaId = 1,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 2,
+                 AutorId = 1,
+                 KnjigaId = 2,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 3,
+                 AutorId = 1,
+                 KnjigaId = 4,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 4,
+                 AutorId = 3,
+                 KnjigaId = 5
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 5,
+                 AutorId = 5,
+                 KnjigaId = 6,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 6,
+                 AutorId = 4,
+                 KnjigaId = 7,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 7,
+                 AutorId = 7,
+                 KnjigaId = 8,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 8,
+                 AutorId = 8,
+                 KnjigaId = 9,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 9,
+                 AutorId = 10,
+                 KnjigaId = 10,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 10,
+                 AutorId = 1,
+                 KnjigaId = 13,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 11,
+                 AutorId = 6,
+                 KnjigaId = 14,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 12,
+                 AutorId = 11,
+                 KnjigaId = 15,
+             },
+             new KnjigaAutori
+             {
+                 KnjigaAutorId = 17,
+                 AutorId = 13,
+                 KnjigaId = 20,
+             }
+            );
+
+        modelBuilder.Entity<KnjigaCiljneGrupe>().HasData(
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 1,
+                CiljnaGrupaId = 1,
+                KnjigaId = 1,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 2,
+                CiljnaGrupaId = 2,
+                KnjigaId = 1,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 3,
+                CiljnaGrupaId = 1,
+                KnjigaId = 2,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 4,
+                CiljnaGrupaId = 5,
+                KnjigaId = 2,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 5,
+                CiljnaGrupaId = 3,
+                KnjigaId = 2,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 6,
+                CiljnaGrupaId = 6,
+                KnjigaId = 4,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 7,
+                CiljnaGrupaId = 1,
+                KnjigaId = 5,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 8,
+                CiljnaGrupaId = 4,
+                KnjigaId = 5,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 9,
+                CiljnaGrupaId = 5,
+                KnjigaId = 5,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 10,
+                CiljnaGrupaId = 1,
+                KnjigaId = 6,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 11,
+                CiljnaGrupaId = 4,
+                KnjigaId = 6,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 12,
+                CiljnaGrupaId = 15,
+                KnjigaId = 6,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 13,
+                CiljnaGrupaId = 1,
+                KnjigaId = 7,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 14,
+                CiljnaGrupaId = 3,
+                KnjigaId = 7,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 15,
+                CiljnaGrupaId = 1,
+                KnjigaId = 8,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 16,
+                CiljnaGrupaId = 3,
+                KnjigaId = 8,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 17,
+                CiljnaGrupaId = 2,
+                KnjigaId = 9,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 18,
+                CiljnaGrupaId = 6,
+                KnjigaId = 9,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 19,
+                CiljnaGrupaId = 6,
+                KnjigaId = 10,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 20,
+                CiljnaGrupaId = 2,
+                KnjigaId = 10,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 21,
+                CiljnaGrupaId = 1,
+                KnjigaId = 13,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 22,
+                CiljnaGrupaId = 3,
+                KnjigaId = 13,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 23,
+                CiljnaGrupaId = 5,
+                KnjigaId = 13,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 24,
+                CiljnaGrupaId = 5,
+                KnjigaId = 14,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 25,
+                CiljnaGrupaId = 1,
+                KnjigaId = 14,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 26,
+                CiljnaGrupaId = 3,
+                KnjigaId = 14,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 27,
+                CiljnaGrupaId = 5,
+                KnjigaId = 15,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new KnjigaCiljneGrupe
+            {
+                KnjigaCiljnaGrupaId = 28,
+                CiljnaGrupaId = 6,
+                KnjigaId = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            }
+            );
+
+        modelBuilder.Entity<KnjigaVrsteSadrzaja>().HasData(
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 1,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 1
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 2,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 2
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 3,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 2
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 4,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 4
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 5,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 4
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 6,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 5
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 7,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 5
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 8,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 6
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 9,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 6
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 10,
+                VrstaSadrzajaId = 2,
+                KnjigaId = 7
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 11,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 7
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 12,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 8
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 13,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 8
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 14,
+                VrstaSadrzajaId = 25,
+                KnjigaId = 9
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 15,
+                VrstaSadrzajaId = 26,
+                KnjigaId = 9
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 16,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 10
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 17,
+                VrstaSadrzajaId = 26,
+                KnjigaId = 10
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 18,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 13
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 19,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 13
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 20,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 14
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 21,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 14
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 22,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 15
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 29,
+                VrstaSadrzajaId = 1,
+                KnjigaId = 20
+            },
+            new KnjigaVrsteSadrzaja
+            {
+                KnjigaVrstaSadrzajaId = 30,
+                VrstaSadrzajaId = 24,
+                KnjigaId = 20
+            }
+            );
+
+
+        modelBuilder.Entity<BibliotekaKnjige>().HasData(
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 12,
+                BibliotekaId = 2,
+                KnjigaId = 1,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 13,
+                BibliotekaId = 2,
+                KnjigaId = 2,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 15,
+                BibliotekaId = 2,
+                KnjigaId = 4,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 16,
+                BibliotekaId = 2,
+                KnjigaId = 7,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 17,
+                BibliotekaId = 2,
+                KnjigaId = 6,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 18,
+                BibliotekaId = 3,
+                KnjigaId = 6,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 19,
+                BibliotekaId = 3,
+                KnjigaId = 4,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 20,
+                BibliotekaId = 3,
+                KnjigaId = 8,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 21,
+                BibliotekaId = 3,
+                KnjigaId = 1,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 22,
+                BibliotekaId = 3,
+                KnjigaId = 10,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 26,
+                BibliotekaId = 4,
+                KnjigaId = 1,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 27,
+                BibliotekaId = 4,
+                KnjigaId = 2,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 28,
+                BibliotekaId = 4,
+                KnjigaId = 5,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new BibliotekaKnjige
+            {
+                BibliotekaKnjigaId = 29,
+                BibliotekaId = 4,
+                KnjigaId = 6,
+                BrojKopija = 30,
+                DatumDodavanja = DateTime.Now,
+                Lokacija = "B1",
+                DostupnoCitaonica = 25,
+                DostupnoPozajmica = 20,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            }
+            );
+
+        modelBuilder.Entity<Pozajmice>().HasData(
+            new Pozajmice
+            {
+                PozajmicaId = 7,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 12,
+                DatumPreuzimanja = DateTime.Now.AddDays(-60),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-53),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-54),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 8,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 15,
+                DatumPreuzimanja = DateTime.Now.AddDays(-50),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-43),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-54),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 9,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 16,
+                DatumPreuzimanja = DateTime.Now.AddDays(-40),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-43),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-44),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 10,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                DatumPreuzimanja = DateTime.Now.AddDays(-60),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-53),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-54),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 11,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 13,
+                DatumPreuzimanja = DateTime.Now.AddDays(-50),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-43),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-44),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 12,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                DatumPreuzimanja = DateTime.Now.AddDays(-40),
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(-33),
+                StvarniDatumVracanja = DateTime.Now.AddDays(-34),
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 13,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 12,
+                DatumPreuzimanja = DateTime.Now,
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(7),
+                StvarniDatumVracanja = null,
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Pozajmice
+            {
+                PozajmicaId = 14,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                DatumPreuzimanja = DateTime.Now,
+                PreporuceniDatumVracanja = DateTime.Now.AddDays(7),
+                StvarniDatumVracanja = null,
+                Trajanje = 7,
+                MoguceProduziti = true,
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            }
+            );
+
+        modelBuilder.Entity<Rezervacije>().HasData(
+            new Rezervacije
+            {
+                RezervacijaId = 1,
+                CitalacId =1,
+                BibliotekaKnjigaId = 12,
+                Odobreno = true,
+                RokRezervacije = DateTime.Now,
+                Ponistena = true,
+                State = "Ponistena",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Rezervacije
+            {
+                RezervacijaId = 2,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 12,
+                Odobreno = true,
+                RokRezervacije = DateTime.Now,
+                Ponistena = true,
+                State = "Zavrsena",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Rezervacije
+            {
+                RezervacijaId = 3,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                Odobreno = true,
+                RokRezervacije = DateTime.Now,
+                Ponistena = true,
+                State = "Ponistena",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Rezervacije
+            {
+                RezervacijaId = 4,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                Odobreno = true,
+                RokRezervacije = DateTime.Now,
+                Ponistena = true,
+                State = "Zavrsena",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Rezervacije
+            {
+                RezervacijaId = 5,
+                CitalacId = 1,
+                BibliotekaKnjigaId = 12,
+                Odobreno = null,
+                RokRezervacije = DateTime.Now,
+                Ponistena = null,
+                State = "Kreirana",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Rezervacije
+            {
+                RezervacijaId = 6,
+                CitalacId = 2,
+                BibliotekaKnjigaId = 12,
+                Odobreno = null,
+                RokRezervacije = DateTime.Now,
+                Ponistena = null,
+                State = "Kreirana",
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            }
+            );
+
+        modelBuilder.Entity<CitalacKnjigaLog>().HasData(
+            new CitalacKnjigaLog
+            {
+                CitalacKnjigaLogId = 1,
+                CitalacId = 1,
+                KnjigaId = 1
+            },
+            new CitalacKnjigaLog
+            {
+                CitalacKnjigaLogId = 2,
+                CitalacId = 1,
+                KnjigaId = 2
+            },
+            new CitalacKnjigaLog
+            {
+                CitalacKnjigaLogId = 3,
+                CitalacId = 2,
+                KnjigaId = 5
+            },
+            new CitalacKnjigaLog
+            {
+                CitalacKnjigaLogId = 4,
+                CitalacId = 2,
+                KnjigaId = 6
+            }
+            );
+
         modelBuilder.Entity<Uplate>().HasData(
     new Uplate
     {
-        UplataId = 3,
+        UplataId = 1,
         CitalacId = 1,
         BibliotekaId = 2,
         Iznos = 4.00m,
-        DatumUplate = DateTime.Parse("2024-07-28 17:18:26.167"),
+        DatumUplate = DateTime.Now.AddDays(-15),
         TipUplateId = 1,
         ValutaId = 1,
         IsDeleted = false,
@@ -1041,11 +2039,35 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
     },
     new Uplate
     {
-        UplataId = 4,
+        UplataId = 2,
         CitalacId = 1,
         BibliotekaId = 2,
+        Iznos = 10.00m,
+        DatumUplate = DateTime.Now.AddDays(15),
+        TipUplateId = 1,
+        ValutaId = 1,
+        IsDeleted = false,
+        VrijemeBrisanja = null
+    },
+    new Uplate
+    {
+        UplataId = 3,
+        CitalacId = 2,
+        BibliotekaId = 2,
         Iznos = 4.00m,
-        DatumUplate = DateTime.Parse("2024-07-28 19:20:56.727"),
+        DatumUplate = DateTime.Now.AddDays(-15),
+        TipUplateId = 2,
+        ValutaId = 1,
+        IsDeleted = false,
+        VrijemeBrisanja = null
+    },
+    new Uplate
+    {
+        UplataId = 4,
+        CitalacId = 2,
+        BibliotekaId = 2,
+        Iznos = 10.00m,
+        DatumUplate = DateTime.Now.AddDays(15),
         TipUplateId = 1,
         ValutaId = 1,
         IsDeleted = false,
@@ -1054,11 +2076,11 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
     new Uplate
     {
         UplataId = 5,
-        CitalacId = 3,
+        CitalacId = 1,
         BibliotekaId = 2,
-        Iznos = 4.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 19:14:37.383"),
-        TipUplateId = 2,
+        Iznos = 10.00m,
+        DatumUplate = DateTime.Now,
+        TipUplateId = 1,
         ValutaId = 1,
         IsDeleted = false,
         VrijemeBrisanja = null
@@ -1066,166 +2088,10 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
     new Uplate
     {
         UplataId = 6,
-        CitalacId = 3,
+        CitalacId = 2,
         BibliotekaId = 2,
         Iznos = 10.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 19:15:54.627"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 11,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 20:57:06.493"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 12,
-        CitalacId = 3,
-        BibliotekaId = 2,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 21:11:07.467"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 13,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 21:11:21.040"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 14,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 20.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 21:11:24.153"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 15,
-        CitalacId = 3,
-        BibliotekaId = 2,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 21:11:36.797"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 16,
-        CitalacId = 5,
-        BibliotekaId = 2,
-        Iznos = 15.00m,
-        DatumUplate = DateTime.Parse("2024-08-17 21:36:13.257"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 17,
-        CitalacId = 4,
-        BibliotekaId = 2,
-        Iznos = 4.00m,
-        DatumUplate = DateTime.Parse("2024-08-20 19:56:11.080"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 18,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-20 20:11:44.707"),
-        TipUplateId = 2,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 19,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 4.00m,
-        DatumUplate = DateTime.Parse("2024-08-21 20:12:48.320"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 20,
-        CitalacId = 3,
-        BibliotekaId = 3,
-        Iznos = 5.00m,
-        DatumUplate = DateTime.Parse("2024-08-21 20:17:27.793"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 21,
-        CitalacId = 3,
-        BibliotekaId = 3,
-        Iznos = 30.00m,
-        DatumUplate = DateTime.Parse("2024-08-21 20:19:00.583"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 22,
-        CitalacId = 1,
-        BibliotekaId = 3,
-        Iznos = 30.00m,
-        DatumUplate = DateTime.Parse("2024-08-21 20:39:43.703"),
-        TipUplateId = 1,
-        ValutaId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Uplate
-    {
-        UplataId = 23,
-        CitalacId = 1,
-        BibliotekaId = 2,
-        Iznos = 2.00m,
-        DatumUplate = DateTime.Parse("2024-08-21 20:40:57.643"),
+        DatumUplate = DateTime.Now,
         TipUplateId = 1,
         ValutaId = 1,
         IsDeleted = false,
@@ -1239,17 +2105,58 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
         UpitId = 1,
         Naslov = "Greška u aplikaciji",
         Upit = "Nakon klika potrebno je nešto napraviti...",
-        Odgovor = "Problem će uskoro biti riješennnnn",
+        Odgovor = "Problem će uskoro biti riješen.",
         CitalacId = 1,
         IsDeleted = false,
         VrijemeBrisanja = null
     }
 );
 
+        modelBuilder.Entity<KorisnikSacuvanaKnjiga>().HasData(
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 1,
+                CitalacId = 1,
+                KnjigaId = 1,
+            },
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 2,
+                CitalacId = 1,
+                KnjigaId = 4,
+            },
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 3,
+                CitalacId = 1,
+                KnjigaId = 5,
+            },
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 4,
+                CitalacId = 2,
+                KnjigaId = 1,
+            },
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 5,
+                CitalacId = 2,
+                KnjigaId = 5,
+            },
+            new KorisnikSacuvanaKnjiga
+            {
+                KorisnikSacuvanaKnjigaId = 6,
+                CitalacId = 2,
+                KnjigaId = 6,
+            }
+            );
+
+
+
         modelBuilder.Entity<TipClanarineBiblioteke>().HasData(
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 6,
+                TipClanarineBibliotekaId = 1,
                 Naziv = "Mjesečna",
                 Trajanje = 30,
                 Iznos = 4.00m,
@@ -1260,7 +2167,7 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 7,
+                TipClanarineBibliotekaId = 2,
                 Naziv = "Tromjesečna",
                 Trajanje = 90,
                 Iznos = 10.00m,
@@ -1271,7 +2178,7 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 8,
+                TipClanarineBibliotekaId = 3,
                 Naziv = "Polugodišnja",
                 Trajanje = 180,
                 Iznos = 15.00m,
@@ -1282,7 +2189,7 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 9,
+                TipClanarineBibliotekaId = 4,
                 Naziv = "Godišnja",
                 Trajanje = 365,
                 Iznos = 20.00m,
@@ -1293,7 +2200,7 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 10,
+                TipClanarineBibliotekaId = 5,
                 Naziv = "Mjesečna",
                 Trajanje = 30,
                 Iznos = 5.00m,
@@ -1304,7 +2211,7 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 11,
+                TipClanarineBibliotekaId = 6,
                 Naziv = "Godišnja",
                 Trajanje = 365,
                 Iznos = 30.00m,
@@ -1315,16 +2222,18 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
             },
             new TipClanarineBiblioteke
             {
-                TipClanarineBibliotekaId = 12,
-                Naziv = "Dvogodišnja",
-                Trajanje = 730,
+                TipClanarineBibliotekaId = 7,
+                Naziv = "Godišnja",
+                Trajanje = 365,
                 Iznos = 35.00m,
-                BibliotekaId = 2,
+                BibliotekaId = 4,
                 ValutaId = 1,
                 IsDeleted = false,
                 VrijemeBrisanja = null
             }
         );
+
+
 
         modelBuilder.Entity<Rezervacije>().HasData(
     new Rezervacije
@@ -1505,132 +2414,95 @@ new Database.Izdavaci { IzdavacId = 12, Naziv = "Mašinski fakultet Mostar" }
         CitalacId = 1,
         IsDeleted = false,
         VrijemeBrisanja = null
-    },
-    new Obavijesti
-    {
-        ObavijestId = 35,
-        BibliotekaId = 2,
-        Naslov = "Obavijest o roku",
-        Tekst = "Poštovani,\nVaša pozajmica knjige Starac i more u biblioteci Narodna biblioteka Mostar ističe 10.08.2024 22:44.\nSrdačan pozdrav",
-        Datum = new DateTime(2024, 8, 20, 20, 59, 35, 820),
-        CitalacId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Obavijesti
-    {
-        ObavijestId = 36,
-        BibliotekaId = 2,
-        Naslov = "Obavijest o roku",
-        Tekst = "Poštovani,\nVaša pozajmica knjige 105 pjesama u biblioteci Narodna biblioteka Mostar ističe 08.09.2024 21:43.\nSrdačan pozdrav",
-        Datum = new DateTime(2024, 8, 20, 21, 9, 16, 460),
-        CitalacId = 4,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new Obavijesti
-    {
-        ObavijestId = 37,
-        BibliotekaId = 2,
-        Naslov = "Obavijest o roku",
-        Tekst = "Poštovani,\nVaša pozajmica knjige Starac i more u biblioteci Narodna biblioteka Mostar ističe 30.08.2024 21:41.\nSrdačan pozdrav",
-        Datum = new DateTime(2024, 8, 20, 21, 10, 10, 923),
-        CitalacId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    }
+    }    
 );
+        modelBuilder.Entity<Clanarine>().HasData(
+            new Clanarine
+            {
+                ClanarinaId = 1,
+                CitalacId = 1,
+                BibliotekaId = 2,
+                UplateId = 1,
+                TipClanarineBibliotekaId = 1,
+                Iznos = 4.00m,
+                Pocetak = DateTime.Now.AddDays(-15),
+                Kraj = DateTime.Now.AddDays(15),
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Clanarine
+            {
+                ClanarinaId = 2,
+                CitalacId = 1,
+                BibliotekaId = 2,
+                UplateId = 2,
+                TipClanarineBibliotekaId = 2,
+                Iznos = 10.00m,
+                Pocetak = DateTime.Now.AddDays(15),
+                Kraj = DateTime.Now.AddDays(105),
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Clanarine
+            {
+                ClanarinaId = 3,
+                CitalacId = 2,
+                BibliotekaId = 2,
+                UplateId = 3,
+                TipClanarineBibliotekaId = 1,
+                Iznos = 4.00m,
+                Pocetak = DateTime.Now.AddDays(-15),
+                Kraj = DateTime.Now.AddDays(15),
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            },
+            new Clanarine
+            {
+                ClanarinaId = 4,
+                CitalacId = 2,
+                BibliotekaId = 2,
+                UplateId = 4,
+                TipClanarineBibliotekaId = 1,
+                Iznos = 4.00m,
+                Pocetak = DateTime.Now.AddDays(15),
+                Kraj = DateTime.Now.AddDays(105),
+                IsDeleted = false,
+                VrijemeBrisanja = null
+            }
+            );
 
-        modelBuilder.Entity<KorisniciUloge>().HasData(
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 1,
-        UlogaId = 2,
-        KorisnikId = 1,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 2,
-        UlogaId = 4,
-        KorisnikId = 2,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 3,
-        UlogaId = 1,
-        KorisnikId = 3,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 4,
-        UlogaId = 1,
-        KorisnikId = 5,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 5,
-        UlogaId = 4,
-        KorisnikId = 6,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 6,
-        UlogaId = 1,
-        KorisnikId = 7,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 7,
-        UlogaId = 4,
-        KorisnikId = 7,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 8,
-        UlogaId = 1,
-        KorisnikId = 8,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 9,
-        UlogaId = 1,
-        KorisnikId = 9,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 10,
-        UlogaId = 1,
-        KorisnikId = 10,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    },
-    new KorisniciUloge
-    {
-        KorisnikUlogaId = 11,
-        UlogaId = 1,
-        KorisnikId = 11,
-        IsDeleted = false,
-        VrijemeBrisanja = null
-    }
-);
+        modelBuilder.Entity<Penali>().HasData(
+            new Penali
+            {
+                PenalId = 1,
+                PozajmicaId = 7,
+                Opis = "Korisnik vratio knjigu sa pocijepanim stranicama",
+                UplataId =5,
+                Iznos = 10.00m,
+                ValutaId = 1,
+                IsDeleted= false
+            },
+            new Penali
+            {
+                PenalId = 2,
+                PozajmicaId = 8,
+                Opis = "Korisnik vratio knjigu sa pocijepanim stranicama",
+                UplataId = 6,
+                Iznos = 10.00m,
+                ValutaId = 1,
+                IsDeleted = false
+            },
+            new Penali
+            {
+                PenalId = 3,
+                PozajmicaId = 9,
+                Opis = "Korisnik vratio knjigu sa pocijepanim stranicama",
+                UplataId = null,
+                Iznos = 10.00m,
+                ValutaId = 1,
+                IsDeleted = false
+            }
+            );
 
 
 

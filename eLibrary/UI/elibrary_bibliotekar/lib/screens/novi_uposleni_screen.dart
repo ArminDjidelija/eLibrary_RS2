@@ -4,6 +4,7 @@ import 'package:elibrary_bibliotekar/models/uloga.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_uposleni_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
+import 'package:elibrary_bibliotekar/screens/biblioteka_uposleni_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -222,7 +223,23 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
-                        text: "Uspješno kreiran novi uposleni!");
+                        text: "Uspješno kreiran novi uposleni!",
+                        onCancelBtnTap: () => {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      BibliotekaUposleniListScreen(),
+                                ),
+                              ),
+                            },
+                        onConfirmBtnTap: () => {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      BibliotekaUposleniListScreen(),
+                                ),
+                              ),
+                            });
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,

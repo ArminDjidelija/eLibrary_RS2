@@ -277,58 +277,71 @@ class _BibliotekaKnjigaDetailsScreenState
                     const SizedBox(
                       height: 5,
                     ),
-                    Row(
+                    Flex(
+                      direction: Axis.horizontal, // Row-like behavior
                       mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            prikaziGraf();
-                          },
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll<Color>(Colors.blue)),
-                          child: const Text(
-                            "Izvještaj",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              prikaziGraf();
+                            },
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll<Color>(
+                                        Colors.blue)),
+                            child: const Text(
+                              "Izvještaj",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    BibliotekaKnjigaEditScreen(
-                                      bibliotekaKnjiga: widget.bibliotekaKnjiga,
-                                    )));
-                          },
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll<Color>(Colors.blue)),
-                          child: const Text(
-                            "Uredi",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      BibliotekaKnjigaEditScreen(
+                                        bibliotekaKnjiga:
+                                            widget.bibliotekaKnjiga,
+                                      )));
+                            },
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll<Color>(
+                                        Colors.blue)),
+                            child: const Text(
+                              "Uredi",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => NovaPozajmicaScreen(
-                                      bibliotekaKnjiga: widget.bibliotekaKnjiga,
-                                    )));
-                          },
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll<Color>(Colors.blue)),
-                          child: const Text(
-                            "Nova pozajmica",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                        const SizedBox(width: 8),
+                        if (widget.bibliotekaKnjiga!.trenutnoDostupno! > 0)
+                          Flexible(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => NovaPozajmicaScreen(
+                                          bibliotekaKnjiga:
+                                              widget.bibliotekaKnjiga,
+                                        )));
+                              },
+                              style: const ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Colors.blue)),
+                              child: const Text(
+                                "Nova pozajmica",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                     Row(

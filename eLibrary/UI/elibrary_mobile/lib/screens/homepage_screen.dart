@@ -186,11 +186,17 @@ class _HomepageScreenState extends State<HomepageScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 8),
-                      Container(
-                        width: 240,
-                        height: 260,
-                        child: imageFromString(e.slika!),
-                      ),
+                      e.slika != null
+                          ? Container(
+                              width: 240,
+                              height: 260,
+                              child: imageFromString(e.slika!),
+                            )
+                          : Container(
+                              width: 240,
+                              height: 260,
+                              child: Image.asset('assets/images/empty.png'),
+                            ),
                       Text(
                         e.naslov!,
                         style: const TextStyle(

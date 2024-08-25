@@ -25,6 +25,7 @@ import 'package:elibrary_bibliotekar/providers/knjiga_vrste_sadrzaja_provider.da
 import 'package:elibrary_bibliotekar/providers/uvez_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrsta_grade_provider.dart';
 import 'package:elibrary_bibliotekar/providers/vrste_sadrzaja_provider.dart';
+import 'package:elibrary_bibliotekar/screens/knjige_list_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -594,10 +595,45 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     try {
                       await knjigaProvider.insert(request);
                       QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.success,
-                          text: "Uspješno dodata knjiga",
-                          width: 300);
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Uspješno dodata knjiga",
+                        width: 300,
+                        onCancelBtnTap: () => {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => KnjigeListScreen(),
+                            ),
+                          )
+                        },
+                        onConfirmBtnTap: () => {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => KnjigeListScreen(),
+                            ),
+                          )
+                        },
+                      );
+
+                      // _formKey.currentState?.reset();
+                      // autori = [];
+                      // ciljneGrupe = [];
+                      // vrsteSadrzaja = [];
+
+                      // autoriList = [];
+                      // ciljneGrupeList = [];
+                      // vrsteSadrzajaList = [];
+
+                      // _base64Image = null;
+                      // jezikId = null;
+                      // izdavacId = null;
+                      // setState(() {});
+
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => KnjigeListScreen(),
+                      //   ),
+                      // );
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

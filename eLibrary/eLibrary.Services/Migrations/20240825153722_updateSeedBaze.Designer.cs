@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eLibrary.Services.Database;
 
@@ -11,9 +12,11 @@ using eLibrary.Services.Database;
 namespace eLibrary.Services.Migrations
 {
     [DbContext(typeof(ELibraryContext))]
-    partial class ELibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20240825153722_updateSeedBaze")]
+    partial class updateSeedBaze
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -729,8 +732,8 @@ namespace eLibrary.Services.Migrations
                             IsDeleted = false,
                             KantonId = 7,
                             KorisnickoIme = "citalac1",
-                            LozinkaHash = "hkQWX9j6A9fmDteJh3G8uYfLwW0=",
-                            LozinkaSalt = "Mze6gFYvmgrOG8urSD+mhg==",
+                            LozinkaHash = "2pka8gGVbEqAsY4ijeBsTJehv9Y==",
+                            LozinkaSalt = "dgCBLLURssjdW6U+61MC+Q==",
                             Prezime = "Citalac1",
                             Status = true,
                             Telefon = "06060606"
@@ -1373,7 +1376,7 @@ namespace eLibrary.Services.Migrations
                         new
                         {
                             KnjigaCiljnaGrupaId = 12,
-                            CiljnaGrupaId = 5,
+                            CiljnaGrupaId = 15,
                             IsDeleted = false,
                             KnjigaId = 6
                         },

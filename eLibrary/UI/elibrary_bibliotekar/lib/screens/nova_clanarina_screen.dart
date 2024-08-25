@@ -8,6 +8,7 @@ import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/clanarine_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_clanarine_biblioteka_provider.dart';
 import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
+import 'package:elibrary_bibliotekar/screens/clanarine_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -177,7 +178,21 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                         context: context,
                         width: 450,
                         type: QuickAlertType.success,
-                        text: "Članarina je uspješno dodata");
+                        text: "Članarina je uspješno dodata",
+                        onCancelBtnTap: () => {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => ClanarineListScreen(),
+                                ),
+                              ),
+                            },
+                        onConfirmBtnTap: () => {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => ClanarineListScreen(),
+                                ),
+                              ),
+                            });
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,

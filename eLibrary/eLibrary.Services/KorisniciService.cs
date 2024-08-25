@@ -86,18 +86,32 @@ namespace eLibrary.Services
         {
             _logger.LogInformation($"Adding user: {entity.KorisnickoIme}");
 
-            if (string.IsNullOrEmpty(request.Lozinka) || string.IsNullOrEmpty(request.LozinkaPotvrda))
-                throw new UserException("Lozinka i potvrda lozinke moraju imati vrijednost");
+            //if (string.IsNullOrEmpty(request.Lozinka) || string.IsNullOrEmpty(request.LozinkaPotvrda))
+            //    throw new UserException("Lozinka i potvrda lozinke moraju imati vrijednost");
 
-            if (request.Lozinka != request.LozinkaPotvrda)
-                throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
+            //if (request.Lozinka != request.LozinkaPotvrda)
+            //    throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
 
             var user = await Context.Korisnicis.FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
             if (user != null)
                 throw new UserException("Korisnik sa ovim korisničkim imenom već postoji!");
-            
+            entity.Status = true;
+
+            var lozinka = _passwordService.GenerateRandomString(8);
+
             entity.LozinkaSalt = _passwordService.GenerateSalt();
-            entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, lozinka);
+            
+            await rabbitMqService.SendAnEmail(new EmailDTO
+            {
+                EmailTo = entity.Email,
+                Message = $"Poštovani\n" +
+                          $"Korisnicko ime: {entity.KorisnickoIme}\n" +
+                          $"Lozinka: {lozinka}\n\n" +
+                          $"Srdačan pozdrav",
+                ReceiverName = entity.Ime + " " + entity.Prezime,
+                Subject = "Registracija"
+            });
 
 
         }

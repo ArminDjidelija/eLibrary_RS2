@@ -1,7 +1,5 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
-import 'package:elibrary_bibliotekar/models/autor.dart';
 import 'package:elibrary_bibliotekar/models/biblioteka_knjiga.dart';
-import 'package:elibrary_bibliotekar/providers/autori_provider.dart';
 import 'package:elibrary_bibliotekar/providers/biblioteka_knjiga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -46,22 +44,7 @@ class _BibliotekaKnjigaEditScreenState
       'dostupnoPozajmica':
           widget.bibliotekaKnjiga?.dostupnoPozajmica.toString(),
     };
-    //initForm();
   }
-
-  // Future initForm() async {
-  //   jeziciResult = await jezikProvider.get();
-  //   vrsteGradeResult = await vrstaGradeProvider.get();
-  //   izdavaciResult = await izdavacProvider.get();
-  //   uveziResult = await uvezProvider.get();
-  //   autoriResult = await autoriProvider.get();
-  //   ciljneGrupeResult = await ciljneGrupeProvider.get();
-  //   vrsteSadrzajaResult = await vrsteSadrzajaProvider.get();
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   print("retreived jezici: ${jeziciResult?.resultList.length}");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +69,6 @@ class _BibliotekaKnjigaEditScreenState
                     child: FormBuilderTextField(
                   decoration: InputDecoration(labelText: "Lokacija"),
                   name: 'lokacija',
-                  // validator: FormBuilderValidators.compose([
-                  //   FormBuilderValidators.required(),
-                  //   FormBuilderValidators.email(),
-                  // ]),
                 )),
                 SizedBox(
                   width: 10,
@@ -162,8 +141,6 @@ class _BibliotekaKnjigaEditScreenState
                       type: QuickAlertType.success,
                       text: "Uspješno modifikovana knjiga!");
                 }
-
-                // print(knjigaSlanje);
               },
               child: Text("Sacuvaj"))
         ],

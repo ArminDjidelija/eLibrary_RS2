@@ -45,8 +45,7 @@ class _HomePageState extends State<HomePage2> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month), label: "Pozajmice"),
             BottomNavigationBarItem(icon: Icon(Icons.euro), label: "Članarine"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.menu), label: "Moj eLibrary"),
+            BottomNavigationBarItem(icon: Icon(Icons.menu), label: "eLibrary"),
           ],
         ),
       ),

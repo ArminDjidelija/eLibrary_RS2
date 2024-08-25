@@ -1,6 +1,7 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
+import 'package:elibrary_bibliotekar/screens/izdavaci_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -99,10 +100,26 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
                     try {
                       await izdavacProvider.insert(request);
                       QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.success,
-                          text: "Uspješno dodat izdavač",
-                          width: 300);
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Uspješno dodat izdavač",
+                        width: 300,
+                        // onCancelBtnTap: () => {
+                        //   Navigator.of(context).pushReplacement(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => IzdavaciListScreen(),
+                        //     ),
+                        //   ),
+                        // },
+                        // onConfirmBtnTap: () => {
+                        //   Navigator.of(context).pushReplacement(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => IzdavaciListScreen(),
+                        //     ),
+                        //   ),
+                        // },
+                      );
+                      _formKey.currentState?.reset();
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

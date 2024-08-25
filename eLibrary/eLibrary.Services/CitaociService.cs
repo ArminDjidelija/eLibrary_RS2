@@ -1,9 +1,11 @@
 ﻿using eLibrary.Model.Exceptions;
+using eLibrary.Model.Messages;
 using eLibrary.Model.Requests;
 using eLibrary.Model.SearchObjects;
 using eLibrary.Services.Auth;
 using eLibrary.Services.BaseServices;
 using eLibrary.Services.Database;
+using eLibrary.Services.RabbitMqService;
 using eLibrary.Services.Recommender;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -17,18 +19,21 @@ namespace eLibrary.Services
         private readonly IPasswordService _passwordService;
         private readonly IRecommendService recommendService;
         private readonly ICurrentUserServiceAsync currentUserService;
+        private readonly IRabbitMqService rabbitMqService;
 
         public CitaociService(ELibraryContext context,
             IMapper mapper,
             ILogger<CitaociService> logger,
             IPasswordService passwordService,
             IRecommendService recommendService,
-            ICurrentUserServiceAsync currentUserService) : base(context, mapper)
+            ICurrentUserServiceAsync currentUserService,
+            IRabbitMqService rabbitMqService) : base(context, mapper)
         {
             this._logger = logger;
             this._passwordService = passwordService;
             this.recommendService = recommendService;
             this.currentUserService = currentUserService;
+            this.rabbitMqService = rabbitMqService;
         }
         public override IQueryable<Citaoci> AddFilter(CitaociSearchObject search, IQueryable<Citaoci> query)
         {
@@ -75,21 +80,34 @@ namespace eLibrary.Services
         {
             _logger.LogInformation($"Adding citaoc: {entity.KorisnickoIme}");
 
-            if (string.IsNullOrEmpty(request.Lozinka) || string.IsNullOrEmpty(request.LozinkaPotvrda))
-                throw new UserException("Lozinka i potvrda lozinke moraju imati vrijednost");
+            //if (string.IsNullOrEmpty(request.Lozinka) || string.IsNullOrEmpty(request.LozinkaPotvrda))
+            //    throw new UserException("Lozinka i potvrda lozinke moraju imati vrijednost");
 
-            if (request.Lozinka != request.LozinkaPotvrda)
-                throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
+            //if (request.Lozinka != request.LozinkaPotvrda)
+            //    throw new UserException("Lozinka i potvrda lozinke moraju biti iste");
 
             var existing = await Context.Citaocis.FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
             if (existing != null)
                 throw new UserException("Čitalac sa ovim korisničkim imenom već postoji");
 
-            entity.LozinkaSalt = _passwordService.GenerateSalt();
-            entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
-
             entity.Status = true;
             entity.DatumRegistracije = DateTime.Now;
+
+            var lozinka = _passwordService.GenerateRandomString(8);
+
+            entity.LozinkaSalt = _passwordService.GenerateSalt();
+            entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, lozinka);
+
+            await rabbitMqService.SendAnEmail(new EmailDTO
+            {
+                EmailTo = entity.Email,
+                Message = $"Poštovani\n" +
+                         $"Korisnicko ime: {entity.KorisnickoIme}\n" +
+                         $"Lozinka: {lozinka}\n\n" +
+                         $"Srdačan pozdrav",
+                ReceiverName = entity.Ime + " " + entity.Prezime,
+                Subject = "Registracija"
+            });
         }
 
         public override async Task BeforeUpdateAsync(CitaociUpdateRequest request, Citaoci entity, CancellationToken cancellationToken = default)
