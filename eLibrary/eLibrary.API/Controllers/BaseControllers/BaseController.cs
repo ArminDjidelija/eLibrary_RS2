@@ -9,7 +9,7 @@ namespace eLibrary.API.Controllers.BaseControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class BaseController<TModel, TSearch> : ControllerBase where TSearch : BaseSearchObject
     {
         private readonly IService<TModel, TSearch> _service;

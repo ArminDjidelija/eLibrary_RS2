@@ -20,9 +20,6 @@ namespace eLibrary.Services.Recommender
             this.context = context;
             this.mapper = mapper;
         }
-        static MLContext mlContext = null;
-        static object isLocked = new object();
-        static ITransformer model = null;
         private readonly ELibraryContext context;
         private readonly IMapper mapper;
 
@@ -31,6 +28,7 @@ namespace eLibrary.Services.Recommender
             var userLikedBooks = await context.CitalacKnjigaLogs.Where(x => x.CitalacId == citalacId).Select(x => x.KnjigaId).Distinct().ToListAsync();
             var allBooks = await context
                 .Knjiges
+                .Take(100000)
                 .Include(x => x.KnjigaAutoris)
                 .Include(x => x.Izdavac)
                 .Include(x => x.Uvez)
@@ -74,20 +72,26 @@ namespace eLibrary.Services.Recommender
             return vector.ToArray();
         }
 
-        public float ComputeCosineSimilarity(float[] vectorA, float[] vectorB)
+        public float ComputeEuclidean(float[] vectorA, float[] vectorB)
         {
-            float dotProduct = 0;
-            float normA = 0;
-            float normB = 0;
-            for (int i = 0; i < vectorA.Length; i++)
+            //float dotProduct = 0;
+            //float normA = 0;
+            //float normB = 0;
+            //for (int i = 0; i < vectorA.Length; i++)
+            //{
+            //    dotProduct += vectorA[i] * vectorB[i];
+            //    normA += vectorA[i] * vectorA[i];
+            //    normB += vectorB[i] * vectorB[i];
+            //}
+            //if (normA == 0 || normB == 0)
+            //    return 0;
+            //return dotProduct / (MathF.Sqrt(normA) * MathF.Sqrt(normB));
+            double squareSum = 0;
+            for(int i= 0;i < vectorA.Length;i++)
             {
-                dotProduct += vectorA[i] * vectorB[i];
-                normA += vectorA[i] * vectorA[i];
-                normB += vectorB[i] * vectorB[i];
+                squareSum += Math.Pow(vectorA[i] - vectorB[i], 2);
             }
-            if (normA == 0 || normB == 0)
-                return 0;
-            return dotProduct / (MathF.Sqrt(normA) * MathF.Sqrt(normB));
+            return (float)Math.Sqrt(squareSum);
         }
 
         public List<Database.Knjige> RecommendBooks(CitalacKnjiga userLikedBooks, List<Database.Knjige> allBooks)
@@ -100,6 +104,7 @@ namespace eLibrary.Services.Recommender
                 return allBooks.Take(10).ToList();            
             }
             var recommendedBooks = new List<Tuple<Database.Knjige, float>>();
+            var backupBooks = new List<Tuple<Database.Knjige, float>>();
 
             foreach (var book in allBooks)
             {
@@ -107,11 +112,26 @@ namespace eLibrary.Services.Recommender
                     continue;
 
                 var bookVector = CreateFeatureVector(book);
-                float maxSimilarity = likedBookVectors.Max(v => ComputeCosineSimilarity(v, bookVector));
+                float maxSimilarity = likedBookVectors.Max(v => ComputeEuclidean(v, bookVector));
 
-                recommendedBooks.Add(new Tuple<Database.Knjige, float>(book, maxSimilarity));
+                if (userLikedBooks.KnjigeIds.Contains(book.KnjigaId))
+                {
+                    backupBooks.Add(new Tuple<Database.Knjige, float>(book, maxSimilarity));
+                }
+                else
+                {
+                    recommendedBooks.Add(new Tuple<Database.Knjige, float>(book, maxSimilarity));
+                }
             }
-
+            if(recommendedBooks.Count <= 5)
+            {
+                return backupBooks
+                .OrderByDescending(x => x.Item2)
+                .Select(x => x.Item1)
+                .Distinct()
+                .Take(10)
+                .ToList();
+            }
             return recommendedBooks
                 .OrderByDescending(x => x.Item2)
                 .Select(x => x.Item1)

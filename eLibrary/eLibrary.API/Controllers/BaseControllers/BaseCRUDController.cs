@@ -1,11 +1,13 @@
 ﻿using eLibrary.Model.SearchObjects;
 using eLibrary.Services.BaseServicesInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eLibrary.API.Controllers.BaseControllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BaseCRUDController<TModel, TSearch, TInsert, TUpdate> : BaseController<TModel, TSearch> where TSearch : BaseSearchObject where TModel : class
     {
         protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> _service;

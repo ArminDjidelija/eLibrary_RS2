@@ -36,7 +36,7 @@ class _UpitDetailsScreenState extends State<UpitDetailsScreen> {
       'upitId': widget.upit?.upitId.toString(),
       'upit': widget.upit?.upit.toString(),
       'naslov': widget.upit?.naslov.toString(),
-      'odgovor': widget.upit?.odgovor.toString(),
+      'odgovor': widget.upit?.odgovor ?? "",
     };
     if (widget.upit?.upitId != null) {
       isEditing = true;

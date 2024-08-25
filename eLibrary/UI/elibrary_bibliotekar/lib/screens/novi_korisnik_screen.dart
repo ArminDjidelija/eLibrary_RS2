@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/kanton.dart';
@@ -6,6 +8,7 @@ import 'package:elibrary_bibliotekar/models/uloga.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
+import 'package:elibrary_bibliotekar/screens/korisnici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -118,48 +121,46 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
             ),
             Row(
               children: [
-                Expanded(
+                SizedBox(
+                    width: 300,
                     child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Korisnicko ime"),
-                  name: 'korisnickoIme',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
+                      decoration:
+                          const InputDecoration(labelText: "Korisnicko ime"),
+                      name: 'korisnickoIme',
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(
+                            errorText: "Obavezno polje"),
+                        FormBuilderValidators.minLength(4),
+                      ]),
+                    )),
                 const SizedBox(
                   width: 10,
                 ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Lozinka"),
-                  name: 'lozinka',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
+                // Expanded(
+                //     child: FormBuilderTextField(
+                //   decoration: const InputDecoration(labelText: "Lozinka"),
+                //   name: 'lozinka',
+                //   validator: FormBuilderValidators.compose([
+                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                //     FormBuilderValidators.minLength(4),
+                //   ]),
+                // )),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // Expanded(
+                //     child: FormBuilderTextField(
+                //   decoration:
+                //       const InputDecoration(labelText: "Lozinka potvrda"),
+                //   name: 'lozinkaPotvrda',
+                //   validator: FormBuilderValidators.compose([
+                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                //     FormBuilderValidators.minLength(4),
+                //   ]),
+                // )),
                 const SizedBox(
                   width: 10,
                 ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Lozinka potvrda"),
-                  name: 'lozinkaPotvrda',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-            Row(
-              children: [
                 SizedBox(
                     width: 300,
                     child: DropdownSearch<Uloga>.multiSelection(
@@ -195,7 +196,12 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                       },
                     ))
               ],
-            )
+            ),
+            // Row(
+            //   children: [
+
+            //   ],
+            // )
           ],
         ),
       ),
@@ -212,16 +218,22 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
               onPressed: () async {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
-                  //TODO provjera username  i email da li vec postoji
-
                   var request = Map.from(_formKey.currentState!.value);
-
+                  request['uloge'] = uloge;
                   try {
                     await korisnikProvider.insert(request);
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
-                        text: "Uspješno kreiran novi korisnik!");
+                        text: "Uspješno kreiran novi korisnik!",
+                        onCancelBtnTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => KorisniciListScreen()));
+                        },
+                        onConfirmBtnTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => KorisniciListScreen()));
+                        });
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,

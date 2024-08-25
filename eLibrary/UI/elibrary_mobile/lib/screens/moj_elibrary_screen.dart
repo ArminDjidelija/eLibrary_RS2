@@ -2,6 +2,7 @@ import 'package:elibrary_mobile/layouts/citalac2_homepage_screen.dart';
 import 'package:elibrary_mobile/screens/citalac_profil_screen.dart';
 import 'package:elibrary_mobile/screens/obavijesti_list_screen.dart';
 import 'package:elibrary_mobile/screens/penali_citalac_screen.dart';
+import 'package:elibrary_mobile/screens/prijavi_gresku_citalac_screen.dart';
 import 'package:elibrary_mobile/screens/sacuvane_knjige_citalac_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -64,6 +65,8 @@ class _MojElibraryScreenState extends State<MojElibraryScreen> {
               SacuvaneKnjigeCitalacScreen()),
           _baseMojSettingsRow(
               "Obavijesti", Icons.notifications_outlined, ObavijestiScreen()),
+          _baseMojSettingsRow(
+              "Prijavi grešku", Icons.error, GreskaCitalacScreen()),
         ],
       ),
     );

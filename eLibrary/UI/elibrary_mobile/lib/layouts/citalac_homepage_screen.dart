@@ -1,6 +1,5 @@
 import 'package:elibrary_mobile/layouts/persistent_bottom_bar_scaffold.dart';
 import 'package:elibrary_mobile/screens/homepage_screen.dart';
-import 'package:elibrary_mobile/screens/knjige_list_screen.dart';
 import 'package:elibrary_mobile/screens/pocetna_knjiga_pretraga_screen.dart';
 import 'package:flutter/material.dart';
 

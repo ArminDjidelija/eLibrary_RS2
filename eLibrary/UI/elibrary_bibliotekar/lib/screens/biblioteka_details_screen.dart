@@ -213,6 +213,11 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => BibliotekeListScreen(),
                                 ))
+                              },
+                          onConfirmBtnTap: () => {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => BibliotekeListScreen(),
+                                ))
                               });
                     } on Exception catch (e) {
                       QuickAlert.show(

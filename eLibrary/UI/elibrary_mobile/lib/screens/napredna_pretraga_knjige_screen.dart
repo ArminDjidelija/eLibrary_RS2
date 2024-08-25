@@ -109,7 +109,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
         filter: searchRequest,
         orderBy: orderBy,
         sortDirection: sortDirection,
-        includeTables: 'Izdavac,Uvez,Jezik');
+        includeTables: 'Izdavac,Uvez,Jezik,KnjigaAutoris');
 
     if (knjigeResult != null) {
       knjige = knjigeResult!.resultList;
@@ -341,7 +341,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                       onPressed: () {
                         Navigator.of(context).pop();
                         _firstLoad();
-                        // Add your search logic here
                       },
                     ),
                   ],
@@ -510,14 +509,14 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                             return const Text("Greška sa učitavanjem autora");
                           } else {
                             return Text(
-                              "Autori: ${snapshot.data!.join(', ')}",
-                              style: const TextStyle(fontSize: 18),
+                              snapshot.data!.join(', '),
+                              style: const TextStyle(fontSize: 16),
                             );
                           }
                         },
                       ),
-                      Text(
-                          "Autori: ${book.knjigaAutoris!.map((e) => e.autor!.ime! + " " + e.autor!.prezime!).join(', ')}"),
+                      // Text(
+                      //     "Autori: ${book.knjigaAutoris!.map((e) => e.autor!.ime! + " " + e.autor!.prezime!).join(', ')}"),
                       Text("Godina izdanja: ${book.godinaIzdanja}"),
                       Text("Jezik: ${book.jezik!.naziv}"),
                     ],

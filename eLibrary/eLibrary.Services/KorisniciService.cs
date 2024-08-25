@@ -105,9 +105,9 @@ namespace eLibrary.Services
             await rabbitMqService.SendAnEmail(new EmailDTO
             {
                 EmailTo = entity.Email,
-                Message = $"Poštovani\n" +
-                          $"Korisnicko ime: {entity.KorisnickoIme}\n" +
-                          $"Lozinka: {lozinka}\n\n" +
+                Message = $"Poštovani<br>" +
+                          $"Korisnicko ime: {entity.KorisnickoIme}<br>" +
+                          $"Lozinka: {lozinka}<br><br>" +
                           $"Srdačan pozdrav",
                 ReceiverName = entity.Ime + " " + entity.Prezime,
                 Subject = "Registracija"

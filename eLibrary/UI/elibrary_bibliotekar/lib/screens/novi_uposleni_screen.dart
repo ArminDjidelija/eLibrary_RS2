@@ -109,48 +109,21 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
             ),
             Row(
               children: [
-                Expanded(
+                SizedBox(
+                    width: 300,
                     child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Korisnicko ime"),
-                  name: 'korisnickoIme',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
+                      decoration:
+                          const InputDecoration(labelText: "Korisnicko ime"),
+                      name: 'korisnickoIme',
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(
+                            errorText: "Obavezno polje"),
+                        FormBuilderValidators.minLength(4),
+                      ]),
+                    )),
                 const SizedBox(
                   width: 10,
                 ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Lozinka"),
-                  name: 'lozinka',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Lozinka potvrda"),
-                  name: 'lozinkaPotvrda',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-            Row(
-              children: [
                 Container(
                     width: 300,
                     child: DropdownSearch<Uloga>.multiSelection(
@@ -185,8 +158,38 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                         if (newValue != null) {print(newValue.length)}
                       },
                     ))
+                // Expanded(
+                //     child: FormBuilderTextField(
+                //   decoration: const InputDecoration(labelText: "Lozinka"),
+                //   name: 'lozinka',
+                //   validator: FormBuilderValidators.compose([
+                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                //     FormBuilderValidators.minLength(4),
+                //   ]),
+                // )),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // Expanded(
+                //     child: FormBuilderTextField(
+                //   decoration:
+                //       const InputDecoration(labelText: "Lozinka potvrda"),
+                //   name: 'lozinkaPotvrda',
+                //   validator: FormBuilderValidators.compose([
+                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                //     FormBuilderValidators.minLength(4),
+                //   ]),
+                // )),
+                // const SizedBox(
+                //   width: 10,
+                // ),
               ],
-            )
+            ),
+            // Row(
+            //   children: [
+
+            //   ],
+            // )
           ],
         ),
       ),
