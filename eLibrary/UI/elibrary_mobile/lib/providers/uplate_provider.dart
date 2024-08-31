@@ -16,8 +16,6 @@ class UplataProvider extends BaseProvider<Uplata> {
 
   Future<Map<String, dynamic>> makePaymentIntent(
       double amount, String currency) async {
-    // Stripe.publishableKey = dotenv.env['_stripeKey'] ??
-    //     "pk_test_51Pnjz0P5tuePrjwKKT8H2aBJoItDhIDp8SzjnCWNGM5FkgOzuyFPjB81xL2SQ1g05Z7Ogb76LSw6LT1a5nBaawH900aK93ROMF";
     final body = {
       'amount': '200',
       'currency': 'USD',

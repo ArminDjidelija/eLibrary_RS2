@@ -284,61 +284,24 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     );
   }
 
-  // Widget _buildPage() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           margin: EdgeInsets.only(left: 10, top: 5),
-  //           child: Text(
-  //             "Napravi članarinu:",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildBiblioteke(),
-  //         _buildTipoviClanarina(),
-  //         tipClanarineId > 0
-  //             ? Container(
-  //                 margin: EdgeInsets.all(8),
-  //                 alignment: Alignment.centerRight,
-  //                 child: ElevatedButton(
-  //                     style: ButtonStyle(
-  //                         backgroundColor:
-  //                             MaterialStatePropertyAll<Color>(Colors.blue)),
-  //                     onPressed: () async => {await makePayment()},
-  //                     child: Text(
-  //                       "Nastavi na plaćanje",
-  //                       style: TextStyle(color: Colors.white),
-  //                     )),
-  //               )
-  //             : Container(),
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           decoration: BoxDecoration(
-  //             border: Border(
-  //               top: BorderSide(
-  //                 color: Colors.black, // Boja bordera
-  //                 width: 2.0, // Širina bordera
-  //               ),
-  //             ),
-  //           ),
-  //           margin: EdgeInsets.only(left: 10, top: 20, right: 10),
-  //           child: Text(
-  //             "Historija članarina",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildPrijasnjeClanarine(),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Future makePayment() async {
     var secret = dotenv.env['_paypalSecret'];
     var public = dotenv.env['_paypalPublic'];
+
+    var valueSecret = String.fromEnvironment("_paypalSecret",
+        defaultValue: dotenv.env['_paypalSecret'] ?? "");
+    var valuePublic = String.fromEnvironment("_paypalSecret",
+        defaultValue: dotenv.env['_paypalSecret'] ?? "");
+
+    if (valueSecret.isEmpty || valuePublic.isEmpty) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška",
+          text: "Greška sa plaćanjem");
+      return;
+    }
+
     var total = odabranaClanarina!.iznos!.toString();
     var naziv = odabranaClanarina!.naziv;
     Navigator.of(context).push(
@@ -375,7 +338,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
               onSuccess: (Map params) async {
                 Navigator.pop(context);
 
-                print("onSuccess: $params");
                 try {
                   await clanarineProvider.insert({
                     'bibliotekaId': odabranaBiblioteka!.bibliotekaId,

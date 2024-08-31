@@ -114,7 +114,9 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(5),
+                    FormBuilderValidators.match(r'^\+\d{7,15}$',
+                        errorText:
+                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
                   ]),
                 )),
               ],
@@ -133,31 +135,6 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                         FormBuilderValidators.minLength(4),
                       ]),
                     )),
-                const SizedBox(
-                  width: 10,
-                ),
-                // Expanded(
-                //     child: FormBuilderTextField(
-                //   decoration: const InputDecoration(labelText: "Lozinka"),
-                //   name: 'lozinka',
-                //   validator: FormBuilderValidators.compose([
-                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                //     FormBuilderValidators.minLength(4),
-                //   ]),
-                // )),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // Expanded(
-                //     child: FormBuilderTextField(
-                //   decoration:
-                //       const InputDecoration(labelText: "Lozinka potvrda"),
-                //   name: 'lozinkaPotvrda',
-                //   validator: FormBuilderValidators.compose([
-                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                //     FormBuilderValidators.minLength(4),
-                //   ]),
-                // )),
                 const SizedBox(
                   width: 10,
                 ),
@@ -197,11 +174,6 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                     ))
               ],
             ),
-            // Row(
-            //   children: [
-
-            //   ],
-            // )
           ],
         ),
       ),

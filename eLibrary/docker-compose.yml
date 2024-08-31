@@ -26,16 +26,15 @@ services:
         - elibrarynet2024
    
   elibrary-sql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     restart: unless-stopped
+    user: root
     environment:
         - ACCEPT_EULA=Y
         - SA_PASSWORD=${_saPassword}
         - MSSQL_PID=Developer
     ports:
         - 1401:1433
-    expose:
-        - 1433
     networks:
         - elibrarynet2024
     

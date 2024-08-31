@@ -74,24 +74,24 @@ namespace eLibrary.Services.Recommender
 
         public float ComputeEuclidean(float[] vectorA, float[] vectorB)
         {
-            //float dotProduct = 0;
-            //float normA = 0;
-            //float normB = 0;
-            //for (int i = 0; i < vectorA.Length; i++)
-            //{
-            //    dotProduct += vectorA[i] * vectorB[i];
-            //    normA += vectorA[i] * vectorA[i];
-            //    normB += vectorB[i] * vectorB[i];
-            //}
-            //if (normA == 0 || normB == 0)
-            //    return 0;
-            //return dotProduct / (MathF.Sqrt(normA) * MathF.Sqrt(normB));
-            double squareSum = 0;
-            for(int i= 0;i < vectorA.Length;i++)
+            float dotProduct = 0;
+            float normA = 0;
+            float normB = 0;
+            for (int i = 0; i < vectorA.Length; i++)
             {
-                squareSum += Math.Pow(vectorA[i] - vectorB[i], 2);
+                dotProduct += vectorA[i] * vectorB[i];
+                normA += vectorA[i] * vectorA[i];
+                normB += vectorB[i] * vectorB[i];
             }
-            return (float)Math.Sqrt(squareSum);
+            if (normA == 0 || normB == 0)
+                return 0;
+            return dotProduct / (MathF.Sqrt(normA) * MathF.Sqrt(normB));
+            //double squareSum = 0;
+            //for(int i= 0;i < vectorA.Length;i++)
+            //{
+            //    squareSum += Math.Pow(vectorA[i] - vectorB[i], 2);
+            //}
+            //return (float)Math.Sqrt(squareSum);
         }
 
         public List<Database.Knjige> RecommendBooks(CitalacKnjiga userLikedBooks, List<Database.Knjige> allBooks)

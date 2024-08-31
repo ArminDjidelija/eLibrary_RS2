@@ -104,6 +104,11 @@ class _TipClanarineBibliotekaDetailsScreenState
                   name: 'trajanje',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    //FormBuilderValidators.numeric(errorText: "Mora biti broj"),
+                    //FormBuilderValidators.max(365,
+                    //    errorText: "Maksimalna vrijednost je 365"),
+                    //FormBuilderValidators.min(1,
+                    //    errorText: "Minimalna vrijednost je 1"),
                   ]),
                 )),
                 const SizedBox(
@@ -115,6 +120,9 @@ class _TipClanarineBibliotekaDetailsScreenState
                   name: 'iznos',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    //FormBuilderValidators.numeric(errorText: "Mora biti broj"),
+                    //FormBuilderValidators.min(0,
+                    //  errorText: "Mora biti veći od 0"),
                   ]),
                 )),
                 const SizedBox(

@@ -127,6 +127,8 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                         FormBuilderValidators.integer(),
+                        FormBuilderValidators.min(1,
+                            errorText: "Minimalno trajanje je 1 dan"),
                       ]),
                     )),
                 SizedBox(

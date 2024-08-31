@@ -107,7 +107,9 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(5),
+                    FormBuilderValidators.match(r'^\+\d{7,15}$',
+                        errorText:
+                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
                   ]),
                 )),
               ],

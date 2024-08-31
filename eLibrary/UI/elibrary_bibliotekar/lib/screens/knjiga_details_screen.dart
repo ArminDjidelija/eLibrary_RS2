@@ -190,7 +190,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naslov"),
+                  decoration: const InputDecoration(labelText: "Naslov"),
                   name: 'naslov',
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
@@ -199,46 +199,56 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Godina izdanja"),
+                  decoration:
+                      const InputDecoration(labelText: "Godina izdanja"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: 'godinaIzdanja',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.numeric(errorText: "Mora biti broj"),
+                    FormBuilderValidators.min(1000,
+                        errorText: "Minimalna godina je 1000"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Broj izdanja"),
+                  decoration: const InputDecoration(labelText: "Broj izdanja"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: 'brojIzdanja',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.numeric(errorText: "Mora biti broj"),
+                    FormBuilderValidators.min(1,
+                        errorText: "Minimalna vrijednost je 1"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Broj stranica"),
+                  decoration: const InputDecoration(labelText: "Broj stranica"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: 'brojStranica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.numeric(errorText: "Mora biti broj"),
+                    FormBuilderValidators.min(1,
+                        errorText: "Minimalna vrijednost je 1"),
                   ]),
                 )),
               ],
@@ -247,7 +257,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Opis"),
+                  decoration: const InputDecoration(labelText: "Opis"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
@@ -261,13 +271,13 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "ISBN"),
+                  decoration: const InputDecoration(labelText: "ISBN"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: 'isbn',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -303,13 +313,13 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     if (newValue != null) {print(newValue.jezikId)}
                   },
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderDropdown(
                   name: "uvezId",
-                  decoration: InputDecoration(labelText: "Uvez"),
+                  decoration: const InputDecoration(labelText: "Uvez"),
                   enabled: AuthProvider.korisnikUloge!
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
@@ -323,10 +333,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -335,7 +345,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: "vrsteGradeId",
-                  decoration: InputDecoration(labelText: "Vrsta građe"),
+                  decoration: const InputDecoration(labelText: "Vrsta građe"),
                   items: vrsteGradeResult?.resultList
                           .map((e) => DropdownMenuItem(
                               value: e.vrstaGradeId.toString(),
@@ -384,7 +394,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                         if (newValue != null) {print(newValue.izdavacId)}
                       },
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 // if (isEditing == false) ...[
@@ -427,7 +437,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     if (newValue != null) {print(newValue.length)}
                   },
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -469,7 +479,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     if (newValue != null) {print(newValue.length)}
                   },
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -525,12 +535,12 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                         name: "imageId",
                         builder: (field) {
                           return InputDecorator(
-                            decoration:
-                                InputDecoration(label: Text("Odaberite sliku")),
+                            decoration: const InputDecoration(
+                                label: Text("Odaberite sliku")),
                             child: ListTile(
-                              leading: Icon(Icons.image),
-                              title: Text("Select image"),
-                              trailing: Icon(Icons.file_upload),
+                              leading: const Icon(Icons.image),
+                              title: const Text("Select image"),
+                              trailing: const Icon(Icons.file_upload),
                               onTap: getImage,
                             ),
                           );
@@ -602,14 +612,14 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                         onCancelBtnTap: () => {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => KnjigeListScreen(),
+                              builder: (context) => const KnjigeListScreen(),
                             ),
                           )
                         },
                         onConfirmBtnTap: () => {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => KnjigeListScreen(),
+                              builder: (context) => const KnjigeListScreen(),
                             ),
                           )
                         },
@@ -672,7 +682,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     }
                   }
                 },
-                child: Text("Sacuvaj"))
+                child: const Text("Sacuvaj"))
           ],
         ),
       );
