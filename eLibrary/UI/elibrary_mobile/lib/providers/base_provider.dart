@@ -15,8 +15,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
   BaseProvider(String endpoint) {
     _endpoint = endpoint;
     baseUrl = const String.fromEnvironment("baseUrl",
-        // defaultValue: "http://10.0.2.2:5023/api/");
-        defaultValue: "http://localhost:5023/api/");
+         defaultValue: "http://10.0.2.2:5023/api/");
+        //defaultValue: "http://localhost:5023/api/");
   }
 
   Future<SearchResult<T>> get(
