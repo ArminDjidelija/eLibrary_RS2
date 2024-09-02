@@ -70,7 +70,8 @@ builder.Services.AddScoped<ICurrentUserServiceAsync, CurrentUserServiceAsync>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
-builder.Services.AddScoped<IRecommendService, RecommendService>();
+//builder.Services.AddScoped<IRecommendService, RecommendService>();
+builder.Services.AddScoped<IRecommendService, MlRecommenderService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -129,7 +130,7 @@ using(var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ELibraryContext>();
     //dataContext.Database.EnsureCreated();
-    dataContext.Database.Migrate();
+    //dataContext.Database.Migrate();
 
     //try
     //{
