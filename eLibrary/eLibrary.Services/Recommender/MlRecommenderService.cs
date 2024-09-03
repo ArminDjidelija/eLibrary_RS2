@@ -9,106 +9,60 @@ namespace eLibrary.Services.Recommender
 {
     public class MlRecommenderService : IRecommendService
     {
-        //private readonly MLContext mlContext;
         private readonly IMapper mapper;
-
         private readonly ELibraryContext eLibraryContext;
+        public List<int> allAuthors { get; set; }
+        public List<int> allTargetGroups { get; set; }
+        public List<int> allContentTypes { get; set; }
+        public List<int> allLanguages { get; set; }
+        public List<int> allVrsteGrade { get; set; }
 
         public MlRecommenderService(ELibraryContext eLibraryContext, IMapper mapper)
         {
             this.eLibraryContext = eLibraryContext;
             this.mapper = mapper;
         }
-        float threshold = 0.75f;
+        
+        /// <summary>
+        /// Recommender is consisted of nested for loop where we calculate book similarity with cosine similarity.
+        /// We group every two books (we don't group same books) which are more than 75% similar.
+        /// Similarity is based on comparing authors, genres, target groups, language, and type of book.
+        /// Books that are similar are grouped and inserted into data list.
+        /// After data training, we can consume the model.
+        /// We have the list of books user has previously read. 
+        /// We get most similar books based on books user has already viewed.
+        /// </summary>
+        float threshold = 0.65f;
         static MLContext mlContext = null;
         static object isLocked = new object();
+        const string ModelPath = "model.zip";
         static ITransformer model = null;
-        public Task<List<Model.KnjigeDTOs.Knjige>> GetRecommendedBooks(int citalacId)
+        public async Task<List<Model.KnjigeDTOs.Knjige>> GetRecommendedBooks(int citalacId)
         {
-            
-            if (mlContext == null)
+            if (model == null)
             {
-
-                //train
+                await LoadAllData();
+               
                 lock (isLocked)
                 {
                     mlContext = new MLContext();
 
-                    var allBooksQuery = eLibraryContext
-                        .Knjiges
-                        .Include(x => x.KnjigaAutoris)
-                        .Include(x => x.KnjigaCiljneGrupes)
-                        .Include(x => x.KnjigaVrsteSadrzajas);
-
-                    var allBooks = allBooksQuery.ToList();
-
-                    var data = new List<KnjigaEntry>();
-
-                    foreach (var item in allBooks)
+                    if (File.Exists(ModelPath))
                     {
-                        //if (item.NarudzbaStavkes.Count > 1)
-                        //{
-                        //    var distinctItemId = item.NarudzbaStavkes.Select(y => y.ProizvodId).Distinct().ToList();
-
-                        //    distinctItemId.ForEach(y =>
-                        //    {
-                        //        var relatedItems = item.NarudzbaStavkes.Where(z => z.ProizvodId != y);
-
-                        //        foreach (var z in relatedItems)
-                        //        {
-                        //            data.Add(new ProductEntry()
-                        //            {
-                        //                ProductID = (uint)y,
-                        //                CoPurchaseProductID = (uint)z.ProizvodId
-                        //            });
-                        //        }
-                        //    });
-                        //}
-
-                        //var authorIds = item.KnjigaAutoris.Select(y => y.AutorId).ToList();
-                        //var targetGroupIds = item.KnjigaCiljneGrupes.Select(y => y.CiljnaGrupaId).ToList();
-                        //var contentTypeIds = item.KnjigaVrsteSadrzajas.Select(y => y.VrstaSadrzajaId).ToList();
-
-                        //var relatedBooks = allBooksQuery
-                        //  .Where(x => x.KnjigaAutoris.Any(x1 => authorIds.Contains(x1.AutorId)) ||
-                        //              x.KnjigaCiljneGrupes.Any(x1 => targetGroupIds.Contains(x1.CiljnaGrupaId)) ||
-                        //              x.KnjigaVrsteSadrzajas.Any(x1 => contentTypeIds.Contains(x1.VrstaSadrzajaId))
-                        //    ).ToList();
-
-                        foreach(var rb in allBooks)
+                        // Load the model from the file
+                        using (var stream = new FileStream(ModelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                         {
-                            if (rb.KnjigaId == item.KnjigaId)
-                                continue;
-                            var similarity = ComputeCosineSimilarity(item, rb);
-                            if(similarity > threshold)
-                            {
-                                data.Add(new KnjigaEntry()
-                                {
-                                    KnjigaId = (uint)item.KnjigaId,
-                                    CoSimilarKnjigaId = (uint)rb.KnjigaId
-                                });
-                            }
+                            model = mlContext.Model.Load(stream, out var modelInputSchema);
                         }
                     }
-
-                    var traindata = mlContext.Data.LoadFromEnumerable(data);
-
-                    MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
-                    options.MatrixColumnIndexColumnName = nameof(KnjigaEntry.KnjigaId);
-                    options.MatrixRowIndexColumnName = nameof(KnjigaEntry.CoSimilarKnjigaId);
-                    options.LabelColumnName = "Label";
-                    options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
-                    options.Alpha = 0.01;
-                    options.Lambda = 0.025;
-                    // For better results use the following parameters
-                    options.NumberOfIterations = 100;
-                    options.C = 0.00001;
-
-                    var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
-
-                    model = est.Fit(traindata);
+                    else
+                    {
+                        TrainData();
+                    }
+                    
                 }
             }
+
             var readedBooks = eLibraryContext
                 .CitalacKnjigaLogs
                 .Where(x=> x.CitalacId == citalacId)
@@ -139,8 +93,14 @@ namespace eLibrary.Services.Recommender
                                          });
                     predictionResult.Add(new(knjiga, prediction.Score));
                 }
-
             }
+
+            var proba = predictionResult
+                .OrderByDescending(x => x.Item2)
+                .Distinct()
+                .Take(30)
+                .ToList();
+
 
             var finalResult = predictionResult
                 .OrderByDescending(x => x.Item2)
@@ -150,10 +110,8 @@ namespace eLibrary.Services.Recommender
                 .Take(5)
                 .ToList();
 
-            var list = 1;
-            return null;
-
-            //return Mapper.Map<List<Model.KnjigeDTOs.Knjige>>(finalResult);
+            var data1 = mapper.Map<List<Model.KnjigeDTOs.Knjige>>(finalResult);
+            return data1;
         }
 
         public double ComputeCosineSimilarity(Database.Knjige book1, Database.Knjige book2)
@@ -164,7 +122,8 @@ namespace eLibrary.Services.Recommender
             double dotProduct = features1.Zip(features2, (f1, f2) => f1 * f2).Sum();
             double magnitude1 = Math.Sqrt(features1.Sum(f => f * f));
             double magnitude2 = Math.Sqrt(features2.Sum(f => f * f));
-
+            if (magnitude1 == 0 || magnitude2 == 0)
+                return 0;
             return dotProduct / (magnitude1 * magnitude2);
         }
 
@@ -172,16 +131,82 @@ namespace eLibrary.Services.Recommender
         {
             var featureVector = new List<double>();
 
-            // Define the feature space based on the maximum number of unique attributes
-            var allAuthors = eLibraryContext.Autoris.Select(x=>x.AutorId).ToList(); // List all unique authors
-            var allTargetGroups = eLibraryContext.CiljneGrupes.Select(x=>x.CiljnaGrupaId).ToList(); // List all unique target groups
-            var allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).ToList(); // List all unique content types
+            allAuthors = eLibraryContext.Autoris.Select(x=>x.AutorId).ToList();
+            allTargetGroups = eLibraryContext.CiljneGrupes.Select(x=>x.CiljnaGrupaId).ToList(); 
+            allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).ToList(); 
+            allLanguages = eLibraryContext.Jezicis.Select(x=>x.JezikId).ToList();
+            allVrsteGrade = eLibraryContext.VrsteGrades.Select(x=>x.VrstaGradeId).ToList();
 
             featureVector.AddRange(allAuthors.Select(author => book.KnjigaAutoris.Select(x=>x.AutorId).Contains(author) ? 1.0 : 0.0));
             featureVector.AddRange(allTargetGroups.Select(targetGroup => book.KnjigaCiljneGrupes.Select(x=>x.CiljnaGrupaId).Contains(targetGroup) ? 1.0 : 0.0));
             featureVector.AddRange(allContentTypes.Select(contentType => book.KnjigaVrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).Contains(contentType) ? 1.0 : 0.0));
+            featureVector.AddRange(allLanguages.Select(x => x == book.JezikId ? 1.0 : 0.0));
+            featureVector.AddRange(allVrsteGrade.Select(x => x == book.VrsteGradeId ? 1.0 : 0.0));
 
             return featureVector.ToArray();
+        }
+
+        private async Task LoadAllData()
+        {
+            allAuthors = eLibraryContext.Autoris.Select(x => x.AutorId).ToList();
+            allTargetGroups = eLibraryContext.CiljneGrupes.Select(x => x.CiljnaGrupaId).ToList();
+            allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x => x.VrstaSadrzajaId).ToList();
+            allLanguages = eLibraryContext.Jezicis.Select(x => x.JezikId).ToList();
+            allVrsteGrade = eLibraryContext.VrsteGrades.Select(x => x.VrstaGradeId).ToList();
+        }
+
+        public void TrainData()
+        {
+            if(mlContext==null) mlContext = new MLContext();
+            var allBooksQuery = eLibraryContext
+                        .Knjiges
+                        .Include(x => x.KnjigaAutoris)
+                        .Include(x => x.KnjigaCiljneGrupes)
+                        .Include(x => x.KnjigaVrsteSadrzajas);
+
+            var allBooks = allBooksQuery.ToList();
+
+            var data = new List<KnjigaEntry>();
+
+            foreach (var item in allBooks)
+            {
+                foreach (var rb in allBooks)
+                {
+                    if (rb.KnjigaId == item.KnjigaId)
+                        continue;
+                    var similarity = ComputeCosineSimilarity(item, rb);
+                    if (similarity > threshold)
+                    {
+                        data.Add(new KnjigaEntry()
+                        {
+                            KnjigaId = (uint)item.KnjigaId,
+                            CoSimilarKnjigaId = (uint)rb.KnjigaId
+                        });
+                    }
+                }
+            }
+
+            var traindata = mlContext.Data.LoadFromEnumerable(data);
+
+            MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
+            options.MatrixColumnIndexColumnName = nameof(KnjigaEntry.KnjigaId);
+            options.MatrixRowIndexColumnName = nameof(KnjigaEntry.CoSimilarKnjigaId);
+            options.LabelColumnName = "Label";
+            options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
+            options.Alpha = 0.01;
+            options.Lambda = 0.005;
+            options.NumberOfIterations = 250;
+            options.C = 0.00001;
+
+            var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
+
+            model = est.Fit(traindata);
+
+            // Save the trained model to a file
+            using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                mlContext.Model.Save(model, traindata.Schema, fs);
+            }
         }
     }
 

@@ -130,6 +130,8 @@ namespace eLibrary.Services.Recommender
                 .Take(10)
                 .ToList();
         }
+
+        public void TrainData() { }
     }
 
     public class CitalacKnjiga

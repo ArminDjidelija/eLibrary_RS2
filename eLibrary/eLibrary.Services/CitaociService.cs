@@ -170,5 +170,10 @@ namespace eLibrary.Services
             var knjige = await recommendService.GetRecommendedBooks(id);
             return knjige;
         }
+
+        public void TrainData()
+        {
+            recommendService.TrainData();
+        }
     }
 }

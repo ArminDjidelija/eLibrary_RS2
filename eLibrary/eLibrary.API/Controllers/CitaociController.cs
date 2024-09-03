@@ -30,6 +30,13 @@ namespace eLibrary.API.Controllers
             return (_service as ICitaociService).Recommend(citalacId);
         }
 
+        [AllowAnonymous]
+        [HttpGet("traindata")]
+        public void TrainData()
+        {
+            (_service as ICitaociService).TrainData();
+        }
+
         [HttpGet("info")]
         public Task<Model.CitaociDTOs.Citaoci> GetInfo(CancellationToken cancellationToken = default)
         {
