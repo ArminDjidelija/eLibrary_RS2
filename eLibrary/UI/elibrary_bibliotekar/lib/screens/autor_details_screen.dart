@@ -86,6 +86,8 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -97,6 +99,8 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(

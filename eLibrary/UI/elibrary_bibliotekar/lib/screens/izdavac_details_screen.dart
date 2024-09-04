@@ -1,7 +1,6 @@
 import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/providers/izdavac_provider.dart';
-import 'package:elibrary_bibliotekar/screens/izdavaci_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -33,7 +32,6 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
   @override
   void initState() {
     izdavacProvider = context.read<IzdavacProvider>();
-    // TODO: implement initState
     super.initState();
     _initialValue = {
       'izdavacId': widget.izdavac?.izdavacId.toString(),
@@ -66,14 +64,19 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
             Row(
               children: [
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naziv"),
-                  name: 'naziv',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                        errorText: "Vrijednost je obavezna"),
-                  ]),
-                )),
+                  child: FormBuilderTextField(
+                    decoration: const InputDecoration(labelText: "Naziv"),
+                    name: 'naziv',
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(
+                            errorText: "Vrijednost je obavezna"),
+                        FormBuilderValidators.maxLength(200,
+                            errorText: "Maksimalno dužina je 200 znakova"),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -104,20 +107,6 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
                         type: QuickAlertType.success,
                         text: "Uspješno dodat izdavač",
                         width: 300,
-                        // onCancelBtnTap: () => {
-                        //   Navigator.of(context).pushReplacement(
-                        //     MaterialPageRoute(
-                        //       builder: (context) => IzdavaciListScreen(),
-                        //     ),
-                        //   ),
-                        // },
-                        // onConfirmBtnTap: () => {
-                        //   Navigator.of(context).pushReplacement(
-                        //     MaterialPageRoute(
-                        //       builder: (context) => IzdavaciListScreen(),
-                        //     ),
-                        //   ),
-                        // },
                       );
                       _formKey.currentState?.reset();
                     } on Exception catch (e) {
@@ -146,7 +135,7 @@ class _IzdavacDetailsScreenState extends State<IzdavacDetailsScreen> {
                   }
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

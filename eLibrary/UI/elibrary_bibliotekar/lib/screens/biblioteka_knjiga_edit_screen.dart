@@ -67,15 +67,15 @@ class _BibliotekaKnjigaEditScreenState
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Lokacija"),
+                  decoration: const InputDecoration(labelText: "Lokacija"),
                   name: 'lokacija',
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Broj kopija"),
+                  decoration: const InputDecoration(labelText: "Broj kopija"),
                   name: 'brojKopija',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
@@ -84,12 +84,13 @@ class _BibliotekaKnjigaEditScreenState
                         errorText: "Vrijednost mora biti cijeli broj"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Dostupno čitaonica"),
+                  decoration:
+                      const InputDecoration(labelText: "Dostupno čitaonica"),
                   name: 'dostupnoCitaonica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
@@ -98,12 +99,13 @@ class _BibliotekaKnjigaEditScreenState
                         errorText: "Vrijednost mora biti cijeli broj"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Dostupno pozajmica"),
+                  decoration:
+                      const InputDecoration(labelText: "Dostupno pozajmica"),
                   name: 'dostupnoPozajmica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
@@ -112,7 +114,7 @@ class _BibliotekaKnjigaEditScreenState
                         errorText: "Vrijednost mora biti cijeli broj"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -142,7 +144,7 @@ class _BibliotekaKnjigaEditScreenState
                       text: "Uspješno modifikovana knjiga!");
                 }
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

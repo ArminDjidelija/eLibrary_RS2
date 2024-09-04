@@ -71,6 +71,8 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
                   name: 'naslov',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(150,
+                        errorText: "Maksimalno dužina je 150 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -86,6 +88,8 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
                   name: 'tekst',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(500,
+                        errorText: "Maksimalno dužina je 500 znakova"),
                   ]),
                   minLines: 1,
                   maxLines: null,

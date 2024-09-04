@@ -91,6 +91,8 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   name: 'naziv',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno dužina je 100 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -101,6 +103,8 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Adresa"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno dužina je 100 znakova"),
                   ]),
                   name: 'adresa',
                 )),
@@ -118,6 +122,8 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   maxLines: null,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(500,
+                        errorText: "Maksimalno dužina je 500 znakova"),
                   ]),
                   name: 'opis',
                 )),
@@ -133,6 +139,7 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Web"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.url(errorText: "Nepravilna adresa"),
                   ]),
                   name: 'web',
                 )),
@@ -144,6 +151,9 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Telefon"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(r'^\+\d{7,15}$',
+                        errorText:
+                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
                   ]),
                   name: 'telefon',
                 )),

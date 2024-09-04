@@ -8,7 +8,6 @@ import 'package:elibrary_bibliotekar/models/ciljna_grupa.dart';
 import 'package:elibrary_bibliotekar/models/izdavac.dart';
 import 'package:elibrary_bibliotekar/models/jezik.dart';
 import 'package:elibrary_bibliotekar/models/knjiga.dart';
-import 'package:elibrary_bibliotekar/models/knjiga_ciljna_grupa.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
 import 'package:elibrary_bibliotekar/models/uvez.dart';
 import 'package:elibrary_bibliotekar/models/vrsta_grade.dart';
@@ -197,6 +196,8 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                       widget.knjiga == null,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.max(200,
+                        errorText: "Maksimalno dužina je 200 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -213,8 +214,8 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.numeric(errorText: "Mora biti broj"),
-                    FormBuilderValidators.min(1000,
-                        errorText: "Minimalna godina je 1000"),
+                    FormBuilderValidators.min(0,
+                        errorText: "Minimalna godina je 0"),
                   ]),
                 )),
                 const SizedBox(
@@ -264,6 +265,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   name: 'napomena',
                   minLines: 1,
                   maxLines: null,
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.maxWordsCount(150,
+                        errorText: "Maksimalno dužina je 150 riječi"),
+                  ]),
                 ))
               ],
             ),
@@ -276,6 +281,10 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                           .any((x) => x.uloga?.naziv == "Administrator") ||
                       widget.knjiga == null,
                   name: 'isbn',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.maxLength(20,
+                        errorText: "Maksimalno dužina je 20 znakova"),
+                  ]),
                 )),
                 const SizedBox(
                   width: 10,
@@ -417,7 +426,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                     return autori;
                   },
                   onChanged: (List<Autor> c) {
-                    if (c != null || c.isNotEmpty) {
+                    if (c.isNotEmpty) {
                       autori = c.map((a) => a.autorId!).toList();
                       autoriList = c;
                     }
@@ -427,7 +436,7 @@ class _KnjigaDetailsScreenState extends State<KnjigaDetailsScreen> {
                   },
                   compareFn: (item1, item2) => item1.autorId == item2.autorId,
                   itemAsString: (Autor u) =>
-                      "${u.ime} ${u.prezime}, ${u.godinaRodjenja}",
+                      "${u.ime} ${u.prezime}, ${u.godinaRodjenja ?? ''}",
                   validator: (List<Autor>? c) {
                     if (c == null || c.isEmpty) {
                       return 'Obavezno polje';
