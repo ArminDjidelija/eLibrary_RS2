@@ -126,6 +126,7 @@ class _ObavijestDetailsScreenState extends State<ObavijestDetailsScreen> {
                           width: 450,
                           type: QuickAlertType.success,
                           text: "Obavijest je uspješno dodata");
+                      _formKey.currentState?.reset();
                     } on Exception catch (e) {
                       QuickAlert.show(
                           context: context,

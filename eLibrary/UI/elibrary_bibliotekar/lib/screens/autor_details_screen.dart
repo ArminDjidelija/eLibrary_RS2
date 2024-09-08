@@ -37,7 +37,9 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
       'autorId': widget.autor?.autorId.toString(),
       'ime': widget.autor?.ime.toString(),
       'prezime': widget.autor?.prezime.toString(),
-      'godinaRodjenja': widget.autor?.godinaRodjenja.toString(),
+      'godinaRodjenja': widget.autor?.godinaRodjenja == null
+          ? null
+          : widget.autor?.godinaRodjenja.toString(),
     };
     if (widget.autor?.autorId != null) {
       isEditing = true;
@@ -108,10 +110,15 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                 ),
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Godina rođenja"),
-                  name: 'godinaRodjenja',
-                )),
+                        decoration:
+                            const InputDecoration(labelText: "Godina rođenja"),
+                        name: 'godinaRodjenja',
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.integer(
+                              errorText: "Broj mora biti cijeli broj"),
+                          FormBuilderValidators.numeric(
+                              errorText: "Broj mora biti cijeli broj"),
+                        ]))),
                 const SizedBox(
                   width: 10,
                 ),
@@ -134,6 +141,9 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 if (formCheck == true) {
                   var request = Map.from(_formKey.currentState!.value);
+                  if (request['godinaRodjenja'] == "") {
+                    request['godinaRodjenja'] = null;
+                  }
                   if (widget.autor == null) {
                     try {
                       await autoriProvider.insert(request);

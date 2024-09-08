@@ -75,8 +75,11 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                   decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -88,8 +91,11 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                   decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalna dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -101,8 +107,7 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                   decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(5),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.match(r'^\+\d{7,15}$',
                         errorText:
                             "Telefon ima od 7 do 15 cifara i počinje znakom+"),
@@ -168,8 +173,13 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                         type: QuickAlertType.success,
                         text: "Uspješno sačuvano!");
                     var lozinka = request['lozinka'];
-                    if (lozinka != null) {
-                      AuthProvider.password = lozinka.toString();
+                    var staraLozinka = request['staraLozinka'];
+                    var lozinkaPotvrda = request['lozinkaPotvrda'];
+
+                    if ((lozinka != null || lozinka != "") &&
+                        (staraLozinka != null || staraLozinka != "") &&
+                        (lozinkaPotvrda != null || lozinkaPotvrda != "")) {
+                      AuthProvider.password = lozinkaPotvrda.toString();
                     }
                   } on Exception catch (e) {
                     QuickAlert.show(

@@ -66,7 +66,10 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno 2 karaktera"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -78,21 +81,31 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno 2 karaktera"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Email"),
-                  name: 'email',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.email(),
-                  ]),
-                )),
+                  child: FormBuilderTextField(
+                    decoration: const InputDecoration(labelText: "Email"),
+                    name: 'email',
+                    validator: FormBuilderValidators.compose(
+                      [
+                        FormBuilderValidators.required(
+                            errorText: "Obavezno polje"),
+                        FormBuilderValidators.email(
+                            errorText: "Nepravilan format emaila"),
+                        FormBuilderValidators.maxLength(100,
+                            errorText: "Maksimalno dužina je 100 znakova"),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -102,7 +115,9 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(5),
+                    FormBuilderValidators.match(r'^\+\d{7,15}$',
+                        errorText:
+                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
                   ]),
                 )),
               ],
@@ -118,7 +133,10 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),
-                        FormBuilderValidators.minLength(4),
+                        FormBuilderValidators.minLength(4,
+                            errorText: "Minimalna dužina je 4 znaka"),
+                        FormBuilderValidators.maxLength(50,
+                            errorText: "Maksimalna dužina je 50 znakova"),
                       ]),
                     )),
                 const SizedBox(
@@ -142,9 +160,6 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                         if (c != null || c.isNotEmpty) {
                           uloge = c.map((a) => a.ulogaId!).toList();
                         }
-                        c.forEach((element) {
-                          print(element.ulogaId);
-                        });
                       },
                       compareFn: (item1, item2) =>
                           item1.ulogaId == item2.ulogaId,
@@ -158,38 +173,8 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
                         if (newValue != null) {print(newValue.length)}
                       },
                     ))
-                // Expanded(
-                //     child: FormBuilderTextField(
-                //   decoration: const InputDecoration(labelText: "Lozinka"),
-                //   name: 'lozinka',
-                //   validator: FormBuilderValidators.compose([
-                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                //     FormBuilderValidators.minLength(4),
-                //   ]),
-                // )),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // Expanded(
-                //     child: FormBuilderTextField(
-                //   decoration:
-                //       const InputDecoration(labelText: "Lozinka potvrda"),
-                //   name: 'lozinkaPotvrda',
-                //   validator: FormBuilderValidators.compose([
-                //     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                //     FormBuilderValidators.minLength(4),
-                //   ]),
-                // )),
-                // const SizedBox(
-                //   width: 10,
-                // ),
               ],
             ),
-            // Row(
-            //   children: [
-
-            //   ],
-            // )
           ],
         ),
       ),
@@ -206,9 +191,6 @@ class _NoviUposleniScreenState extends State<NoviUposleniScreen> {
               onPressed: () async {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
-                  //TODO provjera username  i email da li vec postoji
-
-                  print("Sve uredu");
                   var request = Map.from(_formKey.currentState!.value);
                   request['uloge'] = uloge;
                   try {

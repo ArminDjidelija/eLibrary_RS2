@@ -78,7 +78,10 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -90,7 +93,10 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -103,6 +109,8 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.email(),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno dužina je 100 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -132,7 +140,10 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),
-                        FormBuilderValidators.minLength(4),
+                        FormBuilderValidators.minLength(4,
+                            errorText: "Minimalno dužina je 4 znaka"),
+                        FormBuilderValidators.maxLength(50,
+                            errorText: "Maksimalno dužina je 50 znakova"),
                       ]),
                     )),
                 const SizedBox(
@@ -167,9 +178,6 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                         if (c == null || c.isEmpty) {
                           return 'Obavezno polje';
                         }
-                      },
-                      onSaved: (newValue) => {
-                        if (newValue != null) {print(newValue.length)}
                       },
                     ))
               ],

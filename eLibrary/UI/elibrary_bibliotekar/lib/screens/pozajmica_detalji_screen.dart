@@ -110,143 +110,126 @@ class _PozajmicaDetailsScreenState extends State<PozajmicaDetailsScreen> {
   }
 
   Widget _buildPozajmicaDetalji() {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: 8,
-            ),
-            Container(
-              width: 650,
-              child: Container(
-                child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 8,
+          ),
+          Container(
+            width: 650,
+            child: Column(
+              children: [
+                Table(
+                  border: TableBorder.all(
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.all(Radius.circular(5))),
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: IntrinsicColumnWidth(),
+                    1: FlexColumnWidth()
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   children: [
-                    Table(
-                      border: TableBorder.all(
-                          color: Colors.black,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      columnWidths: const <int, TableColumnWidth>{
-                        0: IntrinsicColumnWidth(),
-                        1: FlexColumnWidth()
-                      },
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              "Čitalac",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              "${widget.pozajmica!.citalac!.ime} ${widget.pozajmica!.citalac!.prezime}",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              "Email",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              "${widget.pozajmica!.citalac!.email}",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              "Datum preuzimanja",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              DateFormat("dd.MM.yyyy. HH:mm").format(
-                                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                      .parseStrict(widget
-                                          .pozajmica!.datumPreuzimanja
-                                          .toString())),
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              "Rok vraćanja",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              DateFormat("dd.MM.yyyy. HH:mm").format(
-                                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                      .parseStrict(widget
-                                          .pozajmica!.preporuceniDatumVracanja
-                                          .toString())),
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          )
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              "Stvarni datum vraćanja",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              DateFormat("dd.MM.yyyy. HH:mm").format(
-                                  DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                      .parseStrict(widget
-                                          .pozajmica!.stvarniDatumVracanja
-                                          .toString())),
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          )
-                        ]),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Čitalac",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          "${widget.pozajmica!.citalac!.ime} ${widget.pozajmica!.citalac!.prezime}",
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Email",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          "${widget.pozajmica!.citalac!.email}",
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Datum preuzimanja",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          DateFormat("dd.MM.yyyy. HH:mm").format(
+                              DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(
+                                  widget.pozajmica!.datumPreuzimanja
+                                      .toString())),
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Rok vraćanja",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          DateFormat("dd.MM.yyyy. HH:mm").format(
+                              DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(
+                                  widget.pozajmica!.preporuceniDatumVracanja
+                                      .toString())),
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          "Stvarni datum vraćanja",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Text(
+                          DateFormat("dd.MM.yyyy. HH:mm").format(
+                              DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(
+                                  widget.pozajmica!.stvarniDatumVracanja
+                                      .toString())),
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ]),
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildApp() {
-    return Container(
-      child: Column(
-        children: [],
+                const SizedBox(
+                  height: 5,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -284,26 +267,28 @@ class PenaliDataSource extends AdvancedDataTableSource<Penal> {
 
     return DataRow(cells: [
       DataCell(Text(item!.opis.toString())),
-      DataCell(Text(item!.iznos.toString())),
+      DataCell(Text(item.iznos.toString())),
       DataCell(
-        item!.uplataId == null ? Text("Nije uplaćeno") : Text("Uplaćen penal"),
+        item.uplataId == null
+            ? const Text("Nije uplaćeno")
+            : const Text("Uplaćen penal"),
       ),
       DataCell(
-        item!.uplataId == null
+        item.uplataId == null
             ? ElevatedButton(
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Dodaj uplatu za penal"),
+                        title: const Text("Dodaj uplatu za penal"),
                         content: FormBuilder(
                             key: _formKey,
                             child: FormBuilderDropdown(
                               name: "tipUplateId",
                               initialValue: tipUplateId,
-                              decoration:
-                                  InputDecoration(labelText: "Tip uplate"),
+                              decoration: const InputDecoration(
+                                  labelText: "Tip uplate"),
                               items: tipoviUplata
                                       .map((e) => DropdownMenuItem(
                                           value: e.tipUplateId.toString(),
@@ -317,13 +302,13 @@ class PenaliDataSource extends AdvancedDataTableSource<Penal> {
                             )),
                         actions: [
                           TextButton(
-                            child: Text("Odustani"),
+                            child: const Text("Odustani"),
                             onPressed: () {
-                              Navigator.of(context).pop(); // Zatvara dijalog
+                              Navigator.of(context).pop();
                             },
                           ),
                           TextButton(
-                            child: Text("Potvrdi"),
+                            child: const Text("Potvrdi"),
                             onPressed: () async {
                               var formaCheck =
                                   _formKey.currentState?.saveAndValidate();
@@ -343,7 +328,7 @@ class PenaliDataSource extends AdvancedDataTableSource<Penal> {
                     },
                   );
                 },
-                child: Text("Dodaj uplatu za penal"),
+                child: const Text("Dodaj uplatu za penal"),
               )
             : Container(),
       )

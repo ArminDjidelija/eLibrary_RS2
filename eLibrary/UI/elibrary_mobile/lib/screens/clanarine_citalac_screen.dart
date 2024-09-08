@@ -346,13 +346,19 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                     'tipClanarineBibliotekaId': tipClanarineId
                   });
                   QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: "Uspješno kreirana članarina");
-                  _firstLoad();
-                  odabranaClanarina = null;
-                  odabranaBiblioteka = null;
-                  odabraniTipClanarine = null;
+                    context: context,
+                    type: QuickAlertType.success,
+                    text: "Uspješno kreirana članarina",
+                  );
+
+                  setState(() {
+                    bibliotekaId = 0;
+                    tipClanarineId = 0;
+                    odabranaClanarina = null;
+                    odabranaBiblioteka = null;
+                    odabraniTipClanarine = null;
+                    _firstLoad();
+                  });
                 } on Exception catch (e) {}
                 // Navigator.pop(context);
               },
@@ -372,7 +378,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
 
   Widget _buildPrijasnjaPozajmicaCard({required Clanarina clanarina}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -380,7 +386,7 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
           children: [
             _buildInfoRow('Biblioteka', clanarina.biblioteka!.naziv.toString()),
             _buildInfoRow('Trajanje',
-                "${formatDateToLocal(clanarina.pocetak.toString())} do ${formatDateToLocal(clanarina.kraj.toString())}"),
+                "${formatDateTimeToLocal(clanarina.pocetak.toString())} do ${formatDateTimeToLocal(clanarina.kraj.toString())}"),
             _buildInfoRow('Iznos',
                 "${clanarina.uplate!.iznos.toString()} ${clanarina.uplate!.valuta!.skracenica.toString()}"),
           ],
@@ -397,12 +403,12 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ),
         ],
@@ -422,10 +428,10 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
 
   Widget _buildBiblioteke() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownSearch<Biblioteka>(
         selectedItem: odabranaBiblioteka,
-        popupProps: PopupPropsMultiSelection.menu(
+        popupProps: const PopupPropsMultiSelection.menu(
           isFilterOnline: true,
           showSearchBox: true,
           searchDelay: Duration(milliseconds: 5),
@@ -458,10 +464,10 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
   Widget _buildTipoviClanarina() {
     return bibliotekaId > 0
         ? Container(
-            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: DropdownSearch<TipClanarineBiblioteka>(
               selectedItem: odabraniTipClanarine,
-              popupProps: PopupPropsMultiSelection.menu(),
+              popupProps: const PopupPropsMultiSelection.menu(),
               dropdownDecoratorProps: const DropDownDecoratorProps(
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Odaberi člnarinu",

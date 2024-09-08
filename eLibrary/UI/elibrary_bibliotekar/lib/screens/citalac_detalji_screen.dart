@@ -198,7 +198,9 @@ class _CitalacDetaljiScreenState extends State<CitalacDetaljiScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(5),
-                        child: Text(widget.citalac!.institucija.toString()),
+                        child: Text(widget.citalac!.institucija == null
+                            ? "Nije uneseno"
+                            : widget.citalac!.institucija.toString()),
                       )
                     ]),
                   ],

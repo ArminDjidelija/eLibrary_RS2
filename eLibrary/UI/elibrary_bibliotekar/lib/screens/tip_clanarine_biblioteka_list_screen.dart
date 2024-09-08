@@ -49,13 +49,11 @@ class _TipClanarinaBibliotekaListScreenState
   Widget build(BuildContext context) {
     return BibliotekarMasterScreen(
         "Tipovi članarina",
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
-            ],
-          ),
+        Column(
+          children: [
+            _buildSearch(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+          ],
         ));
   }
 
@@ -69,10 +67,11 @@ class _TipClanarinaBibliotekaListScreenState
       child: Row(
         children: [
           Container(
-              width: 200,
+              width: 300,
               child: TextField(
                 controller: _trajanjeOdEditingController,
-                decoration: const InputDecoration(labelText: "Trajanje od"),
+                decoration:
+                    const InputDecoration(labelText: "Trajanje od (dani)"),
                 onChanged: (value) async {
                   _source.filterServerSide(_trajanjeOdEditingController.text,
                       _trajanjeDoEditingController.text);
@@ -82,10 +81,11 @@ class _TipClanarinaBibliotekaListScreenState
             width: 8,
           ),
           Container(
-              width: 200,
+              width: 300,
               child: TextField(
                 controller: _trajanjeDoEditingController,
-                decoration: const InputDecoration(labelText: "Trajanje do"),
+                decoration:
+                    const InputDecoration(labelText: "Trajanje do (dani)"),
                 onChanged: (value) async {
                   _source.filterServerSide(_trajanjeOdEditingController.text,
                       _trajanjeDoEditingController.text);

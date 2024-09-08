@@ -101,17 +101,17 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
             Row(
               children: [
                 Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "${widget.bibliotekaKnjiga!.knjiga!.naslov.toString()}, ${widget.bibliotekaKnjiga!.knjiga!.godinaIzdanja.toString()}",
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  ),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${widget.bibliotekaKnjiga!.knjiga!.naslov.toString()}, ${widget.bibliotekaKnjiga!.knjiga!.godinaIzdanja.toString()}",
+                      style: const TextStyle(fontSize: 25),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -120,18 +120,20 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                 Container(
                     width: 200,
                     child: FormBuilderTextField(
-                      decoration:
-                          InputDecoration(labelText: "Dužina pozajmice (dani)"),
+                      decoration: const InputDecoration(
+                          labelText: "Dužina pozajmice (dani)"),
                       name: 'trajanje',
                       initialValue: "7",
                       validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.integer(),
+                        FormBuilderValidators.required(
+                            errorText: "Vrijednost je obavezna"),
+                        FormBuilderValidators.integer(
+                            errorText: "Vrijednost mora biti cijeli broj"),
                         FormBuilderValidators.min(1,
                             errorText: "Minimalno trajanje je 1 dan"),
                       ]),
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 // Expanded(
@@ -152,23 +154,23 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                 Container(
                     width: 200,
                     child: FormBuilderCheckbox(
-                      title: Text("Moguće produžiti"),
+                      title: const Text("Moguće produžiti"),
                       initialValue: false,
                       name: 'moguceProduziti',
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                     child: DropdownSearch<Citalac>(
                   selectedItem: citalac,
                   enabled: citalac == null,
-                  popupProps: PopupPropsMultiSelection.menu(
+                  popupProps: const PopupPropsMultiSelection.menu(
                       // showSelectedItems: true,
                       isFilterOnline: true,
                       showSearchBox: true,
                       searchDelay: Duration(milliseconds: 5)),
-                  dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
                           labelText: "Odaberi korisnika",
                           hintText: "Unesite ime i prezime čitaoca")),
@@ -190,7 +192,7 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                     if (newValue != null) {print(newValue.citalacId)}
                   },
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -234,13 +236,11 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                         builder: (context) => const PozajmiceListScreen()));
                     print(request);
                   }
-                } else {
-                  print("Belaj");
-                }
+                } else {}
 
                 // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

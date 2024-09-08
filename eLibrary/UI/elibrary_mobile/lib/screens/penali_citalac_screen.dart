@@ -248,7 +248,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
       return ListView(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         children: trenutniPenali
             .map((e) => _buildTrenutniPenalCard(penal: e))
             .toList(),
@@ -256,7 +256,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
     } else {
       return Container(
         height: 50,
-        child: Center(
+        child: const Center(
           child: Text("Nema penala za platiti"),
         ),
       );
@@ -265,7 +265,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
 
   Widget _buildTrenutniPenalCard({required Penal penal}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -274,27 +274,27 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
             Container(
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<Biblioteka>(
                 future: getBibliotekaByPenal(penal.penalId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text(
+                    return const Text(
                       'Loading...',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Greška sa učitavanjem',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasData) {
                     return Text(
                       'Biblioteka: ${snapshot.data!.naziv}',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     );
                   } else {
-                    return Text(
+                    return const Text(
                       'Nema biblioteke',
                       style: TextStyle(color: Colors.white),
                     );
@@ -308,7 +308,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                style: ButtonStyle(
+                style: const ButtonStyle(
                     backgroundColor:
                         MaterialStatePropertyAll<Color>(Colors.blue)),
                 onPressed: () async {
@@ -321,7 +321,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                         title: e.toString());
                   }
                 },
-                child: Text(
+                child: const Text(
                   "Plati",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -341,12 +341,12 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ),
         ],
@@ -360,9 +360,9 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             physics:
-                NeverScrollableScrollPhysics(), // Disable ListView scrolling
+                const NeverScrollableScrollPhysics(), // Disable ListView scrolling
             shrinkWrap: true, // Ensure ListView occupies only necessary space
             itemCount: prijasnjiPenali.length + 1,
             controller: scrollController,
@@ -388,7 +388,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
 
   Widget _buildPrijasnjiPenalCard({required Penal penal}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -398,27 +398,27 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
               // height: 200,
               width: double.infinity,
               color: Colors.blue,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<Biblioteka>(
                 future: getBibliotekaByPenal(penal.penalId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text(
+                    return const Text(
                       'Loading...',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasError) {
-                    return Text(
+                    return const Text(
                       'Greška sa učitavanjem',
                       style: TextStyle(color: Colors.white),
                     );
                   } else if (snapshot.hasData) {
                     return Text(
                       'Biblioteka: ${snapshot.data!.naziv}',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     );
                   } else {
-                    return Text(
+                    return const Text(
                       'Nema biblioteke',
                       style: TextStyle(color: Colors.white),
                     );

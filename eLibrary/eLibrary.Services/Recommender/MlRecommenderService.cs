@@ -25,14 +25,14 @@ namespace eLibrary.Services.Recommender
         
         /// <summary>
         /// Recommender is consisted of nested for loop where we calculate book similarity with cosine similarity.
-        /// We group every two books (we don't group same books) which are more than 75% similar.
+        /// We group every two books (we don't group same books) which are more than 65% similar (we would use bigger threshold with more books).
         /// Similarity is based on comparing authors, genres, target groups, language, and type of book.
         /// Books that are similar are grouped and inserted into data list.
         /// After data training, we can consume the model.
-        /// We have the list of books user has previously read. 
+        /// We have the list of books user has previously read or reviewed. 
         /// We get most similar books based on books user has already viewed.
         /// </summary>
-        float threshold = 0.65f;
+        float threshold = 0.75f;
         static MLContext mlContext = null;
         static object isLocked = new object();
         const string ModelPath = "model.zip";
@@ -110,8 +110,27 @@ namespace eLibrary.Services.Recommender
                 .Take(5)
                 .ToList();
 
-            var data1 = mapper.Map<List<Model.KnjigeDTOs.Knjige>>(finalResult);
-            return data1;
+            var knjige = eLibraryContext
+                .Knjiges
+                .Include(x => x.KnjigaAutoris).ThenInclude(x => x.Autor)
+                .Include(x => x.KnjigaVrsteSadrzajas)
+                .Include(x => x.KnjigaCiljneGrupes)
+                .Include(x => x.VrstaGrade)
+                .Include(x => x.Jezik)
+                .Include(x => x.Izdavac)
+                .Include(x => x.Uvez);
+
+            var lista = new List<Model.KnjigeDTOs.Knjige>();
+
+            foreach(var k in finalResult)
+            {
+                var knjiga = await knjige.FirstOrDefaultAsync(x=> x.KnjigaId == k.KnjigaId);
+                if (knjiga != null)
+                    lista.Add(mapper.Map<Model.KnjigeDTOs.Knjige>(knjiga));
+            }
+            return lista;
+            //var data1 = mapper.Map<List<Model.KnjigeDTOs.Knjige>>(finalResult);
+            //return data1;
         }
 
         public double ComputeCosineSimilarity(Database.Knjige book1, Database.Knjige book2)
@@ -135,13 +154,13 @@ namespace eLibrary.Services.Recommender
             allTargetGroups = eLibraryContext.CiljneGrupes.Select(x=>x.CiljnaGrupaId).ToList(); 
             allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).ToList(); 
             allLanguages = eLibraryContext.Jezicis.Select(x=>x.JezikId).ToList();
-            allVrsteGrade = eLibraryContext.VrsteGrades.Select(x=>x.VrstaGradeId).ToList();
+            //allVrsteGrade = eLibraryContext.VrsteGrades.Select(x=>x.VrstaGradeId).ToList();
 
             featureVector.AddRange(allAuthors.Select(author => book.KnjigaAutoris.Select(x=>x.AutorId).Contains(author) ? 1.0 : 0.0));
             featureVector.AddRange(allTargetGroups.Select(targetGroup => book.KnjigaCiljneGrupes.Select(x=>x.CiljnaGrupaId).Contains(targetGroup) ? 1.0 : 0.0));
             featureVector.AddRange(allContentTypes.Select(contentType => book.KnjigaVrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).Contains(contentType) ? 1.0 : 0.0));
             featureVector.AddRange(allLanguages.Select(x => x == book.JezikId ? 1.0 : 0.0));
-            featureVector.AddRange(allVrsteGrade.Select(x => x == book.VrsteGradeId ? 1.0 : 0.0));
+            //featureVector.AddRange(allVrsteGrade.Select(x => x == book.VrsteGradeId ? 1.0 : 0.0));
 
             return featureVector.ToArray();
         }
@@ -202,7 +221,7 @@ namespace eLibrary.Services.Recommender
 
             model = est.Fit(traindata);
 
-            // Save the trained model to a file
+            // Saving trained model to a file
             using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 mlContext.Model.Save(model, traindata.Schema, fs);

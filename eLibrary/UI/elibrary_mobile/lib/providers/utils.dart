@@ -35,8 +35,7 @@ String formatDateTimeToLocal(String date) {
 
 String formatDateToLocal(String date) {
   return DateFormat("dd.MM.yyyy.")
-      .format(
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").parseStrict(date.toString()))
+      .format(DateFormat("yyyy-MM-ddTHH:mm:ss").parseStrict(date.toString()))
       .toString();
 }
 

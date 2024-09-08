@@ -58,7 +58,7 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
           child: Column(
             children: [
               _buildSearch(),
-              _isLoading ? Text("Nema podataka") : _buildPaginatedTable()
+              _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
             ],
           ),
         ));
@@ -114,24 +114,24 @@ class _AutoriListScreenState extends State<AutoriListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Ime"),
+                    child: const Text("Ime"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Prezime"),
+                    child: const Text("Prezime"),
                   )),
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("Godina rodjenja"),
+                    child: const Text("Godina rodjenja"),
                   )),
                   if (AuthProvider.korisnikUloge!.any(
                       (element) => element.uloga!.naziv == "Administrator"))
                     DataColumn(
                         label: Container(
                       alignment: Alignment.centerLeft,
-                      child: Text("Akcija"),
+                      child: const Text("Akcija"),
                     )),
                 ],
                 source: _source,
@@ -184,14 +184,16 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
             )),
             DataCell(Container(
               alignment: Alignment.centerLeft,
-              child: Text(item!.godinaRodjenja.toString()),
+              child: Text(item.godinaRodjenja == null
+                  ? "Nije uneseno"
+                  : item.godinaRodjenja.toString()),
             )),
             DataCell(ElevatedButton(
-                child: Text(
+                child: const Text(
                   "Detalji",
                   style: TextStyle(color: Colors.white),
                 ),
-                style: ButtonStyle(
+                style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                 ),
                 onPressed: () {

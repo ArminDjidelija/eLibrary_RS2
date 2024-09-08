@@ -104,7 +104,8 @@ class _TipClanarineBibliotekaDetailsScreenState
                   name: 'trajanje',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.integer(errorText: "Mora biti broj"),
+                    FormBuilderValidators.integer(
+                        errorText: "Mora biti cijeli broj"),
                     FormBuilderValidators.min(1,
                         errorText: "Minimalno trajanje je 1 dan"),
                     FormBuilderValidators.max(1000,

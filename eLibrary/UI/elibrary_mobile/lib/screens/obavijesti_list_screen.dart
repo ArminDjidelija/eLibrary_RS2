@@ -108,8 +108,6 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Container(
-          // color: Colors.blue,
-          // margin: EdgeInsets.only(bottom: 5),
           height: 75,
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -134,7 +132,7 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
 
   Widget _buildPage() {
     return CustomScrollView(
-      controller: scrollController, // Attach your scroll controller here
+      controller: scrollController,
       slivers: [
         SliverToBoxAdapter(
           child: Container(
@@ -249,42 +247,40 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      child: const Icon(Icons.newspaper),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    child: const Icon(Icons.newspaper),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          obavijest.naslov.toString(),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              formatDateTimeToLocal(obavijest.datum.toString()),
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              obavijest.biblioteka!.naziv.toString(),
+                              style: const TextStyle(fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            obavijest.naslov.toString(),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                formatDateToLocal(obavijest.datum.toString()),
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                obavijest.biblioteka!.naziv.toString(),
-                                style: const TextStyle(fontSize: 12),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               Container(
                 margin: const EdgeInsets.only(top: 5),

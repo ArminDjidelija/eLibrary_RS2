@@ -114,7 +114,8 @@ class _ObavijestScreenState extends State<ObavijestScreen> {
                           Row(
                             children: [
                               Text(
-                                formatDateToLocal(obavijest.datum.toString()),
+                                formatDateTimeToLocal(
+                                    obavijest.datum.toString()),
                                 style: const TextStyle(fontSize: 14),
                               ),
                               const SizedBox(

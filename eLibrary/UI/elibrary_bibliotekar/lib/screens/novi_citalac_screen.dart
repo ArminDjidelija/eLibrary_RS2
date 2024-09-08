@@ -71,7 +71,10 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -83,7 +86,10 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno 50 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -95,7 +101,10 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   name: 'email',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.email(),
+                    FormBuilderValidators.email(
+                        errorText: "Nepravilan format emaila"),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno dužina je 100 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -109,7 +118,7 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.match(r'^\+\d{7,15}$',
                         errorText:
-                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
+                            "Telefon ima od 7 do 15 cifara i počinje znakom +"),
                   ]),
                 )),
               ],
@@ -123,7 +132,10 @@ class _NoviCitalacSCreenState extends State<NoviCitalacScreen> {
                   name: 'korisnickoIme',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.minLength(4),
+                    FormBuilderValidators.minLength(4,
+                        errorText: "Minimalno 4 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalno dužina je 50 znakova"),
                   ]),
                 )),
                 const SizedBox(

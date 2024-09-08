@@ -167,7 +167,9 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
           DataCell(Text(item.prezime.toString())),
           DataCell(Text(item.email.toString())),
           DataCell(Text(item.telefon.toString())),
-          DataCell(Text(item.institucija.toString())),
+          DataCell(Text(item.institucija == null
+              ? "Nije uneseno"
+              : item.institucija.toString())),
         ]);
   }
 

@@ -93,11 +93,10 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                   name: "tipClanarineBibliotekaId",
                   decoration: const InputDecoration(labelText: "Tip clanarine"),
                   items: tipoviClanarina
-                          .map((e) => DropdownMenuItem(
-                              value: e.tipClanarineBibliotekaId.toString(),
-                              child: Text(e.naziv ?? "")))
-                          .toList() ??
-                      [],
+                      .map((e) => DropdownMenuItem(
+                          value: e.tipClanarineBibliotekaId.toString(),
+                          child: Text(e.naziv ?? "")))
+                      .toList(),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
@@ -110,11 +109,10 @@ class _NovaClanarinaScreenState extends State<NovaClanarinaScreen> {
                   name: "tipUplateId",
                   decoration: const InputDecoration(labelText: "Tip uplate"),
                   items: tipoviUplata
-                          .map((e) => DropdownMenuItem(
-                              value: e.tipUplateId.toString(),
-                              child: Text(e.naziv ?? "")))
-                          .toList() ??
-                      [],
+                      .map((e) => DropdownMenuItem(
+                          value: e.tipUplateId.toString(),
+                          child: Text(e.naziv ?? "")))
+                      .toList(),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),

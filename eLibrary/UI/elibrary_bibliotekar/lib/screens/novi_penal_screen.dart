@@ -2,13 +2,11 @@ import 'package:elibrary_bibliotekar/layouts/bibliotekar_master_screen.dart';
 import 'package:elibrary_bibliotekar/models/kanton.dart';
 import 'package:elibrary_bibliotekar/models/pozajmica.dart';
 import 'package:elibrary_bibliotekar/models/search_result.dart';
-import 'package:elibrary_bibliotekar/models/tip_uplate.dart';
 import 'package:elibrary_bibliotekar/models/valuta.dart';
-import 'package:elibrary_bibliotekar/providers/citaoci_provider.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:elibrary_bibliotekar/providers/penali_provider.dart';
-import 'package:elibrary_bibliotekar/providers/tip_uplate_provider.dart';
 import 'package:elibrary_bibliotekar/providers/valute_provider.dart';
+import 'package:elibrary_bibliotekar/screens/historija_pozajmica_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -79,16 +77,17 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Opis"),
+                  decoration: const InputDecoration(labelText: "Opis"),
                   name: 'opis',
                   minLines: 1,
                   maxLines: null,
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(2),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalno 2 znaka"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -98,14 +97,18 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
                 Container(
                     width: 200,
                     child: FormBuilderTextField(
-                      decoration: InputDecoration(labelText: "Iznos"),
+                      decoration: const InputDecoration(labelText: "Iznos"),
                       name: 'iznos',
                       validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.integer(),
+                        FormBuilderValidators.required(
+                            errorText: "Obavezno polje"),
+                        FormBuilderValidators.numeric(
+                            errorText: "Mora biti broj"),
+                        FormBuilderValidators.min(1,
+                            errorText: "Mora biti minimum 1"),
                       ]),
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Container(
@@ -113,9 +116,10 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
                   child: FormBuilderDropdown(
                     name: "valutaId",
                     validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
                     ]),
-                    decoration: InputDecoration(labelText: "Valuta"),
+                    decoration: const InputDecoration(labelText: "Valuta"),
                     items: valutaResult?.resultList
                             .map((e) => DropdownMenuItem(
                                 value: e.valutaId.toString(),
@@ -142,9 +146,6 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
               onPressed: () {
                 var formaCheck = _formKey.currentState?.saveAndValidate();
                 if (formaCheck == true) {
-                  //TODO provjera username  i email da li vec postoji
-
-                  print("Sve uredu");
                   var request = Map.from(_formKey.currentState!.value);
 
                   try {
@@ -153,18 +154,26 @@ class _NoviPenalSCreenState extends State<NoviPenalScreen> {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
-                        text: "Uspješno kreiran novi penal!");
+                        text: "Uspješno kreiran novi penal!",
+                        onCancelBtnTap: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => PozajmiceListScreen()));
+                        },
+                        onConfirmBtnTap: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => PozajmiceListScreen()));
+                        });
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.error,
                         text: e.toString());
                   }
-                } else {
-                  print("Belaj");
-                }
+                } else {}
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

@@ -39,7 +39,9 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
       'prezime': AuthProvider.prezime.toString(),
       'kantonId': AuthProvider.kantonId.toString(),
       'telefon': AuthProvider.telefon.toString(),
-      'institucija': AuthProvider.institucija.toString(),
+      'institucija': AuthProvider.institucija == null
+          ? ""
+          : AuthProvider.institucija.toString(),
       'lozinka': null,
       'novaLozinka': null,
       'lozinkaPotvrda': null
@@ -126,13 +128,17 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Ime"),
+                  decoration: const InputDecoration(labelText: "Ime"),
                   name: 'ime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalna dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalna dužina je 50 znakova"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -141,13 +147,17 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Prezime"),
+                  decoration: const InputDecoration(labelText: "Prezime"),
                   name: 'prezime',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.minLength(2,
+                        errorText: "Minimalna dužina je 2 znaka"),
+                    FormBuilderValidators.maxLength(50,
+                        errorText: "Maksimalna dužina je 50 znakova"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -156,13 +166,16 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Telefon"),
+                  decoration: const InputDecoration(labelText: "Telefon"),
                   name: 'telefon',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(r'^\+\d{7,15}$',
+                        errorText:
+                            "Telefon ima od 7 do 15 cifara i počinje znakom+"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -171,13 +184,14 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Institucija"),
+                  decoration: const InputDecoration(labelText: "Institucija"),
                   name: 'institucija',
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno 100 znakova"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -189,7 +203,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                     name: "kantonId",
                     onChanged: (value) =>
                         {kanton = int.parse(value.toString())},
-                    decoration: InputDecoration(labelText: "Kanton"),
+                    decoration: const InputDecoration(labelText: "Kanton"),
                     items: kantoni
                             .map((e) => DropdownMenuItem(
                                 value: e.kantonId.toString(),
@@ -210,14 +224,14 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                     child: FormBuilderCheckbox(
                   initialValue: promijeniLozinku,
                   name: '',
-                  title: Text("Promijeni lozinku"),
+                  title: const Text("Promijeni lozinku"),
                   onChanged: (value) => {
                     setState(() {
                       promijeniLozinku = value!;
                     })
                   },
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -228,7 +242,8 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                   children: [
                     Expanded(
                         child: FormBuilderTextField(
-                      decoration: InputDecoration(labelText: "Stara lozinka"),
+                      decoration:
+                          const InputDecoration(labelText: "Stara lozinka"),
                       obscureText: true,
                       name: 'lozinka',
                       validator: FormBuilderValidators.compose([
@@ -236,27 +251,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                             errorText: "Obavezno polje"),
                       ]),
                     )),
-                    SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                ),
-              ),
-            if (promijeniLozinku == true)
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: FormBuilderTextField(
-                      decoration: InputDecoration(labelText: "Nova lozinka"),
-                      name: 'novaLozinka',
-                      obscureText: true,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(
-                            errorText: "Obavezno polje"),
-                      ]),
-                    )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
@@ -269,7 +264,28 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                     Expanded(
                         child: FormBuilderTextField(
                       decoration:
-                          InputDecoration(labelText: "Potvrda nove lozinke"),
+                          const InputDecoration(labelText: "Nova lozinka"),
+                      name: 'novaLozinka',
+                      obscureText: true,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(
+                            errorText: "Obavezno polje"),
+                      ]),
+                    )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+              ),
+            if (promijeniLozinku == true)
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: FormBuilderTextField(
+                      decoration: const InputDecoration(
+                          labelText: "Potvrda nove lozinke"),
                       name: 'lozinkaPotvrda',
                       obscureText: true,
                       validator: FormBuilderValidators.compose([
@@ -277,7 +293,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                             errorText: "Obavezno polje"),
                       ]),
                     )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
@@ -354,7 +370,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                 }
                 // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );

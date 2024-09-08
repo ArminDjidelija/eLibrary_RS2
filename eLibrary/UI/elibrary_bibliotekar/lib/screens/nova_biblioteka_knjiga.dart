@@ -81,8 +81,8 @@ class _NovaBibliotekaKnjigaScreenState
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
                         errorText: "Broj kopija je obavezna vrijednost"),
-                    FormBuilderValidators.numeric(
-                        errorText: "Broj kopija mora biti broj"),
+                    FormBuilderValidators.integer(
+                        errorText: "Broj kopija mora biti cijeli broj"),
                     FormBuilderValidators.min(1,
                         errorText: "Broj kopija mora biti veći od 0"),
                   ]),
@@ -105,10 +105,9 @@ class _NovaBibliotekaKnjigaScreenState
                   name: 'dostupnoCitaonica',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
-                        errorText:
-                            "Broj pozajmica u citaonici je obavezna vrijednost"),
-                    FormBuilderValidators.numeric(
-                        errorText: "Broj pozajmica mora biti broj"),
+                        errorText: "Broj pozajmica je obavezna vrijednost"),
+                    FormBuilderValidators.integer(
+                        errorText: "Broj pozajmica mora biti cijeli broj"),
                     FormBuilderValidators.min(1,
                         errorText: "Broj mora biti veći od 0"),
                   ]),
@@ -124,8 +123,8 @@ class _NovaBibliotekaKnjigaScreenState
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
                         errorText: "Broj pozajmica je obavezna vrijednost"),
-                    FormBuilderValidators.numeric(
-                        errorText: "Broj pozajmica mora biti broj"),
+                    FormBuilderValidators.integer(
+                        errorText: "Broj pozajmica mora biti cijeli broj"),
                     FormBuilderValidators.min(1,
                         errorText: "Broj mora biti veći od 0"),
                   ]),

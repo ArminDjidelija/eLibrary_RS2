@@ -13,7 +13,7 @@ TipClanarineBiblioteka _$TipClanarineBibliotekaFromJson(
           (json['tipClanarineBibliotekaId'] as num?)?.toInt()
       ..naziv = json['naziv'] as String?
       ..trajanje = (json['trajanje'] as num?)?.toInt()
-      ..iznos = (json['iznos'] as num?)?.toInt()
+      ..iznos = (json['iznos'] as num?)?.toDouble()
       ..bibliotekaId = (json['bibliotekaId'] as num?)?.toInt()
       ..valutaId = (json['valutaId'] as num?)?.toInt()
       ..valuta = json['valuta'] == null

@@ -339,11 +339,11 @@ class KnjigaDataSource extends AdvancedDataTableSource<Knjiga> {
             },
         cells: [
           DataCell(Text(item!.naslov.toString())),
-          DataCell(Text(item!.isbn.toString())),
-          DataCell(Text(item!.godinaIzdanja.toString())),
-          DataCell(Text(item!.brojIzdanja.toString())),
-          DataCell(Text(item!.brojStranica.toString())),
-          DataCell(item!.slika != null
+          DataCell(Text(item.isbn.toString())),
+          DataCell(Text(item.godinaIzdanja.toString())),
+          DataCell(Text(item.brojIzdanja.toString())),
+          DataCell(Text(item.brojStranica.toString())),
+          DataCell(item.slika != null
               ? Container(
                   width: 75,
                   height: 75,

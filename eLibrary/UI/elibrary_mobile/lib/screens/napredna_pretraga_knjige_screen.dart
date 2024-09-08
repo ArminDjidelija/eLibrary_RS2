@@ -531,7 +531,6 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
   }
 
   Future<List<String>> getAutoriKnjige(int knjigaId) async {
-    print("get autori knjige");
     var knjigaAutori = await knjigaAutoriProvider.get(
         retrieveAll: true,
         includeTables: "Autor",

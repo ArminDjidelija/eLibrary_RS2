@@ -91,8 +91,8 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   name: 'naziv',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.maxLength(100,
-                        errorText: "Maksimalno dužina je 100 znakova"),
+                    FormBuilderValidators.maxLength(250,
+                        errorText: "Maksimalno dužina je 250 znakova"),
                   ]),
                 )),
                 const SizedBox(
@@ -139,6 +139,8 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Web"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(150,
+                        errorText: "Maksimalno dužina je 150 znakova"),
                     FormBuilderValidators.url(errorText: "Nepravilna adresa"),
                   ]),
                   name: 'web',
@@ -165,6 +167,10 @@ class _BibliotekaDetailsScreenState extends State<BibliotekaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Mail"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(100,
+                        errorText: "Maksimalno dužina je 100 znakova"),
+                    FormBuilderValidators.email(
+                        errorText: "Nepravilan format emaila"),
                   ]),
                   name: 'mail',
                 )),
