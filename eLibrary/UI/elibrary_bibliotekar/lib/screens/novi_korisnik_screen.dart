@@ -8,6 +8,7 @@ import 'package:elibrary_bibliotekar/models/uloga.dart';
 import 'package:elibrary_bibliotekar/providers/kanton_provider.dart';
 import 'package:elibrary_bibliotekar/providers/korisnici_provider.dart';
 import 'package:elibrary_bibliotekar/providers/uloge_provider.dart';
+import 'package:elibrary_bibliotekar/providers/auth_provider.dart';
 import 'package:elibrary_bibliotekar/screens/korisnici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -200,6 +201,7 @@ class _NoviKorisnikSCreenState extends State<NoviKorisnikScreen> {
                 if (formaCheck == true) {
                   var request = Map.from(_formKey.currentState!.value);
                   request['uloge'] = uloge;
+                  request['bibliotekaId'] = AuthProvider.bibliotekaId;
                   try {
                     await korisnikProvider.insert(request);
                     QuickAlert.show(

@@ -12,7 +12,7 @@ class Clanarina {
   int? bibliotekaId;
   int? uplateId;
   int? tipClanarineBibliotekaId;
-  int? iznos;
+  double? iznos;
   String? pocetak;
   String? kraj;
   Biblioteka? biblioteka;

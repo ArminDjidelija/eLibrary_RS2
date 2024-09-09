@@ -10,7 +10,7 @@ Penal _$PenalFromJson(Map<String, dynamic> json) => Penal()
   ..penalId = (json['penalId'] as num?)?.toInt()
   ..pozajmicaId = (json['pozajmicaId'] as num?)?.toInt()
   ..opis = json['opis'] as String?
-  ..iznos = (json['iznos'] as num?)?.toInt()
+  ..iznos = (json['iznos'] as num?)?.toDouble()
   ..uplataId = (json['uplataId'] as num?)?.toInt()
   ..valutaId = (json['valutaId'] as num?)?.toInt()
   ..valuta = json['valuta'] == null

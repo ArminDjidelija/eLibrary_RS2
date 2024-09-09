@@ -213,7 +213,7 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 var formCheck = _formKey.currentState?.saveAndValidate();
                 if (formCheck == true) {
                   var request = Map.from(_formKey.currentState!.value);
@@ -221,7 +221,7 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                     request['citalacId'] = citalac!.citalacId;
                     request['bibliotekaKnjigaId'] =
                         widget.bibliotekaKnjiga!.bibliotekaKnjigaId;
-                    pozajmiceProvider.insert(request);
+                    await pozajmiceProvider.insert(request);
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
@@ -234,11 +234,8 @@ class _NovaPozajmicaScreenState extends State<NovaPozajmicaScreen> {
                     }
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const PozajmiceListScreen()));
-                    print(request);
                   }
-                } else {}
-
-                // print(knjigaSlanje);
+                }
               },
               child: const Text("Sacuvaj"))
         ],

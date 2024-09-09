@@ -10,7 +10,9 @@ import 'package:elibrary_mobile/providers/jezici_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_autori_provider.dart';
 import 'package:elibrary_mobile/providers/knjiga_provider.dart';
 import 'package:elibrary_mobile/screens/knjiga_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class NaprednaPretragaKnjiga extends StatefulWidget {
@@ -231,121 +233,123 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Opcija pretrage',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                DropdownSearch<Biblioteka>(
-                  selectedItem: odabranaBiblioteka,
-                  popupProps: const PopupPropsMultiSelection.menu(
-                    isFilterOnline: true,
-                    showSearchBox: true,
-                    searchDelay: Duration(milliseconds: 5),
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Opcija pretrage',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
-                    dropdownSearchDecoration: InputDecoration(
-                      labelText: "Odaberi biblioteku",
-                      hintText: "Unesite naziv biblioteke",
+                  const SizedBox(height: 16),
+                  DropdownSearch<Biblioteka>(
+                    selectedItem: odabranaBiblioteka,
+                    popupProps: const PopupPropsMultiSelection.menu(
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5),
+                    ),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        labelText: "Odaberi biblioteku",
+                        hintText: "Unesite naziv biblioteke",
+                      ),
+                    ),
+                    asyncItems: (String filter) async {
+                      var biblioteke = await getBiblioteke(filter);
+                      return biblioteke;
+                    },
+                    onChanged: (Biblioteka? c) {
+                      bibliotekaId = c!.bibliotekaId!;
+                      odabranaBiblioteka = c;
+                    },
+                    itemAsString: (Biblioteka u) => "${u.naziv}",
+                    onSaved: (newValue) {
+                      if (newValue != null) {
+                        print(newValue.bibliotekaId);
+                      }
+                    },
+                  ),
+                  DropdownSearch<Jezik>(
+                    selectedItem: odabraniJezik,
+                    popupProps: const PopupPropsMultiSelection.menu(
+                      isFilterOnline: true,
+                      showSearchBox: true,
+                      searchDelay: Duration(milliseconds: 5),
+                    ),
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        labelText: "Odaberi jezik",
+                        hintText: "Unesite naziv jezika",
+                      ),
+                    ),
+                    asyncItems: (String filter) async {
+                      var jezici = await getJezike(filter);
+                      return jezici;
+                    },
+                    onChanged: (Jezik? c) {
+                      jezikId = c!.jezikId!;
+                      odabraniJezik = c;
+                    },
+                    itemAsString: (Jezik u) => "${u.naziv}",
+                    onSaved: (newValue) {
+                      if (newValue != null) {
+                        print(newValue.jezikId);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: autorController,
+                    decoration: InputDecoration(
+                      hintText: 'Ime prezime autora',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 8),
                     ),
                   ),
-                  asyncItems: (String filter) async {
-                    var biblioteke = await getBiblioteke(filter);
-                    return biblioteke;
-                  },
-                  onChanged: (Biblioteka? c) {
-                    bibliotekaId = c!.bibliotekaId!;
-                    odabranaBiblioteka = c;
-                  },
-                  itemAsString: (Biblioteka u) => "${u.naziv}",
-                  onSaved: (newValue) {
-                    if (newValue != null) {
-                      print(newValue.bibliotekaId);
-                    }
-                  },
-                ),
-                DropdownSearch<Jezik>(
-                  selectedItem: odabraniJezik,
-                  popupProps: const PopupPropsMultiSelection.menu(
-                    isFilterOnline: true,
-                    showSearchBox: true,
-                    searchDelay: Duration(milliseconds: 5),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: const Text('Poništi filtere'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          bibliotekaId = 0;
+                          jezikId = 0;
+                          odabranaBiblioteka = null;
+                          odabraniJezik = null;
+                          autorController.text = "";
+                          _firstLoad();
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        child: const Text('Close'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        child: const Text('Pretraga'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _firstLoad();
+                        },
+                      ),
+                    ],
                   ),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
-                    dropdownSearchDecoration: InputDecoration(
-                      labelText: "Odaberi jezik",
-                      hintText: "Unesite naziv jezika",
-                    ),
-                  ),
-                  asyncItems: (String filter) async {
-                    var jezici = await getJezike(filter);
-                    return jezici;
-                  },
-                  onChanged: (Jezik? c) {
-                    jezikId = c!.jezikId!;
-                    odabraniJezik = c;
-                  },
-                  itemAsString: (Jezik u) => "${u.naziv}",
-                  onSaved: (newValue) {
-                    if (newValue != null) {
-                      print(newValue.jezikId);
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: autorController,
-                  decoration: InputDecoration(
-                    hintText: 'Ime prezime autora',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      child: const Text('Poništi filtere'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        bibliotekaId = 0;
-                        jezikId = 0;
-                        odabranaBiblioteka = null;
-                        odabraniJezik = null;
-                        autorController.text = "";
-                        _firstLoad();
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      child: const Text('Close'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      child: const Text('Pretraga'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _firstLoad();
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -381,29 +385,32 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                 ),
               ),
               const Spacer(),
-              DropdownButton<String>(
-                value: dropdown,
-                icon: const Icon(Icons.arrow_downward),
-                iconSize: 24,
-                elevation: 16,
-                style: const TextStyle(color: Colors.black),
-                underline: Container(
-                  height: 2,
-                  color: Colors.blue,
+              Expanded(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: dropdown,
+                  icon: const Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.black),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.blue,
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdown = newValue!;
+                      _firstLoad();
+                    });
+                  },
+                  items: sortOptions.keys
+                      .map<DropdownMenuItem<String>>((String key) {
+                    return DropdownMenuItem<String>(
+                      value: key,
+                      child: Text(key),
+                    );
+                  }).toList(),
                 ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropdown = newValue!;
-                    _firstLoad();
-                  });
-                },
-                items: sortOptions.keys
-                    .map<DropdownMenuItem<String>>((String key) {
-                  return DropdownMenuItem<String>(
-                    value: key,
-                    child: Text(key),
-                  );
-                }).toList(),
               ),
             ],
           ),
@@ -469,8 +476,9 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
           ));
         },
         child: Container(
-          height: 200,
+          //height: 200,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: 200,
@@ -496,7 +504,7 @@ class _NaprednaPretragaKnjigaState extends State<NaprednaPretragaKnjiga> {
                       Text(
                         book.naslov!,
                         style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       FutureBuilder<List<String>>(

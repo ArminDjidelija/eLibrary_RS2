@@ -4,6 +4,7 @@ import 'package:elibrary_mobile/models/kanton.dart';
 import 'package:elibrary_mobile/providers/auth_provider.dart';
 import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/kanton_provider.dart';
+import 'package:elibrary_mobile/screens/moj_elibrary_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -50,19 +51,9 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
   }
 
   Future _initForm() async {
-    // var citalac = await citaociProvider.getById(AuthProvider.citalacId!);
     var kantoniResult = await kantonProvider.get(retrieveAll: true);
     kantoni = kantoniResult.resultList;
     setState(() {});
-    // setState(() {
-    //   _initialValue['kantonId'] = citalac.kantonId;
-    //   _initialValue['telefon'] = citalac.telefon;
-    //   _initialValue['institucija'] = citalac.institucija;
-    //   _initialValue['lozinka'] = null;
-    //   _initialValue['novaLozinka'] = null;
-    //   _initialValue['lozinkaPotvrda'] = null;
-    // });
-    // _formKey.currentState?.reset();
   }
 
   Future<List<Kanton>> getKantone(String naziv) async {
@@ -223,7 +214,7 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                 Expanded(
                     child: FormBuilderCheckbox(
                   initialValue: promijeniLozinku,
-                  name: '',
+                  name: 'promijeniLozinku',
                   title: const Text("Promijeni lozinku"),
                   onChanged: (value) => {
                     setState(() {
@@ -299,31 +290,6 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                   ],
                 ),
               ),
-            // Row(
-            //   children: [
-            //     if (kantoni.isNotEmpty)
-            //       Expanded(
-            //           child: FormBuilderDropdown(
-            //         // initialValue:
-            //         //     kantoni.isEmpty ? null : AuthProvider.kantonId,
-            //         name: "kantonId",
-            //         decoration: InputDecoration(labelText: "Kanton"),
-            //         items: kantoni
-            //                 .map((e) => DropdownMenuItem(
-            //                     value: e.kantonId.toString(),
-            //                     child: Text(e.naziv ?? "")))
-            //                 .toList() ??
-            //             [],
-            //         validator: FormBuilderValidators.compose([
-            //           FormBuilderValidators.required(
-            //               errorText: "Obavezno polje"),
-            //         ]),
-            //       )),
-            //     SizedBox(
-            //       width: 10,
-            //     ),
-            //   ],
-            // ),
           ],
         ),
       ),
@@ -346,33 +312,48 @@ class _CitalacProfilScreenState extends State<CitalacProfilScreen> {
                     await citaociProvider.update(
                         AuthProvider.citalacId!, request);
                     QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.success,
-                        title: "Uspješno modifikovan profil");
+                      context: context,
+                      type: QuickAlertType.success,
+                      title: "Uspješno modifikovan profil",
+                    );
                     AuthProvider.ime = request['ime'];
                     AuthProvider.prezime = request['prezime'];
                     AuthProvider.telefon = request['telefon'];
                     AuthProvider.institucija = request['institucija'];
-                    print(request['kantonId']);
                     AuthProvider.kantonId = kanton;
 
                     if (request['lozinka'] != null &&
                         request['novaLozinka'] != null &&
-                        request['lozinkaPotvrda'] != null) {
+                        request['lozinkaPotvrda'] != null &&
+                        promijeniLozinku == true) {
                       AuthProvider.password = request['novaLozinka'];
+                      resetPassword();
+                      setState(() {
+                        _formKey.currentState?.fields['promijeniLozinku']
+                            ?.didChange(false);
+                      });
                     }
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.error,
                         title: e.toString());
+
+                    resetPassword();
                   }
                 }
-                // print(knjigaSlanje);
               },
               child: const Text("Sacuvaj"))
         ],
       ),
     );
+  }
+
+  void resetPassword() {
+    setState(() {
+      _formKey.currentState?.fields['lozinka']?.didChange(null);
+      _formKey.currentState?.fields['novaLozinka']?.didChange(null);
+      _formKey.currentState?.fields['lozinkaPotvrda']?.didChange(null);
+    });
   }
 }

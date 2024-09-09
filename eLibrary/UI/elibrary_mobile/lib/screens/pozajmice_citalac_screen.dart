@@ -284,160 +284,9 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
     );
   }
 
-  // Widget _buildPage() {
-  //   return CustomScrollView(
-  //     controller: scrollController, // Attach your scroll controller here
-  //     slivers: [
-  //       SliverToBoxAdapter(
-  //         child: Container(
-  //           alignment: Alignment.centerLeft,
-  //           margin: const EdgeInsets.only(left: 10, top: 5),
-  //           child: const Text(
-  //             "Trenutne pozajmice",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: _buildTrenutnePozajmice(),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: const SizedBox(height: 20),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: Container(
-  //           decoration: const BoxDecoration(
-  //             border: Border(
-  //               top: BorderSide(
-  //                 color: Colors.black,
-  //                 width: 2.0,
-  //               ),
-  //             ),
-  //           ),
-  //           alignment: Alignment.centerLeft,
-  //           margin: const EdgeInsets.only(left: 10, top: 5, right: 10),
-  //           child: const Text(
-  //             "Trenutne rezervacije",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: _buildTrenutneRezervacije(),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: const SizedBox(height: 20),
-  //       ),
-  //       SliverToBoxAdapter(
-  //         child: Container(
-  //           alignment: Alignment.centerLeft,
-  //           decoration: const BoxDecoration(
-  //             border: Border(
-  //               top: BorderSide(
-  //                 color: Colors.black,
-  //                 width: 2.0,
-  //               ),
-  //             ),
-  //           ),
-  //           margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
-  //           child: const Text(
-  //             "Historija pozajmica",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //       ),
-  //       SliverList(
-  //         delegate: SliverChildBuilderDelegate(
-  //           (context, index) {
-  //             if (index == prijasnjePozajmice.length) {
-  //               return Padding(
-  //                 padding: const EdgeInsets.all(8.0),
-  //                 child: Center(
-  //                   child: Text(
-  //                     hasNextPage
-  //                         ? 'Učitavanje...'
-  //                         : total != 0
-  //                             ? 'Pregledali ste sve pozajmice!'
-  //                             : 'Nema više pozajmica',
-  //                     style: const TextStyle(fontSize: 16),
-  //                   ),
-  //                 ),
-  //               );
-  //             } else {
-  //               return _buildPrijasnjaPozajmicaCard(
-  //                   pozajmica: prijasnjePozajmice[index]);
-  //             }
-  //           },
-  //           childCount: prijasnjePozajmice.length + 1,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildPage() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           margin: const EdgeInsets.only(left: 10, top: 5),
-  //           child: const Text(
-  //             "Trenutne pozajmice",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildTrenutnePozajmice(),
-  //         const SizedBox(
-  //           height: 20,
-  //         ),
-  //         Container(
-  //           decoration: const BoxDecoration(
-  //             border: Border(
-  //               top: BorderSide(
-  //                 color: Colors.black,
-  //                 width: 2.0,
-  //               ),
-  //             ),
-  //           ),
-  //           alignment: Alignment.centerLeft,
-  //           margin: const EdgeInsets.only(left: 10, top: 5, right: 10),
-  //           child: const Text(
-  //             "Trenutne rezervacije",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildTrenutneRezervacije(),
-  //         const SizedBox(
-  //           height: 20,
-  //         ),
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           decoration: const BoxDecoration(
-  //             border: Border(
-  //               top: BorderSide(
-  //                 color: Colors.black,
-  //                 width: 2.0,
-  //               ),
-  //             ),
-  //           ),
-  //           margin: const EdgeInsets.only(left: 10, top: 20, right: 10),
-  //           child: const Text(
-  //             "Historija pozajmica",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildPrijasnjePozajmice()
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildTrenutnePozajmice() {
     if (trenutnePozajmice?.resultList != null) {
       return ListView(
-        //scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -482,7 +331,6 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            // physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             itemCount: prijasnjePozajmice.length + 1,
@@ -611,12 +459,22 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
             child: ListBody(
               children: <Widget>[
                 const Text('Unesite broj dana za produženje pozajmice:'),
-                TextField(
+                TextFormField(
                   controller: _daysController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Broj dana',
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Unesite broj dana';
+                    }
+                    final intValue = int.tryParse(value);
+                    if (intValue == null || intValue < 1 || intValue > 30) {
+                      return 'Vrijednost mora biti između 1 i 30';
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
@@ -720,12 +578,10 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Text(
                     'Loading...',
-                    // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasError) {
                   return const Text(
                     'Greška sa učitavanjem',
-                    // style: TextStyle(color: Colors.white),
                   );
                 } else if (snapshot.hasData) {
                   return _buildInfoRow(
@@ -733,12 +589,10 @@ class _PozajmiceCitalacScreenState extends State<PozajmiceCitalacScreen> {
                 } else {
                   return const Text(
                     'Nema biblioteke',
-                    // style: TextStyle(color: Colors.white),
                   );
                 }
               },
             ),
-            // SizedBox(height: 8.0),
             _buildInfoRow('Datum kreiranja',
                 formatDateTimeToLocal(rezervacija.datumKreiranja.toString())),
             rezervacija.state == "Odobrena"

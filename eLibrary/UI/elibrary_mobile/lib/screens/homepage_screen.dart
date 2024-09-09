@@ -167,71 +167,80 @@ class _HomepageScreenState extends State<HomepageScreen> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: knjigaList
-            .map((e) => InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => KnjigaScreen(
-                            knjiga: e,
-                          )));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  ),
-                  margin: const EdgeInsets.all(8),
-                  width: 240,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 8),
-                      e.slika != null
-                          ? Container(
-                              width: 240,
-                              height: 260,
-                              child: imageFromString(e.slika!),
-                            )
-                          : Container(
-                              width: 240,
-                              height: 260,
-                              child: Image.asset('assets/images/empty.png'),
-                            ),
-                      Text(
-                        e.naslov!,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
+        children: knjigaList.isNotEmpty
+            ? knjigaList
+                .map((e) => InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => KnjigaScreen(
+                                knjiga: e,
+                              )));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
                       ),
-                      FutureBuilder<List<String>>(
-                        future: _getAutoriKnjiga(e.knjigaId!),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Center(child: Text('Nema podataka'));
-                          } else {
-                            final data = snapshot.data!;
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                data.join(", "),
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            );
-                          }
-                        },
+                      margin: const EdgeInsets.all(8),
+                      width: 240,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 8),
+                          e.slika != null
+                              ? Container(
+                                  width: 240,
+                                  height: 260,
+                                  child: imageFromString(e.slika!),
+                                )
+                              : Container(
+                                  width: 240,
+                                  height: 260,
+                                  child: Image.asset('assets/images/empty.png'),
+                                ),
+                          Text(
+                            e.naslov!,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          FutureBuilder<List<String>>(
+                            future: _getAutoriKnjiga(e.knjigaId!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('Nema podataka'));
+                              } else {
+                                final data = snapshot.data!;
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    data.join(", "),
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )))
-            .toList(),
+                    )))
+                .toList()
+            : [
+                Container(
+                    child: Text(
+                        "Nema preporučenih knjiga, otvorite neku knjigu za preporuku"),
+                    width: MediaQuery.sizeOf(context).width)
+              ],
       ),
     );
   }
@@ -365,141 +374,6 @@ class _HomepageScreenState extends State<HomepageScreen> {
       ),
     );
   }
-
-  // Widget _buildTrenutnePozajmice() {
-  //   return Container(
-  //     width: double.infinity,
-  //     child: SingleChildScrollView(
-  //       scrollDirection: Axis.vertical,
-  //       child: Container(
-  //         child: Column(
-  //           children: pozajmicaList
-  //               .map((e) => Container(
-  //                     decoration: const BoxDecoration(
-  //                         border: Border(
-  //                       top: BorderSide(color: Colors.black),
-  //                     )),
-  //                     child: Row(
-  //                       children: [
-  //                         Container(
-  //                           child: Column(
-  //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                             children: [
-  //                               FutureBuilder<Knjiga>(
-  //                                 future:
-  //                                     _getKnjiga(e.bibliotekaKnjiga!.knjigaId!),
-  //                                 builder: (context, snapshot) {
-  //                                   if (snapshot.connectionState ==
-  //                                       ConnectionState.waiting) {
-  //                                     return const Center(
-  //                                         child: CircularProgressIndicator());
-  //                                   } else if (snapshot.hasError) {
-  //                                     return Center(
-  //                                         child:
-  //                                             Text('Error: ${snapshot.error}'));
-  //                                   } else if (!snapshot.hasData ||
-  //                                       snapshot.data == null) {
-  //                                     return const Center(
-  //                                         child: Text('Nema naslova'));
-  //                                   } else {
-  //                                     final data = snapshot.data!;
-  //                                     return Padding(
-  //                                       padding:
-  //                                           const EdgeInsets.only(bottom: 8.0),
-  //                                       child: Text(
-  //                                         "${data.naslov},",
-  //                                         style: const TextStyle(
-  //                                             fontSize: 18,
-  //                                             fontWeight: FontWeight.bold),
-  //                                       ),
-  //                                     );
-  //                                   }
-  //                                 },
-  //                               ),
-  //                               FutureBuilder<List<String>>(
-  //                                 future: _getAutoriKnjiga(
-  //                                     e.bibliotekaKnjiga!.knjigaId!),
-  //                                 builder: (context, snapshot) {
-  //                                   if (snapshot.connectionState ==
-  //                                       ConnectionState.waiting) {
-  //                                     return const Center(
-  //                                         child: CircularProgressIndicator());
-  //                                   } else if (snapshot.hasError) {
-  //                                     return Center(
-  //                                         child:
-  //                                             Text('Error: ${snapshot.error}'));
-  //                                   } else if (!snapshot.hasData ||
-  //                                       snapshot.data!.isEmpty) {
-  //                                     return const Center(
-  //                                         child: Text('Nema autora'));
-  //                                   } else {
-  //                                     final data = snapshot.data!;
-  //                                     return Padding(
-  //                                       padding:
-  //                                           const EdgeInsets.only(bottom: 8.0),
-  //                                       child: Text(
-  //                                         data.join(", "),
-  //                                         style: const TextStyle(
-  //                                             fontSize: 18,
-  //                                             fontWeight: FontWeight.bold),
-  //                                       ),
-  //                                     );
-  //                                   }
-  //                                 },
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                         const Spacer(),
-  //                         Flexible(
-  //                           child: Container(
-  //                             alignment: Alignment.centerRight,
-  //                             child: Column(
-  //                               crossAxisAlignment: CrossAxisAlignment.end,
-  //                               children: [
-  //                                 FutureBuilder<int?>(
-  //                                   future: _calculateDaysLeft(
-  //                                       e.preporuceniDatumVracanja!),
-  //                                   builder: (context, snapshot) {
-  //                                     if (snapshot.connectionState ==
-  //                                         ConnectionState.waiting) {
-  //                                       return const Center(
-  //                                           child: CircularProgressIndicator());
-  //                                     } else if (snapshot.hasError) {
-  //                                       return Center(
-  //                                           child: Text(
-  //                                               'Error: ${snapshot.error}'));
-  //                                     } else if (!snapshot.hasData) {
-  //                                       return const Center(
-  //                                           child: Text(
-  //                                         'Nema podataka',
-  //                                         textAlign: TextAlign.right,
-  //                                       ));
-  //                                     } else {
-  //                                       final daysLeft = snapshot.data!;
-  //                                       if (daysLeft > 0) {
-  //                                         return Text('Još $daysLeft dana',
-  //                                             textAlign: TextAlign.right);
-  //                                       } else {
-  //                                         return const Text('Vratite knjigu!',
-  //                                             textAlign: TextAlign.right);
-  //                                       }
-  //                                     }
-  //                                   },
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ),
-  //                         )
-  //                       ],
-  //                     ),
-  //                   ))
-  //               .toList(),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Future<List<String>> _getAutoriKnjiga(int id) async {
     try {

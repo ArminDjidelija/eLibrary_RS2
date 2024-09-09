@@ -179,15 +179,6 @@ class _SacuvaneKnjigeCitalacScreenState
     );
   }
 
-  // Widget _buildPage() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [_buildPrijasnjePenale()],
-  //     ),
-  //   );
-  // }
-
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -196,12 +187,12 @@ class _SacuvaneKnjigeCitalacScreenState
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
         ],
@@ -215,7 +206,7 @@ class _SacuvaneKnjigeCitalacScreenState
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: sacuvaneKnjige.length + 1,
             controller: scrollController,
@@ -241,37 +232,37 @@ class _SacuvaneKnjigeCitalacScreenState
 
   Widget _buildPrijasnjiPenalCard({required KorisnikSacuvanaKnjiga knjiga}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                margin: EdgeInsets.only(bottom: 8),
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 color: Colors.blue,
                 child: _buildInfoRow('Knjiga', knjiga.knjiga!.naslov!)),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       backgroundColor:
                           MaterialStatePropertyAll<Color>(Colors.red),
                     ),
                     onPressed: () {
                       _ukloniSacuvanuKnjigu(knjiga.korisnikSacuvanaKnjigaId);
                     },
-                    child: Text(
+                    child: const Text(
                       "Ukloni",
                       style: TextStyle(color: Colors.white),
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 ElevatedButton(
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       backgroundColor:
                           MaterialStatePropertyAll<Color>(Colors.blue),
                     ),
@@ -281,7 +272,7 @@ class _SacuvaneKnjigeCitalacScreenState
                                 knjiga: knjiga.knjiga!,
                               )));
                     },
-                    child: Text(
+                    child: const Text(
                       "Pogledaj knjigu",
                       style: TextStyle(color: Colors.white),
                     )),

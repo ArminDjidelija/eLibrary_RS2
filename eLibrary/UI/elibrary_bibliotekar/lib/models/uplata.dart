@@ -10,7 +10,7 @@ class Uplata {
   int? uplataId;
   int? citalacId;
   int? bibliotekaId;
-  int? iznos;
+  double? iznos;
   String? datumUplate;
   int? tipUplateId;
   int? valutaId;

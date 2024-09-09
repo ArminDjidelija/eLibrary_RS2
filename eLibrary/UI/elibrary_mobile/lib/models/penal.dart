@@ -10,7 +10,7 @@ class Penal {
   int? penalId;
   int? pozajmicaId;
   String? opis;
-  int? iznos;
+  double? iznos;
   int? uplataId;
   int? valutaId;
   Valuta? valuta;

@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage2> {
     const HomepageScreen(),
     PocetnaKnjigaPretragaScreen(),
     const PozajmiceCitalacScreen(),
-    const ClanarineCitalacScreen(),
+    ClanarineCitalacScreen(),
     const MojElibraryScreen(),
   ];
 

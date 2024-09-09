@@ -1,4 +1,3 @@
-import 'package:elibrary_mobile/layouts/citalac2_homepage_screen.dart';
 import 'package:elibrary_mobile/screens/citalac_profil_screen.dart';
 import 'package:elibrary_mobile/screens/obavijesti_list_screen.dart';
 import 'package:elibrary_mobile/screens/penali_citalac_screen.dart';
@@ -58,15 +57,16 @@ class _MojElibraryScreenState extends State<MojElibraryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _baseMojSettingsRow("Profil", Icons.euro, CitalacProfilScreen()),
+          _baseMojSettingsRow(
+              "Profil", Icons.euro, const CitalacProfilScreen()),
           _baseMojSettingsRow(
               "Penali", Icons.money_outlined, PenaliCitalacScreen()),
           _baseMojSettingsRow("Sačuvane knjige", Icons.bookmark_outline,
-              SacuvaneKnjigeCitalacScreen()),
+              const SacuvaneKnjigeCitalacScreen()),
+          _baseMojSettingsRow("Obavijesti", Icons.notifications_outlined,
+              const ObavijestiScreen()),
           _baseMojSettingsRow(
-              "Obavijesti", Icons.notifications_outlined, ObavijestiScreen()),
-          _baseMojSettingsRow(
-              "Prijavi grešku", Icons.error, GreskaCitalacScreen()),
+              "Prijavi grešku", Icons.error, const GreskaCitalacScreen()),
         ],
       ),
     );
@@ -79,13 +79,13 @@ class _MojElibraryScreenState extends State<MojElibraryScreen> {
             .push(MaterialPageRoute(builder: (context) => next))
       },
       child: Container(
-        margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+        margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.black,
             width: 2.0,
           ),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(10.0),
           ),
         ),
@@ -95,13 +95,13 @@ class _MojElibraryScreenState extends State<MojElibraryScreen> {
           child: Row(
             children: [
               Icon(ikonica),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               Text(
                 naslov,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ],
           ),

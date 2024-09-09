@@ -8,7 +8,7 @@ class TipClanarineBiblioteka {
   int? tipClanarineBibliotekaId;
   String? naziv;
   int? trajanje;
-  int? iznos;
+  double? iznos;
   int? bibliotekaId;
   int? valutaId;
   Valuta? valuta;

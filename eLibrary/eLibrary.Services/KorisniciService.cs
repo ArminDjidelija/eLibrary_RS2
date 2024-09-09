@@ -134,8 +134,7 @@ namespace eLibrary.Services
         }
 
         public override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnici entity, CancellationToken cancellationToken = default)
-        {
-            
+        {            
             if(request.Lozinka!=null && request.LozinkaPotvrda != null)
             {
                 if (request.StaraLozinka == null)
@@ -152,14 +151,6 @@ namespace eLibrary.Services
 
         public override async Task<Model.KorisniciDTOs.Korisnici> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            //await rabbitMqService.SendAnEmail(new EmailDTO
-            //{
-            //    EmailTo = "didelija.armin@gmail.com",
-            //    Message = DateTime.Now.ToString(),
-            //    ReceiverName = "Armin",
-            //    Subject = "Naslov"
-            //});
-
             return await base.GetByIdAsync(id, cancellationToken);
         }
 

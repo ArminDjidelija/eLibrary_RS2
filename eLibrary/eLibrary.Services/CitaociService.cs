@@ -123,7 +123,7 @@ namespace eLibrary.Services
                 {
                     if (request.NovaLozinka == request.LozinkaPotvrda)
                     {
-                        entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+                        entity.LozinkaHash = _passwordService.GenerateHash(entity.LozinkaSalt, request.NovaLozinka);
                     }
                     else
                     {

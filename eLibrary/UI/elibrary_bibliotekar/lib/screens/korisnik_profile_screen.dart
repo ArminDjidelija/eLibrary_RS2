@@ -20,7 +20,7 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
   final TextEditingController _imeController = TextEditingController();
   final TextEditingController _prezimeController = TextEditingController();
   final TextEditingController _telefonController = TextEditingController();
-
+  bool promijeniLozinku = false;
   bool isLoading = true;
   bool isEditing = false;
   @override
@@ -118,35 +118,77 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
             Row(
               children: [
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Stara lozinka"),
-                  name: 'staraLozinka',
-                  validator: FormBuilderValidators.compose([]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Nova lozinka"),
-                  name: 'lozinka',
-                  validator: FormBuilderValidators.compose([]),
-                )),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Lozinka potvrda"),
-                  name: 'lozinkaPotvrda',
-                  validator: FormBuilderValidators.compose([]),
+                    child: FormBuilderCheckbox(
+                  initialValue: promijeniLozinku,
+                  name: 'promijeniLozinku',
+                  title: const Text("Promijeni lozinku"),
+                  onChanged: (value) => {
+                    setState(() {
+                      promijeniLozinku = value!;
+                    })
+                  },
                 )),
                 const SizedBox(
                   width: 10,
                 ),
               ],
             ),
+            if (promijeniLozinku)
+              Row(
+                children: [
+                  Expanded(
+                      child: FormBuilderTextField(
+                    decoration:
+                        const InputDecoration(labelText: "Stara lozinka"),
+                    name: 'staraLozinka',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(2,
+                          errorText: "Minimalna dužina je 2 znaka"),
+                      FormBuilderValidators.maxLength(50,
+                          errorText: "Maksimalno dužina je 50 znakova"),
+                    ]),
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: FormBuilderTextField(
+                    decoration:
+                        const InputDecoration(labelText: "Nova lozinka"),
+                    name: 'lozinka',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(2,
+                          errorText: "Minimalna dužina je 2 znaka"),
+                      FormBuilderValidators.maxLength(50,
+                          errorText: "Maksimalno dužina je 50 znakova"),
+                    ]),
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: FormBuilderTextField(
+                    decoration:
+                        const InputDecoration(labelText: "Lozinka potvrda"),
+                    name: 'lozinkaPotvrda',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(2,
+                          errorText: "Minimalna dužina je 2 znaka"),
+                      FormBuilderValidators.maxLength(50,
+                          errorText: "Maksimalno dužina je 50 znakova"),
+                    ]),
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -176,11 +218,22 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                     var staraLozinka = request['staraLozinka'];
                     var lozinkaPotvrda = request['lozinkaPotvrda'];
 
-                    if ((lozinka != null || lozinka != "") &&
+                    if (promijeniLozinku == true &&
+                        (lozinka != null || lozinka != "") &&
                         (staraLozinka != null || staraLozinka != "") &&
                         (lozinkaPotvrda != null || lozinkaPotvrda != "")) {
                       AuthProvider.password = lozinkaPotvrda.toString();
                     }
+
+                    setState(() {
+                      _formKey.currentState?.fields['lozinka']?.didChange(null);
+                      _formKey.currentState?.fields['staraLozinka']
+                          ?.didChange(null);
+                      _formKey.currentState?.fields['lozinkaPotvrda']
+                          ?.didChange(null);
+                      _formKey.currentState?.fields['promijeniLozinku']
+                          ?.didChange(false);
+                    });
                   } on Exception catch (e) {
                     QuickAlert.show(
                         context: context,

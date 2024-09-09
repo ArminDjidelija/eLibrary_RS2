@@ -11,7 +11,15 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class PenaliCitalacScreen extends StatefulWidget {
-  const PenaliCitalacScreen({super.key});
+  String? secret;
+  String? public;
+  String? sandBoxMode;
+  PenaliCitalacScreen({super.key}) {
+    secret = const String.fromEnvironment("_paypalSecret", defaultValue: "");
+    public = const String.fromEnvironment("_paypalPublic", defaultValue: "");
+    sandBoxMode =
+        const String.fromEnvironment("_sandBoxMode", defaultValue: "true");
+  }
 
   @override
   State<PenaliCitalacScreen> createState() => _PenaliCitalacScreenState();
@@ -122,7 +130,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
         await tipUplateProvider.get(filter: {'naziv': 'online'});
     if (tipoviUplatum.resultList.isNotEmpty) {
       tipPlacanjaId = tipoviUplatum.resultList.first.tipUplateId;
-      print(tipPlacanjaId);
     }
     setState(() {});
   }
@@ -214,34 +221,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
       ],
     );
   }
-
-  // Widget _buildPage() {
-  //   return SingleChildScrollView(
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           margin: EdgeInsets.only(left: 10, top: 5),
-  //           child: Text(
-  //             "Trenutni penali",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildTrenutniPenali(),
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           margin: EdgeInsets.only(left: 10, top: 5),
-  //           child: Text(
-  //             "Historija penala",
-  //             style: TextStyle(fontSize: 24),
-  //           ),
-  //         ),
-  //         _buildPrijasnjePenale()
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildTrenutniPenali() {
     if (trenutniPenali.isNotEmpty) {
@@ -354,38 +333,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
     );
   }
 
-  Widget _buildPrijasnjePenale() {
-    return isFirstLoadRunning
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            physics:
-                const NeverScrollableScrollPhysics(), // Disable ListView scrolling
-            shrinkWrap: true, // Ensure ListView occupies only necessary space
-            itemCount: prijasnjiPenali.length + 1,
-            controller: scrollController,
-            itemBuilder: (_, index) {
-              if (index == prijasnjiPenali.length) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    hasNextPage
-                        ? 'Učitavanje...'
-                        : total != 0
-                            ? 'Pregledali ste sve penale!'
-                            : 'Nema više penala',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                );
-              } else {
-                return _buildPrijasnjiPenalCard(penal: prijasnjiPenali[index]);
-              }
-            },
-          );
-  }
-
   Widget _buildPrijasnjiPenalCard({required Penal penal}) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -426,31 +373,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                 },
               ),
             ),
-            // FutureBuilder<Biblioteka>(
-            //   future: getBiblioteka(pozajmica!.bibliotekaKnjiga!.bibliotekaId!),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return Text(
-            //         'Loading...',
-            //         // style: TextStyle(color: Colors.white),
-            //       );
-            //     } else if (snapshot.hasError) {
-            //       return Text(
-            //         'Greška sa učitavanjem',
-            //         // style: TextStyle(color: Colors.white),
-            //       );
-            //     } else if (snapshot.hasData) {
-            //       return _buildInfoRow(
-            //           'Ustanova', snapshot.data!.naziv.toString());
-            //     } else {
-            //       return Text(
-            //         'Nema biblioteke',
-            //         // style: TextStyle(color: Colors.white),
-            //       );
-            //     }
-            //   },
-            // ),
-            // SizedBox(height: 8.0),
             _buildInfoRow('Opis', penal.opis!),
             _buildInfoRow(
                 'Iznos', "${penal.iznos} ${penal.valuta!.skracenica}"),
@@ -474,14 +396,31 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
   Future makePayment(Penal penal) async {
     var secret = dotenv.env['_paypalSecret'];
     var public = dotenv.env['_paypalPublic'];
-    // var total = odabranaClanarina!.iznos!.toString();
-    // var naziv = odabranaClanarina!.naziv;
+
+    var valueSecret =
+        (widget.secret == "" || widget.secret == null) ? secret : widget.secret;
+    var valuePublic =
+        (widget.public == "" || widget.public == null) ? public : widget.public;
+
+    if ((valueSecret?.isEmpty ?? true) || (valuePublic?.isEmpty ?? true)) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška",
+          text: "Greška sa plaćanjem");
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: ((context) => PaypalCheckoutView(
-              sandboxMode: true,
-              clientId: public,
-              secretKey: secret,
+              sandboxMode: widget.sandBoxMode == "true"
+                  ? true
+                  : widget.sandBoxMode == "false"
+                      ? false
+                      : true,
+              clientId: valuePublic,
+              secretKey: valueSecret,
               transactions: [
                 {
                   "amount": {
@@ -494,10 +433,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                     }
                   },
                   "description": "Platiti ce se penal.",
-                  // "payment_options": {
-                  //   "allowed_payment_method":
-                  //       "INSTANT_FUNDING_SOURCE"
-                  // },
                   "item_list": {
                     "items": [
                       {
@@ -507,18 +442,6 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                         "currency": "USD"
                       }
                     ],
-
-                    // Optional
-                    //   "shipping_address": {
-                    //     "recipient_name": "Tharwat samy",
-                    //     "line1": "tharwat",
-                    //     "line2": "",
-                    //     "city": "tharwat",
-                    //     "country_code": "EG",
-                    //     "postal_code": "25025",
-                    //     "phone": "+00000000",
-                    //     "state": "ALex"
-                    //  },
                   }
                 }
               ],
@@ -534,6 +457,7 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                       type: QuickAlertType.success,
                       text: "Uspješno kreirana članarina");
                   _firstLoad();
+                  _initForm();
                 } on Exception catch (e) {}
                 Navigator.pop(context);
               },

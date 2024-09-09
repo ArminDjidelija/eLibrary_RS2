@@ -13,7 +13,7 @@ Clanarina _$ClanarinaFromJson(Map<String, dynamic> json) => Clanarina()
   ..uplateId = (json['uplateId'] as num?)?.toInt()
   ..tipClanarineBibliotekaId =
       (json['tipClanarineBibliotekaId'] as num?)?.toInt()
-  ..iznos = (json['iznos'] as num?)?.toInt()
+  ..iznos = (json['iznos'] as num?)?.toDouble()
   ..pocetak = json['pocetak'] as String?
   ..kraj = json['kraj'] as String?
   ..biblioteka = json['biblioteka'] == null

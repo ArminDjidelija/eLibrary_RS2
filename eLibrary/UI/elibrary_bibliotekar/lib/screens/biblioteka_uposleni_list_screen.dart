@@ -96,7 +96,9 @@ class _BibliotekaUposleniListScreenState
               onPressed: () async {
                 //
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => NoviUposleniScreen()));
+                    builder: (context) => NoviUposleniScreen(
+                          bibliotekaId: AuthProvider.bibliotekaId,
+                        )));
               },
               child: const Text("Novi uposleni")),
         ],
@@ -155,32 +157,6 @@ class BibliotekaUposlenikDataSource
       DataCell(Text(item.korisnik!.prezime.toString())),
       DataCell(Text(item.korisnik!.korisnickoIme.toString())),
       DataCell(Text(item.korisnik!.email.toString())),
-      // DataCell(
-      //   ElevatedButton(
-      //       style: const ButtonStyle(
-      //           backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
-      //       onPressed: () async {
-      //         try {
-      //           await provider.delete(item.bibliotekaUposleniId!);
-      //           QuickAlert.show(
-      //               context: context,
-      //               width: 450,
-      //               type: QuickAlertType.success,
-      //               text: "Uposlenik je uspješno izbrisan");
-      //           filterServerSide("", "");
-      //         } on Exception catch (e) {
-      //           QuickAlert.show(
-      //               context: context,
-      //               width: 450,
-      //               type: QuickAlertType.error,
-      //               text: "Greška prilikom brisanja");
-      //         }
-      //       },
-      //       child: const Text(
-      //         "Izbrisi",
-      //         style: TextStyle(color: Colors.white),
-      //       )),
-      // )
     ]);
   }
 

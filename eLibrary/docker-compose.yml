@@ -44,7 +44,7 @@ services:
       build:
         context: .
       environment:
-        - ConnectionStrings:eLibraryConnection=Server=elibrary-sql,1433;Database=210046;User=sa;Password=${_saPassword};ConnectRetryCount=0;TrustServerCertificate=True
+        - ConnectionStrings:eLibraryConnection=Server=${_source},1433;Database=${_catalog};User=sa;Password=${_saPassword};ConnectRetryCount=0;TrustServerCertificate=True
         - ASPNETCORE_ENVIRONMENT=Development
         - _fromAddress=${_fromAddress}
         - _password=${_password}

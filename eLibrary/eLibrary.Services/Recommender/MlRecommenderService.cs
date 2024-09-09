@@ -25,14 +25,13 @@ namespace eLibrary.Services.Recommender
         
         /// <summary>
         /// Recommender is consisted of nested for loop where we calculate book similarity with cosine similarity.
-        /// We group every two books (we don't group same books) which are more than 65% similar (we would use bigger threshold with more books).
+        /// We group every two books (we don't group same books) and set label as similarity.
         /// Similarity is based on comparing authors, genres, target groups, language, and type of book.
         /// Books that are similar are grouped and inserted into data list.
         /// After data training, we can consume the model.
         /// We have the list of books user has previously read or reviewed. 
         /// We get most similar books based on books user has already viewed.
         /// </summary>
-        float threshold = 0.75f;
         static MLContext mlContext = null;
         static object isLocked = new object();
         const string ModelPath = "model.zip";
@@ -59,7 +58,6 @@ namespace eLibrary.Services.Recommender
                     {
                         TrainData();
                     }
-                    
                 }
             }
 
@@ -95,13 +93,6 @@ namespace eLibrary.Services.Recommender
                 }
             }
 
-            var proba = predictionResult
-                .OrderByDescending(x => x.Item2)
-                .Distinct()
-                .Take(30)
-                .ToList();
-
-
             var finalResult = predictionResult
                 .OrderByDescending(x => x.Item2)
                 .Select(x => x.Item1)
@@ -129,8 +120,6 @@ namespace eLibrary.Services.Recommender
                     lista.Add(mapper.Map<Model.KnjigeDTOs.Knjige>(knjiga));
             }
             return lista;
-            //var data1 = mapper.Map<List<Model.KnjigeDTOs.Knjige>>(finalResult);
-            //return data1;
         }
 
         public double ComputeCosineSimilarity(Database.Knjige book1, Database.Knjige book2)
@@ -194,14 +183,13 @@ namespace eLibrary.Services.Recommender
                     if (rb.KnjigaId == item.KnjigaId)
                         continue;
                     var similarity = ComputeCosineSimilarity(item, rb);
-                    if (similarity > threshold)
+                    data.Add(new KnjigaEntry()
                     {
-                        data.Add(new KnjigaEntry()
-                        {
-                            KnjigaId = (uint)item.KnjigaId,
-                            CoSimilarKnjigaId = (uint)rb.KnjigaId
-                        });
-                    }
+                        KnjigaId = (uint)item.KnjigaId,
+                        CoSimilarKnjigaId = (uint)rb.KnjigaId,
+                        Label = (float)similarity
+                    });
+
                 }
             }
 
@@ -214,14 +202,13 @@ namespace eLibrary.Services.Recommender
             options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
             options.Alpha = 0.01;
             options.Lambda = 0.005;
-            options.NumberOfIterations = 250;
+            options.NumberOfIterations = 100;
             options.C = 0.00001;
-
             var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
 
             model = est.Fit(traindata);
 
-            // Saving trained model to a file
+            // save model to file
             using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 mlContext.Model.Save(model, traindata.Schema, fs);
@@ -245,6 +232,4 @@ namespace eLibrary.Services.Recommender
 
         public float Label { get; set; }
     }
-
-
 }

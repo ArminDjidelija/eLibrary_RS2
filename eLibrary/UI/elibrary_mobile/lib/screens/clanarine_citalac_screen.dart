@@ -11,6 +11,7 @@ import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart
 import 'package:elibrary_mobile/providers/tip_uplate_provider.dart';
 import 'package:elibrary_mobile/providers/uplate_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,17 @@ import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 import 'package:quickalert/quickalert.dart';
 
 class ClanarineCitalacScreen extends StatefulWidget {
-  const ClanarineCitalacScreen({super.key});
+  String? secret;
+  String? public;
+  String? sandBoxMode;
+  ClanarineCitalacScreen({
+    super.key,
+  }) {
+    secret = const String.fromEnvironment("_paypalSecret", defaultValue: "");
+    public = const String.fromEnvironment("_paypalPublic", defaultValue: "");
+    sandBoxMode =
+        const String.fromEnvironment("_sandBoxMode", defaultValue: "true");
+  }
 
   @override
   State<ClanarineCitalacScreen> createState() => _ClanarineCitalacScreenState();
@@ -288,12 +299,12 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
     var secret = dotenv.env['_paypalSecret'];
     var public = dotenv.env['_paypalPublic'];
 
-    var valueSecret = String.fromEnvironment("_paypalSecret",
-        defaultValue: dotenv.env['_paypalSecret'] ?? "");
-    var valuePublic = String.fromEnvironment("_paypalSecret",
-        defaultValue: dotenv.env['_paypalSecret'] ?? "");
+    var valueSecret =
+        (widget.secret == "" || widget.secret == null) ? secret : widget.secret;
+    var valuePublic =
+        (widget.public == "" || widget.public == null) ? public : widget.public;
 
-    if (valueSecret.isEmpty || valuePublic.isEmpty) {
+    if ((valueSecret?.isEmpty ?? true) || (valuePublic?.isEmpty ?? true)) {
       QuickAlert.show(
           context: context,
           type: QuickAlertType.error,
@@ -304,12 +315,17 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
 
     var total = odabranaClanarina!.iznos!.toString();
     var naziv = odabranaClanarina!.naziv;
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: ((context) => PaypalCheckoutView(
-              sandboxMode: true,
-              clientId: public,
-              secretKey: secret,
+              sandboxMode: widget.sandBoxMode == "true"
+                  ? true
+                  : widget.sandBoxMode == "false"
+                      ? false
+                      : true,
+              clientId: valuePublic,
+              secretKey: valueSecret,
               transactions: [
                 {
                   "amount": {
@@ -360,7 +376,6 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
                     _firstLoad();
                   });
                 } on Exception catch (e) {}
-                // Navigator.pop(context);
               },
               onError: (error) {
                 print("onSuccess: $error");
@@ -494,35 +509,5 @@ class _ClanarineCitalacScreenState extends State<ClanarineCitalacScreen> {
             ),
           )
         : Container();
-  }
-
-  Future<void> saveData() async {
-    // try {
-    //   Map<String, dynamic> transaction = {
-    //     'brojTransakcije': paymentIntent!['id'],
-    //     'ukupniIznos': _kosaricaProvider.total,
-    //     'autodioId': 3,
-    //     'kolicina': 1,
-    //     'korisnikId': userId
-    //   };
-
-    //   await _narudzbaProvider.dodajNarudzbu(transaction);
-    //   setState(() {
-    //     isLoading = false;
-    //     _kosaricaProvider.kosarica.items = [];
-    //     _kosaricaProvider.total = 0;
-    //   });
-    //   MyDialogs.showSuccess(context, 'Uspješna transakcija.', () {
-    //     Navigator.of(context).pop();
-    //     setState(() {
-    //       isLoading = true;
-    //     });
-    //     _kosaricaProvider.kosarica.items.isNotEmpty
-    //         ? _buildProductCardList()
-    //         : _buildNoDataField();
-    //   });
-    // } catch (e) {
-    //   MyDialogs.showError(context, e.toString());
-    // }
   }
 }

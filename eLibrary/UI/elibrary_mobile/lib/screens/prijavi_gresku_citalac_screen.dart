@@ -1,8 +1,5 @@
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:elibrary_mobile/models/ciljna_grupa.dart';
 import 'package:elibrary_mobile/models/kanton.dart';
 import 'package:elibrary_mobile/providers/auth_provider.dart';
-import 'package:elibrary_mobile/providers/citaoci_provider.dart';
 import 'package:elibrary_mobile/providers/kanton_provider.dart';
 import 'package:elibrary_mobile/providers/upiti_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,13 +95,13 @@ class _GreskaCitalacScreenState extends State<GreskaCitalacScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Naslov"),
+                  decoration: const InputDecoration(labelText: "Naslov"),
                   name: 'naslov',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -113,7 +110,7 @@ class _GreskaCitalacScreenState extends State<GreskaCitalacScreen> {
               children: [
                 Expanded(
                     child: FormBuilderTextField(
-                  decoration: InputDecoration(labelText: "Opis"),
+                  decoration: const InputDecoration(labelText: "Opis"),
                   name: 'upit',
                   minLines: 1,
                   maxLines: null,
@@ -121,7 +118,7 @@ class _GreskaCitalacScreenState extends State<GreskaCitalacScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                 )),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -158,9 +155,8 @@ class _GreskaCitalacScreenState extends State<GreskaCitalacScreen> {
                         title: e.toString());
                   }
                 }
-                // print(knjigaSlanje);
               },
-              child: Text("Sacuvaj"))
+              child: const Text("Sacuvaj"))
         ],
       ),
     );
