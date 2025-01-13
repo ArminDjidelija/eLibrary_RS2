@@ -134,13 +134,13 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
               ],
             ),
             if (promijeniLozinku)
-              Row(
-                children: [
-                  Expanded(
-                      child: FormBuilderTextField(
+              Row(children: [
+                Expanded(
+                  child: FormBuilderTextField(
                     decoration:
                         const InputDecoration(labelText: "Stara lozinka"),
                     name: 'staraLozinka',
+                    obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(
                           errorText: "Obavezno polje"),
@@ -149,15 +149,15 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                       FormBuilderValidators.maxLength(50,
                           errorText: "Maksimalno dužina je 50 znakova"),
                     ]),
-                  )),
-                  const SizedBox(
-                    width: 10,
                   ),
-                  Expanded(
-                      child: FormBuilderTextField(
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FormBuilderTextField(
                     decoration:
                         const InputDecoration(labelText: "Nova lozinka"),
                     name: 'lozinka',
+                    obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(
                           errorText: "Obavezno polje"),
@@ -166,29 +166,30 @@ class _KorisnikProfileCreenState extends State<KorisnikProfileScreen> {
                       FormBuilderValidators.maxLength(50,
                           errorText: "Maksimalno dužina je 50 znakova"),
                     ]),
-                  )),
-                  const SizedBox(
-                    width: 10,
                   ),
-                  Expanded(
-                      child: FormBuilderTextField(
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FormBuilderTextField(
                     decoration:
                         const InputDecoration(labelText: "Lozinka potvrda"),
                     name: 'lozinkaPotvrda',
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(
-                          errorText: "Obavezno polje"),
-                      FormBuilderValidators.minLength(2,
-                          errorText: "Minimalna dužina je 2 znaka"),
-                      FormBuilderValidators.maxLength(50,
-                          errorText: "Maksimalno dužina je 50 znakova"),
-                    ]),
-                  )),
-                  const SizedBox(
-                    width: 10,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Obavezno polje";
+                      }
+                      final lozinka =
+                          _formKey.currentState?.fields['lozinka']?.value;
+                      if (value != lozinka) {
+                        return "Lozinke se ne podudaraju";
+                      }
+                      return null;
+                    },
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 10),
+              ]),
           ],
         ),
       ),

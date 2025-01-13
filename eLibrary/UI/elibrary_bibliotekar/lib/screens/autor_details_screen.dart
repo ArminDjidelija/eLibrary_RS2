@@ -118,6 +118,8 @@ class _AutorDetailsScreenState extends State<AutorDetailsScreen> {
                               errorText: "Broj mora biti cijeli broj"),
                           FormBuilderValidators.numeric(
                               errorText: "Broj mora biti cijeli broj"),
+                          FormBuilderValidators.min(0,
+                              errorText: "Broj mora biti veći od 0"),
                         ]))),
                 const SizedBox(
                   width: 10,
