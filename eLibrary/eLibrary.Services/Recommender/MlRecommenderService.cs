@@ -21,105 +21,97 @@ namespace eLibrary.Services.Recommender
         {
             this.eLibraryContext = eLibraryContext;
             this.mapper = mapper;
+            mlContext = new MLContext();
+
         }
-        
-        /// <summary>
-        /// Recommender is consisted of nested for loop where we calculate book similarity with cosine similarity.
-        /// We group every two books (we don't group same books) and set label as similarity.
-        /// Similarity is based on comparing authors, genres, target groups, language, and type of book.
-        /// Books that are similar are grouped and inserted into data list.
-        /// After data training, we can consume the model.
-        /// We have the list of books user has previously read or reviewed. 
-        /// We get most similar books based on books user has already viewed.
-        /// </summary>
+
         static MLContext mlContext = null;
         static object isLocked = new object();
         const string ModelPath = "model.zip";
         static ITransformer model = null;
         public async Task<List<Model.KnjigeDTOs.Knjige>> GetRecommendedBooks(int citalacId)
         {
-            if (model == null)
-            {
-                await LoadAllData();
-               
-                lock (isLocked)
-                {
-                    mlContext = new MLContext();
-
-                    if (File.Exists(ModelPath))
-                    {
-                        // Load the model from the file
-                        using (var stream = new FileStream(ModelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        {
-                            model = mlContext.Model.Load(stream, out var modelInputSchema);
-                        }
-                    }
-                    else
-                    {
-                        TrainData();
-                    }
-                }
-            }
-
-            var readedBooks = eLibraryContext
-                .CitalacKnjigaLogs
-                .Where(x=> x.CitalacId == citalacId)
-                .Select(x=> x.KnjigaId)
-                .Distinct()
-                .ToList();
-
-            var knjiges = eLibraryContext
-                .Knjiges
-                .ToList();
-
-            var predictionResult = new List<(Database.Knjige, float)>();
-
-            foreach (var knjiga in knjiges)
-            {
-                var predictionengine = mlContext.Model.CreatePredictionEngine<KnjigaEntry, Copurchase_prediction>(model);
-
-                foreach(var procitanaKnjiga in readedBooks)
-                {
-                    if (procitanaKnjiga == knjiga.KnjigaId)
-                        continue;
-
-                    var prediction = predictionengine.Predict(
-                                         new KnjigaEntry()
-                                         {
-                                             KnjigaId = (uint)procitanaKnjiga,
-                                             CoSimilarKnjigaId = (uint)knjiga.KnjigaId
-                                         });
-                    predictionResult.Add(new(knjiga, prediction.Score));
-                }
-            }
-
-            var finalResult = predictionResult
-                .OrderByDescending(x => x.Item2)
-                .Select(x => x.Item1)
-                .Distinct()
-                .Where(x=> !readedBooks.Any(y=>x.KnjigaId==y))
-                .Take(5)
-                .ToList();
-
-            var knjige = eLibraryContext
+            var allBooksQuery = eLibraryContext
                 .Knjiges
                 .Include(x => x.KnjigaAutoris).ThenInclude(x => x.Autor)
-                .Include(x => x.KnjigaVrsteSadrzajas)
-                .Include(x => x.KnjigaCiljneGrupes)
+                .Include(x => x.KnjigaCiljneGrupes).ThenInclude(x => x.CiljnaGrupa)
                 .Include(x => x.VrstaGrade)
+                .Include(x => x.KnjigaVrsteSadrzajas).ThenInclude(x => x.VrstaSadrzaja)
                 .Include(x => x.Jezik)
-                .Include(x => x.Izdavac)
-                .Include(x => x.Uvez);
+                .AsQueryable();
 
-            var lista = new List<Model.KnjigeDTOs.Knjige>();
+            var readedBookIds = eLibraryContext
+                .CitalacKnjigaLogs
+                .Where(x => x.CitalacId == citalacId)
+                .Select(x => x.KnjigaId)
+                .Distinct()
+                .ToList();
 
-            foreach(var k in finalResult)
+            var readedBooks = await allBooksQuery
+                .Where(x => readedBookIds.Contains(x.KnjigaId))
+                .ToListAsync();
+
+            var readedBookData = readedBooks.Select(k => new KnjigaData
             {
-                var knjiga = await knjige.FirstOrDefaultAsync(x=> x.KnjigaId == k.KnjigaId);
-                if (knjiga != null)
-                    lista.Add(mapper.Map<Model.KnjigeDTOs.Knjige>(knjiga));
+                KnjigaId = k.KnjigaId,
+                Autori = string.Join(", ", k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime)),
+                CiljneGrupe = string.Join(", ", k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv)),
+                VrsteGrade = k.VrstaGrade.Naziv
+            }).ToList();
+
+            var allBookData = await allBooksQuery.Select(k => new KnjigaData
+            {
+                KnjigaId = k.KnjigaId,
+                Autori = string.Join(", ", k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime.OrderBy(x => x))),
+                CiljneGrupe = string.Join(", ", k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv).OrderBy(x => x)),
+                VrsteGrade = k.VrstaGrade.Naziv,
+                VrsteSadrzaja = string.Join(", ", k.KnjigaVrsteSadrzajas.Select(kcg => kcg.VrstaSadrzaja.Naziv).OrderBy(x => x)),
+                Jezik = k.Jezik.Naziv,
+                Naslov = k.Naslov
+            }).ToListAsync();
+
+            var pipeline = mlContext.Transforms.Text.FeaturizeText("AutoriFeaturized", nameof(KnjigaData.Autori))
+                           .Append(mlContext.Transforms.Text.FeaturizeText("CiljneGrupeFeaturized", nameof(KnjigaData.CiljneGrupe)))
+                           .Append(mlContext.Transforms.Text.FeaturizeText("VrsteGradeFeaturized", nameof(KnjigaData.VrsteGrade)))
+                           .Append(mlContext.Transforms.Text.FeaturizeText("VrsteSadrzajaFeaturized", nameof(KnjigaData.VrsteSadrzaja)))
+                           .Append(mlContext.Transforms.Text.FeaturizeText("JezikFeaturized", nameof(KnjigaData.Jezik)))
+                           .Append(mlContext.Transforms.Text.FeaturizeText("NaslovFeaturized", nameof(KnjigaData.Naslov)))
+                           .Append(mlContext.Transforms.Concatenate("Features",
+                                "AutoriFeaturized",
+                                "CiljneGrupeFeaturized",
+                                "VrsteGradeFeaturized",
+                                "VrsteSadrzajaFeaturized",
+                                "JezikFeaturized"));
+
+            var model = pipeline.Fit(mlContext.Data.LoadFromEnumerable(allBookData));
+
+            var predictions = new List<KnjigaPrediction>();
+            var predictionEngine = mlContext.Model.CreatePredictionEngine<KnjigaData, KnjigaPrediction>(model);
+
+            foreach (var book in allBookData)
+            {
+                if (readedBookData.Any(rb => rb.KnjigaId == book.KnjigaId))
+                    continue;
+
+                var bookVector = predictionEngine.Predict(book).Features;
+
+                float totalScore = 0;
+                foreach (var readedBook in readedBookData)
+                {
+                    var readedVector = predictionEngine.Predict(readedBook).Features;
+                    totalScore += CalculateCosineSimilarity(bookVector, readedVector);
+                }
+
+                predictions.Add(new KnjigaPrediction
+                {
+                    Id = book.KnjigaId,
+                    Score = totalScore / readedBookData.Count
+                });
             }
-            return lista;
+
+            var predictionIds = predictions.OrderByDescending(x => x.Score).Take(5).Select(x => x.Id).ToList();
+
+            return mapper.Map<List<Model.KnjigeDTOs.Knjige>>(await allBooksQuery.Where(x => predictionIds.Contains(x.KnjigaId)).ToListAsync());
         }
 
         public double ComputeCosineSimilarity(Database.Knjige book1, Database.Knjige book2)
@@ -139,33 +131,24 @@ namespace eLibrary.Services.Recommender
         {
             var featureVector = new List<double>();
 
-            allAuthors = eLibraryContext.Autoris.Select(x=>x.AutorId).ToList();
-            allTargetGroups = eLibraryContext.CiljneGrupes.Select(x=>x.CiljnaGrupaId).ToList(); 
-            allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).ToList(); 
-            allLanguages = eLibraryContext.Jezicis.Select(x=>x.JezikId).ToList();
+            allAuthors = eLibraryContext.Autoris.Select(x => x.AutorId).ToList();
+            allTargetGroups = eLibraryContext.CiljneGrupes.Select(x => x.CiljnaGrupaId).ToList();
+            allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x => x.VrstaSadrzajaId).ToList();
+            allLanguages = eLibraryContext.Jezicis.Select(x => x.JezikId).ToList();
             //allVrsteGrade = eLibraryContext.VrsteGrades.Select(x=>x.VrstaGradeId).ToList();
 
-            featureVector.AddRange(allAuthors.Select(author => book.KnjigaAutoris.Select(x=>x.AutorId).Contains(author) ? 1.0 : 0.0));
-            featureVector.AddRange(allTargetGroups.Select(targetGroup => book.KnjigaCiljneGrupes.Select(x=>x.CiljnaGrupaId).Contains(targetGroup) ? 1.0 : 0.0));
-            featureVector.AddRange(allContentTypes.Select(contentType => book.KnjigaVrsteSadrzajas.Select(x=>x.VrstaSadrzajaId).Contains(contentType) ? 1.0 : 0.0));
+            featureVector.AddRange(allAuthors.Select(author => book.KnjigaAutoris.Select(x => x.AutorId).Contains(author) ? 1.0 : 0.0));
+            featureVector.AddRange(allTargetGroups.Select(targetGroup => book.KnjigaCiljneGrupes.Select(x => x.CiljnaGrupaId).Contains(targetGroup) ? 1.0 : 0.0));
+            featureVector.AddRange(allContentTypes.Select(contentType => book.KnjigaVrsteSadrzajas.Select(x => x.VrstaSadrzajaId).Contains(contentType) ? 1.0 : 0.0));
             featureVector.AddRange(allLanguages.Select(x => x == book.JezikId ? 1.0 : 0.0));
             //featureVector.AddRange(allVrsteGrade.Select(x => x == book.VrsteGradeId ? 1.0 : 0.0));
 
             return featureVector.ToArray();
         }
 
-        private async Task LoadAllData()
-        {
-            allAuthors = eLibraryContext.Autoris.Select(x => x.AutorId).ToList();
-            allTargetGroups = eLibraryContext.CiljneGrupes.Select(x => x.CiljnaGrupaId).ToList();
-            allContentTypes = eLibraryContext.VrsteSadrzajas.Select(x => x.VrstaSadrzajaId).ToList();
-            allLanguages = eLibraryContext.Jezicis.Select(x => x.JezikId).ToList();
-            allVrsteGrade = eLibraryContext.VrsteGrades.Select(x => x.VrstaGradeId).ToList();
-        }
-
         public void TrainData()
         {
-            if(mlContext==null) mlContext = new MLContext();
+            if (mlContext == null) mlContext = new MLContext();
             var allBooksQuery = eLibraryContext
                         .Knjiges
                         .Include(x => x.KnjigaAutoris)
@@ -214,12 +197,25 @@ namespace eLibrary.Services.Recommender
                 mlContext.Model.Save(model, traindata.Schema, fs);
             }
         }
-    }
 
+        private float CalculateCosineSimilarity(float[] vectorA, float[] vectorB)
+        {
+            float dotProduct = 0;
+            float magnitudeA = 0;
+            float magnitudeB = 0;
 
-    public class Copurchase_prediction
-    {
-        public float Score { get; set; }
+            for (int i = 0; i < vectorA.Length; i++)
+            {
+                dotProduct += vectorA[i] * vectorB[i];
+                magnitudeA += vectorA[i] * vectorA[i];
+                magnitudeB += vectorB[i] * vectorB[i];
+            }
+
+            magnitudeA = MathF.Sqrt(magnitudeA);
+            magnitudeB = MathF.Sqrt(magnitudeB);
+
+            return dotProduct / (magnitudeA * magnitudeB);
+        }
     }
 
     public class KnjigaEntry
@@ -231,5 +227,25 @@ namespace eLibrary.Services.Recommender
         public uint CoSimilarKnjigaId { get; set; }
 
         public float Label { get; set; }
+    }
+
+    public class KnjigaData
+    {
+        public int KnjigaId { get; set; }
+        public string Autori { get; set; }
+        public string CiljneGrupe { get; set; }
+        public string VrsteGrade { get; set; }
+        public string VrsteSadrzaja { get; set; }
+        public string Jezik { get; set; }
+        public string Naslov { get; set; }
+    }
+
+    public class KnjigaPrediction
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public float Score { get; set; }
+        [VectorType]
+        public float[] Features { get; set; }
     }
 }

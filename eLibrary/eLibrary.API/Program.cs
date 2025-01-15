@@ -2,7 +2,6 @@ using eLibrary.API.Auth;
 using eLibrary.API.Filters;
 using eLibrary.Services;
 using eLibrary.Services.Auth;
-using eLibrary.Services.BaseServicesInterfaces;
 using eLibrary.Services.Database;
 using eLibrary.Services.RabbitMqService;
 using eLibrary.Services.Recommender;
@@ -127,10 +126,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ELibraryContext>();
-    dataContext.Database.Migrate();
+    //dataContext.Database.Migrate();
 }
 
 app.Run();
