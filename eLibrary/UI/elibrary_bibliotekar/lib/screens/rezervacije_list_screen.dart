@@ -184,6 +184,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
       )),
       DataCell(
         FutureBuilder<List<String>>(
+          key: ValueKey(item.rezervacijaId),
           future: getAllowedActions(item.rezervacijaId!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -206,6 +207,8 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
 
   void filterServerSide(ime) {
     imePrezimeGTE = ime;
+    data = [];
+    count = 0;
     setNextView();
   }
 
@@ -248,7 +251,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   }
 
   Future<Knjiga> fetchKnjiga(int? knjigaId) async {
-    var knjiga = await this.knjigaProvider.getById(knjigaId!);
+    var knjiga = await knjigaProvider.getById(knjigaId!);
     return knjiga;
   }
 

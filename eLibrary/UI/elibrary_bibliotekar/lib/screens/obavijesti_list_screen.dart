@@ -182,20 +182,36 @@ class ObavijestiDataSource extends AdvancedDataTableSource<Obavijest> {
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.red)),
               onPressed: () async {
-                try {
-                  await provider.delete(item.obavijestId!);
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: "Obavijest je uspješno izbrisana");
-                } on Exception catch (e) {
-                  QuickAlert.show(
-                      context: context,
-                      width: 450,
-                      type: QuickAlertType.error,
-                      text: "Greška prilikom brisanja");
-                }
-                filterServerSide("");
+                QuickAlert.show(
+                    context: context,
+                    width: 450,
+                    type: QuickAlertType.confirm,
+                    title: "Jeste li sigurni?",
+                    text: "Da li želite izbrisati obavijest?",
+                    confirmBtnText: "Da",
+                    cancelBtnText: "Ne",
+                    onConfirmBtnTap: () async {
+                      try {
+                        await provider.delete(item.obavijestId!);
+                        Navigator.pop(context);
+
+                        QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                            text: "Obavijest je uspješno izbrisana");
+                      } on Exception catch (e) {
+                        QuickAlert.show(
+                            context: context,
+                            width: 450,
+                            type: QuickAlertType.error,
+                            text: "Greška prilikom brisanja");
+                      }
+                      filterServerSide("");
+                      //Navigator.pop(context);
+                    },
+                    onCancelBtnTap: () {
+                      Navigator.pop(context);
+                    });
               },
               child: const Text(
                 "Izbrisi",

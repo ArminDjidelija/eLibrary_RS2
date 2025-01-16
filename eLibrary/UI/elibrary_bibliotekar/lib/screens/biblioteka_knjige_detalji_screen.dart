@@ -430,6 +430,22 @@ class _BibliotekaKnjigaDetailsScreenState
           '${dir.path}/Izvjestaj-${widget.bibliotekaKnjiga!.knjiga!.naslov}.pdf';
       File file = File(path);
       file.writeAsBytes(await pdf.save());
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Izvještaj"),
+            content: Text("Putanja do fajla:\n$path"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("Zatvori"),
+              ),
+            ],
+          );
+        },
+      );
     } on Exception catch (e) {
       print(e);
     }

@@ -188,7 +188,8 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
                   ? "Nije uneseno"
                   : item.godinaRodjenja.toString()),
             )),
-            DataCell(ElevatedButton(
+            DataCell(
+              ElevatedButton(
                 child: const Text(
                   "Detalji",
                   style: TextStyle(color: Colors.white),
@@ -201,9 +202,9 @@ class AutorDataSource extends AdvancedDataTableSource<Autor> {
                       builder: (context) => AutorDetailsScreen(
                             autor: item,
                           )));
-                }))
-            // DataCell(Text(item!.prezime.toString())),
-            // DataCell(Text(item!.godinaRodjenja.toString())),
+                },
+              ),
+            )
           ]);
     } else {}
 

@@ -154,12 +154,17 @@ class CitalacDataSource extends AdvancedDataTableSource<Citalac> {
 
     return DataRow(
         onSelectChanged: (selected) => {
-              if (selected == true)
+              if (selected == true &&
+                  !AuthProvider.korisnikUloge!.any(
+                      (element) => element.uloga!.naziv == "Administrator"))
                 {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
                       builder: (context) => CitalacDetaljiScreen(
-                            citalac: item,
-                          ))),
+                        citalac: item,
+                      ),
+                    ),
+                  ),
                 }
             },
         cells: [

@@ -74,46 +74,55 @@ class _BibliotekaKnjigaEditScreenState
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration: const InputDecoration(labelText: "Broj kopija"),
-                  name: 'brojKopija',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                        errorText: "Vrijednost je obavezna"),
-                    FormBuilderValidators.integer(
-                        errorText: "Vrijednost mora biti cijeli broj"),
-                  ]),
-                )),
+                  child: FormBuilderTextField(
+                    decoration: const InputDecoration(labelText: "Broj kopija"),
+                    name: 'brojKopija',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Vrijednost je obavezna"),
+                      FormBuilderValidators.integer(
+                          errorText: "Vrijednost mora biti cijeli broj"),
+                      FormBuilderValidators.min(1,
+                          errorText: "Vrijednost mora biti barem 1")
+                    ]),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Dostupno čitaonica"),
-                  name: 'dostupnoCitaonica',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                        errorText: "Vrijednost je obavezna"),
-                    FormBuilderValidators.integer(
-                        errorText: "Vrijednost mora biti cijeli broj"),
-                  ]),
-                )),
+                  child: FormBuilderTextField(
+                    decoration:
+                        const InputDecoration(labelText: "Dostupno čitaonica"),
+                    name: 'dostupnoCitaonica',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Vrijednost je obavezna"),
+                      FormBuilderValidators.integer(
+                          errorText: "Vrijednost mora biti cijeli broj"),
+                      FormBuilderValidators.min(0,
+                          errorText: "Vrijednost mora biti barem 0")
+                    ]),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                    child: FormBuilderTextField(
-                  decoration:
-                      const InputDecoration(labelText: "Dostupno pozajmica"),
-                  name: 'dostupnoPozajmica',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                        errorText: "Vrijednost je obavezna"),
-                    FormBuilderValidators.integer(
-                        errorText: "Vrijednost mora biti cijeli broj"),
-                  ]),
-                )),
+                  child: FormBuilderTextField(
+                    decoration:
+                        const InputDecoration(labelText: "Dostupno pozajmica"),
+                    name: 'dostupnoPozajmica',
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                          errorText: "Vrijednost je obavezna"),
+                      FormBuilderValidators.integer(
+                          errorText: "Vrijednost mora biti cijeli broj"),
+                      FormBuilderValidators.min(0,
+                          errorText: "Vrijednost mora biti barem 0")
+                    ]),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
