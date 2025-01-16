@@ -447,19 +447,22 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
               ],
               note: "Kontaktirajte nas za bilo kakve poteskoce",
               onSuccess: (Map params) async {
-                print("onSuccess: $params");
+                Navigator.pop(context);
+
                 try {
-                  Navigator.pop(context);
                   await penaliProvider.Plati(penal.penalId!,
                       tipPlacanjaId == null ? 1 : tipPlacanjaId!);
                   QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
                       text: "Uspješno kreirana članarina");
-                  _firstLoad();
-                  _initForm();
+
+                  setState(() {
+                    _firstLoad();
+                    _initForm();
+                  });
                 } on Exception catch (e) {}
-                Navigator.pop(context);
+                //Navigator.pop(context);
               },
               onError: (error) {
                 print("onSuccess: $error");
