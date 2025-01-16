@@ -31,7 +31,9 @@ namespace eLibrary.Services.Recommender
         static ITransformer model = null;
         public async Task<List<Model.KnjigeDTOs.Knjige>> GetRecommendedBooks(int citalacId)
         {
-            var allBooksQuery = eLibraryContext
+            try
+            {
+                var allBooksQuery = eLibraryContext
                 .Knjiges
                 .Include(x => x.KnjigaAutoris).ThenInclude(x => x.Autor)
                 .Include(x => x.KnjigaCiljneGrupes).ThenInclude(x => x.CiljnaGrupa)
@@ -40,78 +42,100 @@ namespace eLibrary.Services.Recommender
                 .Include(x => x.Jezik)
                 .AsQueryable();
 
-            var readedBookIds = eLibraryContext
-                .CitalacKnjigaLogs
-                .Where(x => x.CitalacId == citalacId)
-                .Select(x => x.KnjigaId)
-                .Distinct()
-                .ToList();
+                var readedBookIds = eLibraryContext
+                    .CitalacKnjigaLogs
+                    .Where(x => x.CitalacId == citalacId)
+                    .Select(x => x.KnjigaId)
+                    .Distinct()
+                    .ToList();
 
-            var readedBooks = await allBooksQuery
-                .Where(x => readedBookIds.Contains(x.KnjigaId))
-                .ToListAsync();
+                var readedBooks = await allBooksQuery
+                    .Where(x => readedBookIds.Contains(x.KnjigaId))
+                    .ToListAsync();
 
-            var readedBookData = readedBooks.Select(k => new KnjigaData
-            {
-                KnjigaId = k.KnjigaId,
-                Autori = string.Join(", ", k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime)),
-                CiljneGrupe = string.Join(", ", k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv)),
-                VrsteGrade = k.VrstaGrade.Naziv
-            }).ToList();
-
-            var allBookData = await allBooksQuery.Select(k => new KnjigaData
-            {
-                KnjigaId = k.KnjigaId,
-                Autori = string.Join(", ", k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime.OrderBy(x => x))),
-                CiljneGrupe = string.Join(", ", k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv).OrderBy(x => x)),
-                VrsteGrade = k.VrstaGrade.Naziv,
-                VrsteSadrzaja = string.Join(", ", k.KnjigaVrsteSadrzajas.Select(kcg => kcg.VrstaSadrzaja.Naziv).OrderBy(x => x)),
-                Jezik = k.Jezik.Naziv,
-                Naslov = k.Naslov
-            }).ToListAsync();
-
-            var pipeline = mlContext.Transforms.Text.FeaturizeText("AutoriFeaturized", nameof(KnjigaData.Autori))
-                           .Append(mlContext.Transforms.Text.FeaturizeText("CiljneGrupeFeaturized", nameof(KnjigaData.CiljneGrupe)))
-                           .Append(mlContext.Transforms.Text.FeaturizeText("VrsteGradeFeaturized", nameof(KnjigaData.VrsteGrade)))
-                           .Append(mlContext.Transforms.Text.FeaturizeText("VrsteSadrzajaFeaturized", nameof(KnjigaData.VrsteSadrzaja)))
-                           .Append(mlContext.Transforms.Text.FeaturizeText("JezikFeaturized", nameof(KnjigaData.Jezik)))
-                           .Append(mlContext.Transforms.Text.FeaturizeText("NaslovFeaturized", nameof(KnjigaData.Naslov)))
-                           .Append(mlContext.Transforms.Concatenate("Features",
-                                "AutoriFeaturized",
-                                "CiljneGrupeFeaturized",
-                                "VrsteGradeFeaturized",
-                                "VrsteSadrzajaFeaturized",
-                                "JezikFeaturized"));
-
-            var model = pipeline.Fit(mlContext.Data.LoadFromEnumerable(allBookData));
-
-            var predictions = new List<KnjigaPrediction>();
-            var predictionEngine = mlContext.Model.CreatePredictionEngine<KnjigaData, KnjigaPrediction>(model);
-
-            foreach (var book in allBookData)
-            {
-                if (readedBookData.Any(rb => rb.KnjigaId == book.KnjigaId))
-                    continue;
-
-                var bookVector = predictionEngine.Predict(book).Features;
-
-                float totalScore = 0;
-                foreach (var readedBook in readedBookData)
+                var readedBookData = readedBooks.Select(k => new KnjigaData
                 {
-                    var readedVector = predictionEngine.Predict(readedBook).Features;
-                    totalScore += CalculateCosineSimilarity(bookVector, readedVector);
+                    KnjigaId = k.KnjigaId,
+                    Autori = string.Join(", ", k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime)),
+                    CiljneGrupe = string.Join(", ", k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv)),
+                    VrsteGrade = k.VrstaGrade.Naziv
+                }).ToList();
+
+                var allBookData = allBooksQuery
+                    .Select(k => new
+                    {
+                        k.KnjigaId,
+                        Autori = k.KnjigaAutoris.Select(ka => ka.Autor.Ime + " " + ka.Autor.Prezime).OrderBy(x => x).ToList(),
+                        CiljneGrupe = k.KnjigaCiljneGrupes.Select(kcg => kcg.CiljnaGrupa.Naziv).OrderBy(x => x).ToList(),
+                        VrsteGrade = k.VrstaGrade.Naziv,
+                        VrsteSadrzaja = k.KnjigaVrsteSadrzajas.Select(kcg => kcg.VrstaSadrzaja.Naziv).OrderBy(x => x).ToList(),
+                        Jezik = k.Jezik.Naziv,
+                        k.Naslov
+                    })
+                    .AsEnumerable()
+                    .Select(k => new KnjigaData
+                    {
+                        KnjigaId = k.KnjigaId,
+                        Autori = string.Join(", ", k.Autori),
+                        CiljneGrupe = string.Join(", ", k.CiljneGrupe),
+                        VrsteGrade = k.VrsteGrade,
+                        VrsteSadrzaja = string.Join(", ", k.VrsteSadrzaja),
+                        Jezik = k.Jezik,
+                        Naslov = k.Naslov
+                    })
+                    .ToList();
+
+                var pipeline = mlContext.Transforms.Text.FeaturizeText("AutoriFeaturized", nameof(KnjigaData.Autori))
+                               .Append(mlContext.Transforms.Text.FeaturizeText("CiljneGrupeFeaturized", nameof(KnjigaData.CiljneGrupe)))
+                               .Append(mlContext.Transforms.Text.FeaturizeText("VrsteGradeFeaturized", nameof(KnjigaData.VrsteGrade)))
+                               .Append(mlContext.Transforms.Text.FeaturizeText("VrsteSadrzajaFeaturized", nameof(KnjigaData.VrsteSadrzaja)))
+                               .Append(mlContext.Transforms.Text.FeaturizeText("JezikFeaturized", nameof(KnjigaData.Jezik)))
+                               .Append(mlContext.Transforms.Text.FeaturizeText("NaslovFeaturized", nameof(KnjigaData.Naslov)))
+                               .Append(mlContext.Transforms.Concatenate("Features",
+                                    "AutoriFeaturized",
+                                    "CiljneGrupeFeaturized",
+                                    "VrsteGradeFeaturized",
+                                    "VrsteSadrzajaFeaturized",
+                                    "JezikFeaturized"));
+
+                var model = pipeline.Fit(mlContext.Data.LoadFromEnumerable(allBookData));
+
+                var predictions = new List<KnjigaPrediction>();
+                var predictionEngine = mlContext.Model.CreatePredictionEngine<KnjigaData, KnjigaPrediction>(model);
+                Console.WriteLine("SVE OK 1 ----------------------------");
+
+                foreach (var book in allBookData)
+                {
+                    if (readedBookData.Any(rb => rb.KnjigaId == book.KnjigaId))
+                        continue;
+
+                    var bookVector = predictionEngine.Predict(book).Features;
+
+                    float totalScore = 0;
+                    foreach (var readedBook in readedBookData)
+                    {
+                        var readedVector = predictionEngine.Predict(readedBook).Features;
+                        totalScore += CalculateCosineSimilarity(bookVector, readedVector);
+                    }
+
+                    predictions.Add(new KnjigaPrediction
+                    {
+                        Id = book.KnjigaId,
+                        Score = totalScore / readedBookData.Count
+                    });
                 }
+                Console.WriteLine("SVE OK 2 ----------------------------");
 
-                predictions.Add(new KnjigaPrediction
-                {
-                    Id = book.KnjigaId,
-                    Score = totalScore / readedBookData.Count
-                });
+                var predictionIds = predictions.OrderByDescending(x => x.Score).Take(5).Select(x => x.Id).ToList();
+                Console.WriteLine("SVE OK 3 ----------------------------");
+                var data = await allBooksQuery.Where(x => predictionIds.Contains(x.KnjigaId)).ToListAsync();
+
+                return mapper.Map<List<Model.KnjigeDTOs.Knjige>>(data);
             }
-
-            var predictionIds = predictions.OrderByDescending(x => x.Score).Take(5).Select(x => x.Id).ToList();
-
-            return mapper.Map<List<Model.KnjigeDTOs.Knjige>>(await allBooksQuery.Where(x => predictionIds.Contains(x.KnjigaId)).ToListAsync());
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
         public double ComputeCosineSimilarity(Database.Knjige book1, Database.Knjige book2)
