@@ -8,7 +8,7 @@ Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnolo
 - **Extractovati arhivu fit-build-01-17-desktop (eLibrary_RS2/eLibrary), te otvoriti elibrary_bibliotekar.exe iz foldera Debug.**
 - **Extractovati arhivu fit-build-01-17-mobile.part1 (eLibrary_RS2/eLibrary), te otvoriti flutter-apk folder.**
 - **Fajl app-debug.apk (iz foldera flutter-apk) prenijeti na emulator i sačekati da se instalira. (Deinstalirati aplikaciju sa emulatora ukoliko je instalirana!)**
-- 
+  
 - **Nakon instaliranja obe aplikacije, iskoristiti kredencijale za uloge ispod.**
 
 ## Kredencijali za prijavu
