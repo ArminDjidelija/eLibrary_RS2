@@ -13,17 +13,5 @@ namespace eLibrary.API.Controllers
         public BibliotekeController(IBibliotekeService service) : base(service)
         {
         }
-
-        [AllowAnonymous]
-        public override Task<PagedResult<Model.BibliotekeDTOs.Biblioteke>> GetList([FromQuery] BibliotekeSearchObject searchObject, CancellationToken cancellationToken = default)
-        {
-            return base.GetList(searchObject, cancellationToken);
-        }
-
-        [AllowAnonymous]
-        public override Task<Model.BibliotekeDTOs.Biblioteke> GetById(int id, CancellationToken cancellationToken = default)
-        {
-            return base.GetById(id, cancellationToken);
-        }
     }
 }
