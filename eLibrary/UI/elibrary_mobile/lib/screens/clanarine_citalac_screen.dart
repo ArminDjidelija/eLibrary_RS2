@@ -11,7 +11,6 @@ import 'package:elibrary_mobile/providers/tip_clanarine_biblioteka_provider.dart
 import 'package:elibrary_mobile/providers/tip_uplate_provider.dart';
 import 'package:elibrary_mobile/providers/uplate_provider.dart';
 import 'package:elibrary_mobile/providers/utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';

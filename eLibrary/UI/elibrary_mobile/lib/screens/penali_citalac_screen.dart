@@ -452,17 +452,21 @@ class _PenaliCitalacScreenState extends State<PenaliCitalacScreen> {
                 try {
                   await penaliProvider.Plati(penal.penalId!,
                       tipPlacanjaId == null ? 1 : tipPlacanjaId!);
-                  QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: "Uspješno kreirana članarina");
+                  // QuickAlert.show(
+                  //     context: context,
+                  //     type: QuickAlertType.success,
+                  //     text: "Uspješno kreirana članarina");
 
                   setState(() {
                     _firstLoad();
                     _initForm();
                   });
-                } on Exception catch (e) {}
-                //Navigator.pop(context);
+                } on Exception catch (e) {
+                  setState(() {
+                    _firstLoad();
+                    _initForm();
+                  });
+                }
               },
               onError: (error) {
                 print("onSuccess: $error");
