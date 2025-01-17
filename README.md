@@ -2,12 +2,12 @@
 Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnologija u Mostaru
 
 # Upute za pokretanje
-- **Extractovati arhivu fit-build-01-17-env u istom folderu (eLibrary_RS2/eLibrary)**
+- **Extractovati arhivu fit-build-01-17-env u istom folderu (eLibrary_RS2/eLibrary) radi extract-a env**
 - **Otvoriti \eLibrary_RS2\eLibrary u terminalu i pokrenuti komandu docker compose up --build, te sačekati da se sve uspješno build-a.**
 
 - **Extractovati arhivu fit-build-01-17-desktop (eLibrary_RS2/eLibrary), te otvoriti elibrary_bibliotekar.exe iz foldera Debug.**
 - **Extractovati arhivu fit-build-01-17-mobile.part1 (eLibrary_RS2/eLibrary), te otvoriti flutter-apk folder.**
-- **Fajl app-debug.apk (iz foldera flutter-apk) prenijeti na emulator i sačekati da se instalira. (Deinstalirati aplikaciju sa emulatora ukoliko je instalirana!)**
+- **Fajl app-debug.apk (iz foldera flutter-apk) prenijeti na emulator i sačekati da se instalira. (Deinstalirati aplikaciju sa emulatora ukoliko je prije bila instalirana!)**
   
 - **Nakon instaliranja obe aplikacije, iskoristiti kredencijale za uloge ispod.**
 
